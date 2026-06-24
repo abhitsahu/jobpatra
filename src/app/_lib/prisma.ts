@@ -1,0 +1,67 @@
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
+import dns from 'dns';
+import { promisify } from 'util';
+
+// Prevent multiple PrismaClient instances in development (hot reload).
+// In production, a single instance is created and reused.
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __prisma: PrismaClient | undefined;
+}
+
+const resolve4 = promisify(dns.resolve4);
+
+async function createPrismaClient() {
+  // In development: DIRECT_URL (port 5432, session mode, bypasses PgBouncer).
+  // In production: DATABASE_URL (port 6543, transaction pooler for serverless).
+  const connectionString =
+    process.env.NODE_ENV === 'development'
+      ? (process.env.DIRECT_URL ?? process.env.DATABASE_URL)
+      : process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error('DATABASE_URL or DIRECT_URL is not set');
+  }
+
+  const u = new URL(connectionString);
+
+  // Node.js resolves the hostname to BOTH IPv4 and IPv6, then races them
+  // (Happy Eyeballs). The IPv6 addresses (64:ff9b::...) fail immediately
+  // with ENETUNREACH, causing pg to report ETIMEDOUT even though IPv4 works.
+  // Pre-resolving to a single IPv4 address sidesteps this entirely.
+  const [resolvedHost] = await resolve4(u.hostname);
+
+  const pool = new Pool({
+    host: resolvedHost,
+    port: parseInt(u.port || '5432'),
+    user: u.username,
+    password: u.password,
+    database: u.pathname.slice(1),
+    ssl: { rejectUnauthorized: false },
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  });
+
+  const adapter = new PrismaPg(pool);
+
+  return new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+}
+
+// Async IIFE to handle DNS resolution at module initialisation.
+// The singleton is preserved across Next.js hot reloads via global.__prisma.
+export const prisma: PrismaClient =
+  global.__prisma ??
+  (await (async () => {
+    const client = await createPrismaClient();
+    if (process.env.NODE_ENV !== 'production') {
+      global.__prisma = client;
+    }
+    return client;
+  })());
