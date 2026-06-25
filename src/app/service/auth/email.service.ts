@@ -11,7 +11,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
   const verifyUrl = `${APP_URL}/verify-email?token=${token}`;
 
   await resend.emails.send({
-    from: FROM_EMAIL,
+    from: `JobPatra <${FROM_EMAIL}>`,
     to: email,
     subject: 'Verify your email address',
     html: `
@@ -42,7 +42,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
   const resetUrl = `${APP_URL}/reset-password?token=${token}`;
 
   await resend.emails.send({
-    from: FROM_EMAIL,
+    from: `JobPatra <${FROM_EMAIL}>`,
     to: email,
     subject: 'Reset your password',
     html: `

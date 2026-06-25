@@ -1,0 +1,125 @@
+@import 'tailwindcss';
+
+@theme {
+  /* ── Colors (from Google Stitch design) ──────────────────── */
+  --color-surface-charcoal: #0b1014;
+  --color-surface: #0f1418;
+  --color-surface-dim: #0f1418;
+  --color-surface-container-lowest: #0a0f13;
+  --color-surface-container-low: #171c20;
+  --color-surface-container: #1b2024;
+  --color-surface-container-high: #262b2f;
+  --color-surface-container-highest: #30353a;
+  --color-surface-bright: #353a3e;
+  --color-surface-variant: #30353a;
+
+  --color-on-surface: #dfe3e9;
+  --color-on-surface-variant: #bfc7d4;
+  --color-on-background: #dfe3e9;
+  --color-background: #0f1418;
+
+  --color-electric-blue: #1a91f0;
+  --color-deep-indigo: #2e358a;
+  --color-neon-purple: #a855f7;
+
+  --color-primary: #a0caff;
+  --color-primary-fixed: #d2e4ff;
+  --color-primary-fixed-dim: #a0caff;
+  --color-primary-container: #2294f4;
+  --color-inverse-primary: #0061a5;
+  --color-on-primary: #003259;
+  --color-on-primary-fixed: #001c37;
+  --color-on-primary-fixed-variant: #00497e;
+  --color-on-primary-container: #002b4e;
+
+  --color-secondary: #bec2ff;
+  --color-secondary-fixed: #e0e0ff;
+  --color-secondary-fixed-dim: #bec2ff;
+  --color-secondary-container: #363d92;
+  --color-on-secondary: #1e247b;
+  --color-on-secondary-fixed: #020668;
+  --color-on-secondary-fixed-variant: #363d92;
+  --color-on-secondary-container: #a9afff;
+
+  --color-tertiary: #ffb781;
+  --color-tertiary-fixed: #ffdcc4;
+  --color-tertiary-fixed-dim: #ffb781;
+  --color-tertiary-container: #dc7506;
+  --color-on-tertiary: #4e2600;
+  --color-on-tertiary-fixed: #2f1400;
+  --color-on-tertiary-fixed-variant: #6f3800;
+  --color-on-tertiary-container: #442000;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+
+  --color-outline: #8a919e;
+  --color-outline-variant: #404752;
+
+  --color-surface-tint: #a0caff;
+  --color-inverse-surface: #dfe3e9;
+  --color-inverse-on-surface: #2c3135;
+
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-display-hero: 'Space Grotesk', sans-serif;
+  --font-headline-lg: 'Space Grotesk', sans-serif;
+  --font-headline-md: 'Space Grotesk', sans-serif;
+  --font-button-text: 'Space Grotesk', sans-serif;
+  --font-label-caps: 'Space Grotesk', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+
+  /* ── Border radius ────────────────────────────────────────── */
+  --radius: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* ── Global resets ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100vh;
+  background-color: #0b1014;
+  color: #dfe3e9;
+  font-family: 'Inter', sans-serif;
+}
+
+::selection {
+  background-color: rgba(26, 145, 240, 0.3);
+  color: white;
+}
+
+/* ── Material Symbols config ────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* ── Glow animation for submit button ───────────────────────── */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(26, 145, 240, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(26, 145, 240, 0.4);
+  }
+}
+
+.animate-glow:hover {
+  animation: pulse-glow 2s infinite;
+}
