@@ -12,8 +12,8 @@ export function ConfirmPasswordStatus({ password, confirmPassword }: ConfirmPass
   return (
     <p
       className={[
-        'flex items-center gap-1.5 font-[Inter] text-[13px] mt-1.5 transition-colors duration-300',
-        match ? 'text-[#34a853]' : 'text-[#ffb4ab]',
+        "flex items-center gap-1.5 font-['Hanken_Grotesk'] text-[13px] mt-1.5 transition-colors duration-300",
+        match ? 'text-[#2a7040]' : 'text-[#ba1a1a]',
       ].join(' ')}
       role="status"
       aria-live="polite"
@@ -33,3 +33,4 @@ export function ConfirmPasswordStatus({ password, confirmPassword }: ConfirmPass
     </p>
   );
 }
+

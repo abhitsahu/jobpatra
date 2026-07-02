@@ -24,12 +24,12 @@ function computeScore(password: string): number {
 
 function getLevel(score: number): StrengthLevel {
   if (score <= 1)
-    return { label: 'Weak', score: 1, color: 'bg-[#ef4444]', textColor: 'text-[#ef4444]' };
+    return { label: 'Weak', score: 1, color: 'bg-[#ba1a1a]', textColor: 'text-[#ba1a1a]' };
   if (score <= 3)
-    return { label: 'Medium', score: 2, color: 'bg-[#f59e0b]', textColor: 'text-[#f59e0b]' };
+    return { label: 'Medium', score: 2, color: 'bg-[#795900]', textColor: 'text-[#795900]' };
   if (score <= 5)
-    return { label: 'Strong', score: 3, color: 'bg-[#1a91f0]', textColor: 'text-[#1a91f0]' };
-  return { label: 'Very Strong', score: 4, color: 'bg-[#34a853]', textColor: 'text-[#34a853]' };
+    return { label: 'Strong', score: 3, color: 'bg-[#5b060c]', textColor: 'text-[#5b060c]' };
+  return { label: 'Very Strong', score: 4, color: 'bg-[#2a7040]', textColor: 'text-[#2a7040]' };
 }
 
 const TOTAL_SEGMENTS = 4;
@@ -55,7 +55,7 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
             key={i}
             className={[
               'h-1 flex-1 rounded-full transition-all duration-400',
-              i < level.score ? level.color : 'bg-[#30353a]',
+              i < level.score ? level.color : 'bg-[#ddc0bd]',
             ].join(' ')}
           />
         ))}
@@ -63,10 +63,11 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
 
       {/* Label */}
       <p
-        className={`font-[Inter] text-[12px] font-medium transition-colors duration-300 ${level.textColor}`}
+        className={`font-['Hanken_Grotesk'] text-[12px] font-medium transition-colors duration-300 ${level.textColor}`}
       >
         {level.label}
       </p>
     </div>
   );
 }
+

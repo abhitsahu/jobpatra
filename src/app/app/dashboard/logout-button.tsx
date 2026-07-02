@@ -4,15 +4,15 @@ import { logoutClient } from '@/app/api/client/auth/auth-client';
 
 export function LogoutButton() {
   const handleLogout = async () => {
-    await logoutClient('/'); // redirects to landing page, NOT /app/login
+    await logoutClient('/'); // redirects to landing page
   };
 
   return (
     <button
       onClick={handleLogout}
-      className="inline-flex items-center gap-2 bg-white/5 border border-[rgba(255,255,255,0.08)] text-[#dfe3e9] hover:bg-white/10 px-6 py-2.5 rounded-full font-[Space_Grotesk] text-[14px] font-medium transition-all duration-200 active:scale-95 cursor-pointer"
+      className="inline-flex items-center gap-2 bg-white/45 border border-[#ddc0bd] text-[#564240] hover:text-[#5b060c] hover:bg-[#fff0ed] px-5 py-2 rounded-none font-['Hanken_Grotesk'] text-[14px] font-semibold tracking-wider uppercase transition-all duration-200 active:scale-95 cursor-pointer"
     >
-      <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+      <span className="material-symbols-outlined text-[18px]">
         logout
       </span>
       Logout

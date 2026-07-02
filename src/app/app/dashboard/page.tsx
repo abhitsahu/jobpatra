@@ -5,8 +5,8 @@ import { authOptions } from '@/app/api/(controller)/auth/[...nextauth]/options';
 import DashboardPageClient from './dashboard-client';
 
 export const metadata: Metadata = {
-  title: 'Dashboard — Elevate AI',
-  description: 'Your Elevate AI dashboard — manage resumes, ATS analyses, and AI suggestions.',
+  title: 'Dashboard | JobPatra - AI Career Workshop',
+  description: 'Your JobPatra dashboard — manage resumes, ATS analyses, and AI suggestions.',
 };
 
 export default async function DashboardPage() {

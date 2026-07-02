@@ -22,24 +22,19 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="h-full w-64 fixed left-0 top-0 z-40 bg-surface-container-low/80 backdrop-blur-2xl border-r border-glass-border flex flex-col py-8 px-4 hidden md:flex">
+    <aside className="flex flex-col h-screen fixed left-0 top-0 py-10 w-64 bg-[#fff0ed] border-r border-[#ddc0bd] shadow-sm z-50 hidden md:flex">
       {/* Brand */}
-      <div className="mb-12 px-4 flex items-center gap-3">
-        <div className="w-8 h-8 rounded bg-gradient-to-br from-deep-indigo to-electric-blue flex items-center justify-center shadow-[0_0_15px_rgba(26,145,240,0.4)] shrink-0">
-          <span className="material-symbols-outlined text-white text-[18px]">bolt</span>
-        </div>
-        <div>
-          <h1 className="text-[20px] leading-tight font-bold text-on-surface tracking-tight font-[Space_Grotesk]">
-            Elevate AI
-          </h1>
-          <p className="text-[11px] tracking-widest font-semibold text-electric-blue uppercase">
-            Pro Plan
-          </p>
-        </div>
+      <div className="px-6 mb-10">
+        <h1 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-bold text-[#5b060c] mb-1">
+          JobPatra
+        </h1>
+        <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] tracking-wider uppercase">
+          AI Career Workshop
+        </p>
       </div>
 
-      {/* Nav */}
-      <nav className="flex flex-col gap-1 flex-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-4 space-y-2">
         {NAV_ITEMS.map((item) => {
           const isActive =
             item.href === '/app/dashboard'
@@ -51,10 +46,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium transition-all duration-200',
+                "flex items-center gap-3 px-4 py-2.5 transition-all font-['Hanken_Grotesk'] text-[14px] font-semibold leading-[20px]",
                 isActive
-                  ? 'bg-secondary-container/30 text-primary border-r-2 border-primary'
-                  : 'text-on-surface-variant hover:bg-white/5 hover:translate-x-0.5',
+                  ? 'text-white bg-[#5b060c] shadow-md scale-[0.98]'
+                  : 'text-[#564240] hover:bg-[#ffe2db] hover:translate-x-0.5'
               )}
             >
               <span
@@ -63,18 +58,22 @@ export function Sidebar() {
               >
                 {item.icon}
               </span>
-              {item.label}
+              <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Upgrade CTA */}
-      <div className="mt-auto">
-        <button className="w-full py-3 rounded-lg border border-glass-border bg-white/5 hover:bg-white/10 text-on-surface text-[14px] font-medium transition-colors flex justify-center items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
-          Upgrade to Pro
-        </button>
+      {/* Signature Edition Info */}
+      <div className="px-6 mt-8">
+        <div className="p-4 bg-[#ffe2db]/50 rounded border border-[#ddc0bd]/30 text-center">
+          <span className="material-symbols-outlined text-[#5b060c] mb-2 text-2xl">
+            history_edu
+          </span>
+          <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-wider">
+            Signature Edition
+          </p>
+        </div>
       </div>
     </aside>
   );

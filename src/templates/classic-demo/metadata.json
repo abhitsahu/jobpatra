@@ -3,7 +3,7 @@
   "name": "Classic Resume",
   "category": "Classic",
   "version": "1.0.0",
-  "thumbnail": "preview.png",
+  "thumbnail": "template.png",
   "engine": "handlebars",
   "ats": true,
   "sections": [

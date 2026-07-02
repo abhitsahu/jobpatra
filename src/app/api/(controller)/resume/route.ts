@@ -34,8 +34,8 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const queryResult = listResumesQuerySchema.safeParse({
-      page: searchParams.get('page'),
-      limit: searchParams.get('limit'),
+      page: searchParams.get('page') ?? undefined,
+      limit: searchParams.get('limit') ?? undefined,
       status: searchParams.get('status') ?? undefined,
     });
 

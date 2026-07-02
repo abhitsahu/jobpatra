@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useDuplicateResume, useDeleteResume, useDownloadPdf } from '@/app/app/_hooks/use-resumes';
 import type { ResumeListItem } from '@/app/api/model/response/resume';
-import { cn } from '@/app/app/_util/cn';
 
 interface ResumeCardProps {
   resume: ResumeListItem;
@@ -27,7 +25,6 @@ function formatDate(date: Date | string) {
 
 export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const duplicate = useDuplicateResume();
   const del = useDeleteResume();
@@ -43,6 +40,9 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
   const handleDownload = () => pdf.mutate({ id: resume.id, filename: `${resume.title}.pdf` });
   const handlePreview = () => onPreview(resume.id);
 
+  // Tab indicator color based on completion status
+  const tabColorClass = resume.status === 'COMPLETE' ? 'bg-[#5b060c]' : 'bg-[#8a716f]';
+
   return (
     <motion.div
       layout
@@ -50,86 +50,66 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.2 }}
-      className="p-4 rounded-lg bg-surface-container-lowest/50 border border-glass-border flex items-center justify-between hover:bg-surface-container-high transition-colors group cursor-pointer"
+      className="group flex flex-col sm:flex-row sm:items-center p-6 hover:bg-[#fff0ed]/45 transition-colors border-b border-[#ddc0bd]/30 relative cursor-pointer"
       onClick={handleEdit}
     >
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-electric-blue transition-colors shrink-0">
-          <span className="material-symbols-outlined">description</span>
+      {/* Folder Tab Indicator */}
+      <div className={`absolute left-0 top-0 h-full w-1.5 ${tabColorClass} group-hover:w-3.5 transition-all duration-300`}></div>
+
+      <div className="flex-1 flex items-center min-w-0">
+        <div className="w-14 h-16 bg-white border border-[#ddc0bd]/60 rounded-sm shadow-sm flex items-center justify-center mr-5 flex-shrink-0">
+          <span className="material-symbols-outlined text-[#5b060c]/40 text-2xl">description</span>
         </div>
         <div className="min-w-0">
-          <h4 className="text-[15px] font-medium text-white truncate max-w-[260px]">
+          <h4 className="font-['Playfair_Display'] text-[18px] font-semibold text-[#5b060c] truncate group-hover:underline">
             {resume.title}
           </h4>
-          <p className="text-[13px] text-on-surface-variant mt-0.5">
-            {resume.templateId} · Edited {formatDate(resume.updatedAt)}
+          <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] text-[#564240]/80 mt-1">
+            Template: {resume.templateId} • Edited {formatDate(resume.updatedAt)} • Status: {resume.status}
           </p>
         </div>
       </div>
 
+      {/* Flat Action Buttons appearing on hover */}
       <div
-        className="flex items-center gap-4"
-        onClick={(e) => e.stopPropagation()} // prevent card click when using action buttons
+        className="flex gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity px-6 mt-4 sm:mt-0 relative z-30"
+        onClick={(e) => e.stopPropagation()} // prevent card navigation when calling actions
       >
-        {/* Status badge */}
-        <span
-          className={cn(
-            'text-[11px] font-semibold tracking-wider px-2.5 py-0.5 rounded-full border hidden sm:block',
-            resume.status === 'COMPLETE'
-              ? 'bg-green-500/10 text-green-400 border-green-500/20'
-              : 'bg-surface-container-high text-on-surface-variant border-glass-border',
-          )}
+        <button
+          onClick={handleEdit}
+          className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
+          title="Edit Resume"
         >
-          {resume.status}
-        </span>
-
-        {/* Actions */}
-        <div className="relative">
-          <button
-            id={`resume-menu-${resume.id}`}
-            className="w-8 h-8 rounded-full border border-glass-border flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-white transition-all"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-label="Resume actions"
-          >
-            <span className="material-symbols-outlined text-[18px]">more_vert</span>
-          </button>
-
-          <AnimatePresence>
-            {menuOpen && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.12 }}
-                className="absolute right-0 top-10 z-50 w-48 bg-surface-container-high border border-glass-border rounded-xl shadow-2xl overflow-hidden"
-                onMouseLeave={() => setMenuOpen(false)}
-              >
-                {[
-                  { label: 'Edit', icon: 'edit', action: handleEdit },
-                  { label: 'Quick Preview', icon: 'visibility', action: handlePreview },
-                  { label: 'Duplicate', icon: 'content_copy', action: handleDuplicate },
-                  { label: 'Download PDF', icon: 'download', action: handleDownload },
-                  { label: 'Delete', icon: 'delete', action: handleDelete, danger: true },
-                ].map((item) => (
-                  <button
-                    key={item.label}
-                    className={cn(
-                      'w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-white/5 transition-colors text-left',
-                      item.danger ? 'text-error' : 'text-on-surface',
-                    )}
-                    onClick={() => {
-                      setMenuOpen(false);
-                      item.action();
-                    }}
-                  >
-                    <span className="material-symbols-outlined text-[18px]">{item.icon}</span>
-                    {item.label}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+          <span className="material-symbols-outlined text-[20px]">edit</span>
+        </button>
+        <button
+          onClick={handlePreview}
+          className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
+          title="Quick Preview"
+        >
+          <span className="material-symbols-outlined text-[20px]">visibility</span>
+        </button>
+        <button
+          onClick={handleDuplicate}
+          className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
+          title="Duplicate"
+        >
+          <span className="material-symbols-outlined text-[20px]">content_copy</span>
+        </button>
+        <button
+          onClick={handleDownload}
+          className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
+          title="Download PDF"
+        >
+          <span className="material-symbols-outlined text-[20px]">download</span>
+        </button>
+        <button
+          onClick={handleDelete}
+          className="p-2 hover:bg-red-50 text-[#564240] hover:text-red-600 rounded transition-colors"
+          title="Delete"
+        >
+          <span className="material-symbols-outlined text-[20px]">delete</span>
+        </button>
       </div>
     </motion.div>
   );

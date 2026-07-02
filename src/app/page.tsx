@@ -3,14 +3,17 @@ import { getServerSession } from 'next-auth';
 import type { Metadata } from 'next';
 
 import { authOptions } from '@/app/api/(controller)/auth/[...nextauth]/options';
-import { Navbar } from '@/app/app/_components/layout/navbar';
-import { Hero } from '@/app/app/_components/landing/hero';
-import { Footer } from '@/app/app/_components/layout/footer';
+import { LandingNavbar } from '@/app/app/_components/landing/landing-navbar';
+import { LandingHero } from '@/app/app/_components/landing/landing-hero';
+import { LandingFeatures } from '@/app/app/_components/landing/landing-features';
+import { LandingTestimonials } from '@/app/app/_components/landing/landing-testimonials';
+import { LandingCta } from '@/app/app/_components/landing/landing-cta';
+import { LandingFooter } from '@/app/app/_components/landing/landing-footer';
 
 export const metadata: Metadata = {
-  title: 'JobPatra — AI Resume Builder & ATS Analyzer',
+  title: 'JobPatra | AI Career Workshop',
   description:
-    'Land more interviews with surgically precise resumes. Our AI analyzes job descriptions and tailors your experience to bypass ATS filters with maximum impact.',
+    'Transform your professional history into a bespoke artifact of value. JobPatra uses artisanal AI to weave your experience into a narrative that captures eyes and passes every digital gatekeeper.',
 };
 
 export default async function RootPage() {
@@ -21,28 +24,17 @@ export default async function RootPage() {
   }
 
   return (
-    <div className="bg-[#0f1418] text-[#dfe3e9] min-h-screen overflow-x-hidden selection:bg-[rgba(26,145,240,0.3)] selection:text-white antialiased">
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#1a91f0]/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[40%] h-[60%] bg-[#a855f7]/10 blur-[150px] rounded-full" />
-        {/* Subtle grid overlay */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-      </div>
+    <div className="landing-body-bg landing-nib-cursor font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#2b1611] overflow-x-hidden min-h-screen">
+      <LandingNavbar />
 
-      <Navbar isLoggedIn={false} />
-
-      <main className="relative z-10">
-        <Hero isLoggedIn={false} />
+      <main>
+        <LandingHero />
+        <LandingFeatures />
+        <LandingTestimonials />
+        <LandingCta />
       </main>
 
-      <Footer />
+      <LandingFooter />
     </div>
   );
 }

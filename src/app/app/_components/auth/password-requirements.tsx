@@ -22,7 +22,7 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
             <span
               className={[
                 'material-symbols-outlined flex-shrink-0 transition-colors duration-300',
-                met ? 'text-[#34a853]' : 'text-[#8a919e]',
+                met ? 'text-[#2a7040]' : 'text-[#8a716f]',
               ].join(' ')}
               style={{
                 fontSize: '16px',
@@ -36,8 +36,8 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
             {/* Label */}
             <span
               className={[
-                'font-[Inter] text-[13px] transition-colors duration-300',
-                met ? 'text-[#34a853]' : 'text-[#8a919e]',
+                "font-['Hanken_Grotesk'] text-[13px] transition-colors duration-300",
+                met ? 'text-[#2a7040]' : 'text-[#8a716f]',
               ].join(' ')}
             >
               {rule.label}
@@ -50,3 +50,4 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
     </ul>
   );
 }
+
