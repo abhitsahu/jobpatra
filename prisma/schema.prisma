@@ -21,12 +21,14 @@ model User {
   role           String    @default("USER")
 
   accounts Account[]
+  resumes  Resume[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
 }
+
 
 model Account {
   id                String  @id @default(cuid())
@@ -65,4 +67,223 @@ model PasswordResetToken {
 
   @@unique([email, token])
   @@map("password_reset_tokens")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RESUME BUILDER MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Resume {
+  id           String    @id @default(cuid())
+  userId       String
+  title        String
+  templateId   String    @default("classic-demo")
+  status       String    @default("DRAFT") // ResumeStatus enum in TypeScript
+  declaration  String?   @db.Text
+  sectionOrder String[]  @default([])
+  pdfUrl       String?
+  s3Key        String?
+  deletedAt    DateTime?
+
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalInfo    PersonalInfo?
+  experiences     WorkExperience[]
+  education       Education[]
+  projects        Project[]
+  skills          Skill[]
+  certifications  Certification[]
+  achievements    Achievement[]
+  languages       Language[]
+  references      Reference[]
+  atsAnalyses     ATSAnalysis[]
+  aiSuggestions   AISuggestion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, deletedAt])
+  @@index([userId, status])
+  @@map("resumes")
+}
+
+model PersonalInfo {
+  id          String  @id @default(cuid())
+  resumeId    String  @unique
+  fullName    String
+  jobTitle    String?
+  email       String
+  phone       String?
+  location    String?
+  website     String?
+  linkedin    String?
+  github      String?
+  summary     String? @db.Text
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("personal_info")
+}
+
+model WorkExperience {
+  id               String    @id @default(cuid())
+  resumeId         String
+  company          String
+  position         String
+  location         String?
+  startDate        String
+  endDate          String?
+  currentlyWorking Boolean   @default(false)
+  description      String?   @db.Text
+  highlights       String[]  @default([])
+  order            Int       @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, order])
+  @@map("work_experiences")
+}
+
+model Education {
+  id          String  @id @default(cuid())
+  resumeId    String
+  institution String
+  degree      String
+  fieldOfStudy String?
+  startDate   String
+  endDate     String?
+  result      String? // GPA, percentage, grade
+  order       Int     @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, order])
+  @@map("education")
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  resumeId     String
+  title        String
+  field        String?
+  startDate    String?
+  endDate      String?
+  description  String?  @db.Text
+  technologies String[] @default([])
+  link         String?
+  order        Int      @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, order])
+  @@map("projects")
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  resumeId String
+  name     String
+  category String @default("TECHNICAL") // SkillCategory enum in TypeScript
+  order    Int    @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("skills")
+}
+
+model Certification {
+  id       String  @id @default(cuid())
+  resumeId String
+  name     String
+  issuer   String?
+  date     String?
+  url      String?
+  order    Int     @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("certifications")
+}
+
+model Achievement {
+  id          String  @id @default(cuid())
+  resumeId    String
+  title       String
+  date        String?
+  description String? @db.Text
+  order       Int     @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("achievements")
+}
+
+model Language {
+  id          String  @id @default(cuid())
+  resumeId    String
+  name        String
+  proficiency String? // LanguageProficiency enum in TypeScript
+  order       Int     @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("languages")
+}
+
+model Reference {
+  id          String  @id @default(cuid())
+  resumeId    String
+  name        String
+  designation String?
+  company     String?
+  email       String?
+  phone       String?
+  order       Int     @default(0)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("references")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AI & ATS MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ATSAnalysis {
+  id             String @id @default(cuid())
+  resumeId       String
+  jobDescription String @db.Text
+  overallScore   Int    // 0–100
+  keywordMatches Json   // { matched: string[], missing: string[] }
+  suggestions    Json   // [{ section, issue, fix }]
+  formatScore    Int    // 0–100
+  contentScore   Int    // 0–100
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([resumeId])
+  @@map("ats_analyses")
+}
+
+model AISuggestion {
+  id       String  @id @default(cuid())
+  resumeId String
+  section  String  // "summary" | "experience" | "skills" | etc.
+  original String  @db.Text
+  suggested String @db.Text
+  accepted Boolean @default(false)
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([resumeId])
+  @@map("ai_suggestions")
 }

@@ -30,6 +30,10 @@ export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): P
     const message =
       errorBody?.message ?? `Request failed with status ${response.status} ${response.statusText}`;
 
+    if (errorBody?.errors) {
+      console.error('[API Validation Errors]', errorBody.errors);
+    }
+
     throw new Error(message);
   }
 

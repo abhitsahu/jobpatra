@@ -8,7 +8,6 @@ import { promisify } from 'util';
 // In production, a single instance is created and reused.
 
 declare global {
-  // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined;
 }
 

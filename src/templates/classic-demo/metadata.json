@@ -1,0 +1,17 @@
+{
+  "id": "classic-001",
+  "name": "Classic Resume",
+  "category": "Classic",
+  "version": "1.0.0",
+  "thumbnail": "preview.png",
+  "engine": "handlebars",
+  "ats": true,
+  "sections": [
+    "personal",
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "projects"
+  ]
+}

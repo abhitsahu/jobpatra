@@ -62,7 +62,6 @@ export async function resetPasswordClient(
 export async function resendVerificationClient(
   resendVerificationRequest: Pick<SignupRequest, 'email'>,
 ): Promise<AuthResponse> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   void resendVerificationRequest;
 
   // TODO: implement when POST /api/public/auth/resend-verification is added.
