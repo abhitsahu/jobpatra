@@ -5,11 +5,11 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const navLinks = [
-  { label: 'Templates', href: '#templates', active: true },
-  { label: 'ATS Checker', href: '#ats-checker', active: false },
-  { label: 'Features', href: '#features', active: false },
-  { label: 'Pricing', href: '#pricing', active: false },
-  { label: 'Resources', href: '#resources', active: false },
+  { label: 'Templates', href: '/#templates', active: false },
+  { label: 'ATS Checker', href: '/app/ats-checker', active: false },
+  { label: 'Features', href: '/#features', active: false },
+  { label: 'Pricing', href: '/#pricing', active: false },
+  { label: 'Resources', href: '/#resources', active: false },
 ];
 
 export function LandingNavbar() {
@@ -32,14 +32,17 @@ export function LandingNavbar() {
     >
       <div className="flex justify-between items-center w-full px-4 md:px-16 py-4 max-w-7xl mx-auto">
         {/* Brand */}
-        <Link href="/" className="font-['Playfair_Display'] text-[32px] leading-[40px] font-bold text-[#5b060c]">
+        <Link
+          href="/"
+          className="font-['Playfair_Display'] text-[32px] leading-[40px] font-bold text-[#5b060c]"
+        >
           JobPatra
         </Link>
 
         {/* Nav Links - Desktop */}
         <div className="hidden md:flex gap-8 items-center">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
               href={link.href}
               className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${
@@ -49,7 +52,7 @@ export function LandingNavbar() {
               }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
 

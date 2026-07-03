@@ -33,4 +33,3 @@ export function ConfirmPasswordStatus({ password, confirmPassword }: ConfirmPass
     </p>
   );
 }
-

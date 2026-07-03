@@ -59,8 +59,12 @@ export function LoginForm() {
           <div className="relative z-10 text-center flex flex-col items-center space-y-8">
             {/* Brand Identity */}
             <div className="space-y-2">
-              <h1 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-white tracking-tight">JobPatra</h1>
-              <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#ffdad7] uppercase tracking-widest opacity-80">AI Career Workshop</p>
+              <h1 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-white tracking-tight">
+                JobPatra
+              </h1>
+              <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#ffdad7] uppercase tracking-widest opacity-80">
+                AI Career Workshop
+              </p>
             </div>
             {/* Central Illustration: Wax Sealed Envelope */}
             <div className="relative w-72 h-72 flex items-center justify-center">
@@ -81,14 +85,24 @@ export function LoginForm() {
                 {/* The Wax Seal */}
                 <div className="absolute -bottom-4 auth-wax-seal cursor-pointer">
                   <div className="w-16 h-16 rounded-full bg-[#5b060c] flex items-center justify-center border-4 border-[#7a1f1f] shadow-lg">
-                    <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>approval</span>
+                    <span
+                      className="material-symbols-outlined text-white text-3xl"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      approval
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="max-w-xs space-y-4 pt-12">
-              <h2 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold italic">Crafting artifacts of value.</h2>
-              <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-white/70">Step into your bespoke letterpress workshop. We refine your professional identity with the gravity it deserves.</p>
+              <h2 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold italic">
+                Crafting artifacts of value.
+              </h2>
+              <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-white/70">
+                Step into your bespoke letterpress workshop. We refine your professional identity
+                with the gravity it deserves.
+              </p>
             </div>
           </div>
         </section>
@@ -97,17 +111,28 @@ export function LoginForm() {
         <section className="auth-sheet-base flex flex-col items-center justify-center p-8 md:p-16 relative">
           {/* Mobile Brand Logo */}
           <div className="md:hidden mb-12 text-center">
-            <h1 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#5b060c]">JobPatra</h1>
+            <h1 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#5b060c]">
+              JobPatra
+            </h1>
           </div>
           <div className="w-full max-w-sm space-y-10">
             <header className="space-y-2">
-              <h2 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">Welcome Back</h2>
-              <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#564240]">Continue your professional journey.</p>
+              <h2 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
+                Welcome Back
+              </h2>
+              <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#564240]">
+                Continue your professional journey.
+              </p>
             </header>
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-1 group">
-                  <label className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] uppercase transition-colors duration-300" htmlFor="email">Professional Email</label>
+                  <label
+                    className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] uppercase transition-colors duration-300"
+                    htmlFor="email"
+                  >
+                    Professional Email
+                  </label>
                   <input
                     className="w-full py-3 auth-input-underline font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#2b1611] placeholder:text-[#ddc0bd]/60 focus:ring-0"
                     id="email"
@@ -121,8 +146,18 @@ export function LoginForm() {
                 </div>
                 <div className="space-y-1 group">
                   <div className="flex justify-between items-center">
-                    <label className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] uppercase transition-colors duration-300" htmlFor="password">Security Code</label>
-                    <Link className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#5b060c] hover:underline" href="/app/public/forgot-password">Forgot?</Link>
+                    <label
+                      className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] uppercase transition-colors duration-300"
+                      htmlFor="password"
+                    >
+                      Security Code
+                    </label>
+                    <Link
+                      className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#5b060c] hover:underline"
+                      href="/app/public/forgot-password"
+                    >
+                      Forgot?
+                    </Link>
                   </div>
                   <input
                     className="w-full py-3 auth-input-underline font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#2b1611] placeholder:text-[#ddc0bd]/60 focus:ring-0"
@@ -139,7 +174,10 @@ export function LoginForm() {
               <div className="pt-4 space-y-4">
                 {/* Server-level error */}
                 {serverError && (
-                  <p className="font-['Hanken_Grotesk'] text-[14px] text-[#ba1a1a] text-center" role="alert">
+                  <p
+                    className="font-['Hanken_Grotesk'] text-[14px] text-[#ba1a1a] text-center"
+                    role="alert"
+                  >
                     {serverError}
                   </p>
                 )}
@@ -151,11 +189,17 @@ export function LoginForm() {
                   disabled={isSubmitting}
                 >
                   <span>{isSubmitting ? 'Entering...' : 'Enter Workshop'}</span>
-                  <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+                  <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">
+                    arrow_right_alt
+                  </span>
                 </button>
                 <div className="relative flex items-center justify-center py-2">
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#ddc0bd]/30"></div></div>
-                  <span className="relative bg-[#FFF8EE] px-4 font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#564240] uppercase">Or</span>
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[#ddc0bd]/30"></div>
+                  </div>
+                  <span className="relative bg-[#FFF8EE] px-4 font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#564240] uppercase">
+                    Or
+                  </span>
                 </div>
                 {/* Google Social Login */}
                 <button
@@ -164,7 +208,11 @@ export function LoginForm() {
                   className="w-full bg-white border border-[#ddc0bd] text-[#2b1611] py-3 rounded-none font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold flex items-center justify-center gap-3 hover:bg-[#fff0ed] transition-colors shadow-sm disabled:opacity-50"
                   type="button"
                 >
-                  <img alt="Google" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0pSKr4MQR0C0md8_uOSSQ0xldqkWrtoU42-y0YqMPORRcirjkdDGnRLLhawCEzlhKVM4xiYv0YHiZo5QPiNrmB4B7x2wMT3r1pyH-SFRiLVcG0z0sqc6_-KH1k9dC_CbOeVQN-8ZX90DIXqZ3kD9EmH53s39s87JtG6sk01Dptuf7v2WEsvizQ_01s09JZ96QI3H7xD7yi9jlyvfIyPw6h17nAinPyWnA9d-ApG_lhQ8LO5mMII9LkKKOmm-v2B8s6p6ORQ6i0CVq"/>
+                  <img
+                    alt="Google"
+                    className="w-5 h-5"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0pSKr4MQR0C0md8_uOSSQ0xldqkWrtoU42-y0YqMPORRcirjkdDGnRLLhawCEzlhKVM4xiYv0YHiZo5QPiNrmB4B7x2wMT3r1pyH-SFRiLVcG0z0sqc6_-KH1k9dC_CbOeVQN-8ZX90DIXqZ3kD9EmH53s39s87JtG6sk01Dptuf7v2WEsvizQ_01s09JZ96QI3H7xD7yi9jlyvfIyPw6h17nAinPyWnA9d-ApG_lhQ8LO5mMII9LkKKOmm-v2B8s6p6ORQ6i0CVq"
+                  />
                   <span>{googleLoading ? 'Connecting...' : 'Continue with Google'}</span>
                 </button>
               </div>
@@ -172,7 +220,9 @@ export function LoginForm() {
             <footer className="pt-8 text-center">
               <p className="font-['Hanken_Grotesk'] text-[#564240] text-[16px] leading-[24px]">
                 New to the workshop?{' '}
-                <Link className="text-[#5b060c] font-bold hover:underline" href="/app/signup">Request Access</Link>
+                <Link className="text-[#5b060c] font-bold hover:underline" href="/app/signup">
+                  Request Access
+                </Link>
               </p>
             </footer>
           </div>

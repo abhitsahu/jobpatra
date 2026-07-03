@@ -6,12 +6,5 @@
   "thumbnail": "template.png",
   "engine": "handlebars",
   "ats": true,
-  "sections": [
-    "personal",
-    "summary",
-    "experience",
-    "education",
-    "skills",
-    "projects"
-  ]
+  "sections": ["personal", "summary", "experience", "education", "skills", "projects"]
 }

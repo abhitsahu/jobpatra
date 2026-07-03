@@ -38,8 +38,9 @@ export function LandingHero() {
           </h1>
 
           <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] mb-10 max-w-lg">
-            Transform your professional history into a bespoke artifact of value. JobPatra uses artisanal AI to weave your experience
-            into a narrative that captures eyes and passes every digital gatekeeper.
+            Transform your professional history into a bespoke artifact of value. JobPatra uses
+            artisanal AI to weave your experience into a narrative that captures eyes and passes
+            every digital gatekeeper.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -69,8 +70,17 @@ export function LandingHero() {
         {/* Right: Premium Envelope Visual */}
         <div className="relative h-[600px] flex items-center justify-center mt-12 lg:mt-0">
           {/* Dotted Delivery Path */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" overflow="visible">
-            <path d="M50,450 Q250,400 400,100" fill="none" stroke="#E5D9C8" strokeDasharray="8,8" strokeWidth="2" />
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+            overflow="visible"
+          >
+            <path
+              d="M50,450 Q250,400 400,100"
+              fill="none"
+              stroke="#E5D9C8"
+              strokeDasharray="8,8"
+              strokeWidth="2"
+            />
           </svg>
 
           {/* Deep Burgundy Envelope */}
@@ -105,7 +115,9 @@ export function LandingHero() {
             {/* Wax Seal */}
             <div className="landing-wax-seal w-20 h-20 absolute bottom-10 right-[-10px] z-20 transform -rotate-12">
               <div className="flex flex-col items-center justify-center text-center px-2">
-                <span className="text-[8px] font-extrabold text-[#261a00] leading-none uppercase">ATS</span>
+                <span className="text-[8px] font-extrabold text-[#261a00] leading-none uppercase">
+                  ATS
+                </span>
                 <span className="text-[10px] font-bold text-[#261a00] leading-tight">APPROVED</span>
               </div>
             </div>

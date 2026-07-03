@@ -267,6 +267,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           <input
             id="editor-resume-title"
             type="text"
+            // eslint-disable-next-line react-hooks/incompatible-library
             value={watch('title') || ''}
             onChange={(e) => handleTitleChange(e.target.value)}
             className="bg-transparent border-none focus:ring-0 text-on-surface font-[Space_Grotesk] text-[20px] font-bold p-0 w-[200px] sm:w-[300px] hover:bg-white/5 rounded px-2 py-0.5 transition-colors -ml-2 truncate"

@@ -35,10 +35,7 @@ export function SectionStepper({ active, onChange }: SectionStepperProps) {
   }, [active]);
 
   return (
-    <HorizontalScrollTabs
-      className="border-b border-glass-border"
-      scrollClassName="space-x-1 pb-2"
-    >
+    <HorizontalScrollTabs className="border-b border-glass-border" scrollClassName="space-x-1 pb-2">
       {SECTIONS.map((s) => (
         <button
           key={s.key}

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AuthLayout } from '../_components/auth/auth-layout';
+import { AuthLayout } from '../../_components/auth/auth-layout';
 import { LoginForm } from './login-form';
 
 export const metadata: Metadata = {

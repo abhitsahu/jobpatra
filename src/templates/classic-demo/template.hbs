@@ -1,507 +1,469 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-<head>
-    <meta charset="UTF-8">
+<html lang='en-US'>
+  <head>
+    <meta charset='UTF-8' />
     <title>{{#if metadata.title}}{{metadata.title}}{{else}}{{personal.name}} Resume{{/if}}</title>
 
-    <link rel="stylesheet" href="style.css" />
-</head>
+    <link rel='stylesheet' href='style.css' />
+  </head>
 
-<body>
-<div class="container">
+  <body>
+    <div class='container'>
 
-<header>
+      <header>
 
-    <h1 id="name">
-        {{personal.name}}
-    </h1>
+        <h1 id='name'>
+          {{personal.name}}
+        </h1>
 
-    {{#if personal.jobTitle}}
-    <div id="designation">
+        {{#if personal.jobTitle}}
+          <div id='designation'>
 
-        <span class="title">
-            {{personal.jobTitle}}
-        </span>
+            <span class='title'>
+              {{personal.jobTitle}}
+            </span>
 
-        {{#if personal.organization}}
-        <span class="organization">
-            {{personal.organization}}
-        </span>
+            {{#if personal.organization}}
+              <span class='organization'>
+                {{personal.organization}}
+              </span>
+            {{/if}}
+
+          </div>
         {{/if}}
 
-    </div>
-    {{/if}}
+        <div class='contact'>
 
-    <div class="contact">
+          {{#if personal.email}}
+            <div class='email'>
+              {{personal.email}}
+            </div>
+          {{/if}}
 
-        {{#if personal.email}}
-        <div class="email">
-            {{personal.email}}
+          {{#if personal.phone}}
+            <div class='phone'>
+              {{personal.phone}}
+            </div>
+          {{/if}}
+
+          {{#if personal.location}}
+            <div class='location'>
+              {{personal.location}}
+            </div>
+          {{/if}}
+
+          {{#if personal.website}}
+            <div class='website'>
+              {{personal.website}}
+            </div>
+          {{/if}}
+
+          {{#if personal.linkedin}}
+            <div class='linkedin'>
+              {{personal.linkedin}}
+            </div>
+          {{/if}}
+
+          {{#if personal.github}}
+            <div class='github'>
+              {{personal.github}}
+            </div>
+          {{/if}}
+
         </div>
-        {{/if}}
 
-        {{#if personal.phone}}
-        <div class="phone">
-            {{personal.phone}}
-        </div>
-        {{/if}}
+      </header>
 
-        {{#if personal.location}}
-        <div class="location">
-            {{personal.location}}
-        </div>
-        {{/if}}
+      <div class='content' role='main'>
 
-        {{#if personal.website}}
-        <div class="website">
-            {{personal.website}}
-        </div>
-        {{/if}}
+        {{#if summary}}
+          <section id='objective'>
 
-        {{#if personal.linkedin}}
-        <div class="linkedin">
-            {{personal.linkedin}}
-        </div>
-        {{/if}}
+            <h2 class='title'>
+              Objective
+            </h2>
 
-        {{#if personal.github}}
-        <div class="github">
-            {{personal.github}}
-        </div>
-        {{/if}}
+            <div class='description'>
 
-    </div>
-
-</header>
-
-<div class="content" role="main">
-
-    {{#if summary}}
-    <section id="objective">
-
-        <h2 class="title">
-            Objective
-        </h2>
-
-        <div class="description">
-
-            <p>
+              <p>
                 {{summary}}
-            </p>
+              </p>
 
-        </div>
+            </div>
 
-    </section>
-    {{/if}}
+          </section>
+        {{/if}}
 
+        {{#if education.length}}
 
+          <section id='Education'>
 
-    {{#if education.length}}
+            <h2 class='title'>
+              Education
+            </h2>
 
-    <section id="Education">
+            <div class='description'>
 
-        <h2 class="title">
-            Education
-        </h2>
-
-        <div class="description">
-
-            <table>
+              <table>
 
                 <thead>
 
-                    <tr>
-                        <td>Duration</td>
-                        <td>Qualification</td>
-                        <td>Institute/School</td>
-                        <td>Result</td>
-                    </tr>
+                  <tr>
+                    <td>Duration</td>
+                    <td>Qualification</td>
+                    <td>Institute/School</td>
+                    <td>Result</td>
+                  </tr>
 
                 </thead>
 
                 <tbody>
 
-                {{#each education}}
+                  {{#each education}}
 
                     <tr>
 
-                        <td>
+                      <td>
 
-                            {{#if startDate}}
-                                {{startDate}}
-                            {{/if}}
+                        {{#if startDate}}
+                          {{startDate}}
+                        {{/if}}
 
-                            {{#if endDate}}
-                                - {{endDate}}
-                            {{/if}}
+                        {{#if endDate}}
+                          -
+                          {{endDate}}
+                        {{/if}}
 
-                        </td>
+                      </td>
 
-                        <td>
-                            {{degree}}
-                        </td>
+                      <td>
+                        {{degree}}
+                      </td>
 
-                        <td>
-                            {{institution}}
-                        </td>
+                      <td>
+                        {{institution}}
+                      </td>
 
-                        <td>
-                            {{result}}
-                        </td>
+                      <td>
+                        {{result}}
+                      </td>
 
                     </tr>
 
-                {{/each}}
+                  {{/each}}
 
                 </tbody>
 
-            </table>
+              </table>
 
-        </div>
+            </div>
 
-    </section>
+          </section>
 
-    {{/if}}
+        {{/if}}
 
+        {{#if experience.length}}
 
+          <section id='experience'>
 
+            <h2 class='title'>
+              Experience
+            </h2>
 
+            <div class='description'>
 
-    {{#if experience.length}}
+              {{#each experience}}
 
-    <section id="experience">
+                <section class='project'>
 
-        <h2 class="title">
-            Experience
-        </h2>
-
-        <div class="description">
-
-        {{#each experience}}
-
-            <section class="project">
-
-                <h3 class="title">
+                  <h3 class='title'>
                     {{position}}
-                </h3>
+                  </h3>
 
-                <div class="meta">
+                  <div class='meta'>
 
-                    <span class="field">
-                        {{company}}
+                    <span class='field'>
+                      {{company}}
                     </span>
 
-                    <span class="date">
+                    <span class='date'>
 
-                        {{#if startDate}}
-                            {{startDate}}
-                        {{/if}}
+                      {{#if startDate}}
+                        {{startDate}}
+                      {{/if}}
 
-                        {{#if endDate}}
-                            - {{endDate}}
-                        {{else}}
-                            - Present
-                        {{/if}}
+                      {{#if endDate}}
+                        -
+                        {{endDate}}
+                      {{else}}
+                        - Present
+                      {{/if}}
 
                     </span>
 
-                </div>
+                  </div>
 
-                <p class="description">
+                  <p class='description'>
                     {{description}}
-                </p>
+                  </p>
 
-            </section>
+                </section>
 
-        {{/each}}
+              {{/each}}
 
-        </div>
+            </div>
 
-    </section>
+          </section>
 
-    {{/if}}
+        {{/if}}
 
+        {{#if projects.length}}
 
+          <section id='projects'>
 
+            <h2 class='title'>
+              Projects Undertaken
+            </h2>
 
+            <div class='description'>
 
+              {{#each projects}}
 
-    {{#if projects.length}}
+                <section class='project'>
 
-    <section id="projects">
-
-        <h2 class="title">
-            Projects Undertaken
-        </h2>
-
-        <div class="description">
-
-        {{#each projects}}
-
-            <section class="project">
-
-                <h3 class="title">
+                  <h3 class='title'>
                     {{title}}
-                </h3>
+                  </h3>
 
-                <div class="meta">
+                  <div class='meta'>
 
                     {{#if field}}
-                    <span class="field">
+                      <span class='field'>
                         {{field}}
-                    </span>
+                      </span>
                     {{/if}}
 
-                    <span class="date">
+                    <span class='date'>
 
-                        {{#if startDate}}
-                            {{startDate}}
-                        {{/if}}
+                      {{#if startDate}}
+                        {{startDate}}
+                      {{/if}}
 
-                        {{#if endDate}}
-                            - {{endDate}}
-                        {{/if}}
+                      {{#if endDate}}
+                        -
+                        {{endDate}}
+                      {{/if}}
 
                     </span>
 
-                </div>
+                  </div>
 
-                <p class="description">
+                  <p class='description'>
                     {{description}}
-                </p>
+                  </p>
 
-                {{#if technologies.length}}
+                  {{#if technologies.length}}
 
-                <div class="technologies">
+                    <div class='technologies'>
 
-                    <strong>Technologies:</strong>
+                      <strong>Technologies:</strong>
 
-                    {{#each technologies}}
+                      {{#each technologies}}
 
                         {{this}}{{#unless @last}}, {{/unless}}
 
-                    {{/each}}
+                      {{/each}}
 
-                </div>
+                    </div>
 
-                {{/if}}
+                  {{/if}}
 
-                {{#if link}}
+                  {{#if link}}
 
-                <div class="project-link">
-                    {{link}}
-                </div>
+                    <div class='project-link'>
+                      {{link}}
+                    </div>
 
-                {{/if}}
+                  {{/if}}
 
-            </section>
+                </section>
 
-        {{/each}}
+              {{/each}}
 
-        </div>
+            </div>
 
-    </section>
+          </section>
 
-    {{/if}}
+        {{/if}}
 
+        {{#if skills.length}}
 
+          <section id='skills'>
 
+            <h2 class='title'>
+              Technical Skills
+            </h2>
 
+            <div class='description'>
 
+              <ul>
 
-    {{#if skills.length}}
+                {{#each skills}}
 
-    <section id="skills">
+                  <li>{{this}}</li>
 
-        <h2 class="title">
-            Technical Skills
-        </h2>
+                {{/each}}
 
-        <div class="description">
+              </ul>
 
-            <ul>
+            </div>
 
-            {{#each skills}}
+          </section>
 
-                <li>{{this}}</li>
+        {{/if}}
 
-            {{/each}}
+        {{#if certifications.length}}
 
-            </ul>
+          <section id='certifications'>
 
-        </div>
+            <h2 class='title'>
+              Certifications
+            </h2>
 
-    </section>
+            <div class='description'>
 
-    {{/if}}
+              <ul>
 
+                {{#each certifications}}
 
+                  <li>{{name}}</li>
 
+                {{/each}}
 
+              </ul>
 
+            </div>
 
+          </section>
 
-    {{#if certifications.length}}
+        {{/if}}
 
-    <section id="certifications">
+        {{#if achievements.length}}
 
-        <h2 class="title">
-            Certifications
-        </h2>
+          <section id='achievements'>
 
-        <div class="description">
+            <h2 class='title'>
+              Achievements
+            </h2>
 
-            <ul>
+            <div class='description'>
 
-            {{#each certifications}}
+              <ul>
 
-                <li>{{name}}</li>
+                {{#each achievements}}
 
-            {{/each}}
+                  <li>{{title}}</li>
 
-            </ul>
+                {{/each}}
 
-        </div>
+              </ul>
 
-    </section>
+            </div>
 
-    {{/if}}
+          </section>
 
+        {{/if}}
 
+        {{#if languages.length}}
 
+          <section id='languages'>
 
+            <h2 class='title'>
+              Languages
+            </h2>
 
+            <div class='description'>
 
-    {{#if achievements.length}}
+              <ul>
 
-    <section id="achievements">
+                {{#each languages}}
 
-        <h2 class="title">
-            Achievements
-        </h2>
+                  <li>{{this}}</li>
 
-        <div class="description">
+                {{/each}}
 
-            <ul>
+              </ul>
 
-            {{#each achievements}}
+            </div>
 
-                <li>{{title}}</li>
+          </section>
 
-            {{/each}}
+        {{/if}}
 
-            </ul>
+        {{#if references.length}}
 
-        </div>
+          <section id='references'>
 
-    </section>
+            <h2 class='title'>
+              References
+            </h2>
 
-    {{/if}}
+            <div class='description'>
 
+              {{#each references}}
 
+                <p>
 
+                  <strong>{{name}}</strong>
 
+                  {{#if designation}}
+                    -
+                    {{designation}}
+                  {{/if}}
 
-
-    {{#if languages.length}}
-
-    <section id="languages">
-
-        <h2 class="title">
-            Languages
-        </h2>
-
-        <div class="description">
-
-            <ul>
-
-            {{#each languages}}
-
-                <li>{{this}}</li>
-
-            {{/each}}
-
-            </ul>
-
-        </div>
-
-    </section>
-
-    {{/if}}
-
-
-
-
-
-
-    {{#if references.length}}
-
-    <section id="references">
-
-        <h2 class="title">
-            References
-        </h2>
-
-        <div class="description">
-
-        {{#each references}}
-
-            <p>
-
-                <strong>{{name}}</strong>
-
-                {{#if designation}}
-                    - {{designation}}
-                {{/if}}
-
-                {{#if company}}
+                  {{#if company}}
                     ({{company}})
-                {{/if}}
+                  {{/if}}
 
-                {{#if email}}
-                    - {{email}}
-                {{/if}}
+                  {{#if email}}
+                    -
+                    {{email}}
+                  {{/if}}
 
-            </p>
+                </p>
 
-        {{/each}}
+              {{/each}}
 
-        </div>
+            </div>
 
-    </section>
+          </section>
 
-    {{/if}}
+        {{/if}}
 
+        {{#if declaration}}
 
+          <section id='declaration'>
 
+            <h2 class='title'>
+              Declaration
+            </h2>
 
+            <div class='description'>
 
-
-    {{#if declaration}}
-
-    <section id="declaration">
-
-        <h2 class="title">
-            Declaration
-        </h2>
-
-        <div class="description">
-
-            <p>
+              <p>
 
                 {{declaration}}
 
-            </p>
+              </p>
 
-        </div>
+            </div>
 
-    </section>
+          </section>
 
-    {{/if}}
+        {{/if}}
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-</body>
+  </body>
 </html>

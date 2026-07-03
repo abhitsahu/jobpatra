@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { LandingNavbar } from '../landing/landing-navbar';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -32,9 +31,6 @@ export function AuthLayout({ children }: AuthLayoutProps) {
     <div className="auth-desk-base font-['Hanken_Grotesk'] text-[#2b1611] min-h-screen flex flex-col relative overflow-x-hidden selection:bg-[#5b060c]/20 selection:text-[#5b060c]">
       {/* Paper Texture Overlay */}
       <div className="fixed inset-0 auth-paper-texture pointer-events-none z-50"></div>
-
-      {/* Shared Header Navigation */}
-      <LandingNavbar />
 
       {/* Background Decorative Elements (The Desk) */}
       <div className="absolute top-28 left-10 opacity-20 transform -rotate-12 select-none pointer-events-none hidden md:block">

@@ -35,7 +35,8 @@ export function LandingFooter() {
             JobPatra
           </div>
           <p className="text-[#564240] font-['Hanken_Grotesk'] text-[16px] leading-[24px]">
-            Architecting the future of professional storytelling through the lens of timeless elegance and AI precision.
+            Architecting the future of professional storytelling through the lens of timeless
+            elegance and AI precision.
           </p>
         </div>
 

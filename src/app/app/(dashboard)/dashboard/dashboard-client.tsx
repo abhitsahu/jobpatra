@@ -105,13 +105,12 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-12 gap-6">
-            
             {/* ATS Score Widget (Postage Stamp) */}
             <div className="col-span-12 lg:col-span-4 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-8 flex flex-col items-center justify-center relative overflow-hidden">
               <div className="absolute top-4 left-4 font-['Hanken_Grotesk'] text-[11px] font-semibold uppercase tracking-wider text-[#8a716f]">
                 Postage Metric
               </div>
-              
+
               {/* The Stamp Mark */}
               <div className="w-44 h-44 border-4 border-dashed border-[#5b060c]/20 rounded-full flex flex-col items-center justify-center relative p-4 rotate-[-5deg]">
                 <div className="absolute inset-0 border-2 border-[#5b060c]/10 rounded-full m-2"></div>
@@ -125,15 +124,18 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                   PERCENTILE
                 </span>
                 {/* Rubber Stamp Texture Overlay */}
-                <div 
-                  className="absolute inset-0 opacity-20 pointer-events-none mix-blend-multiply" 
-                  style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }}
+                <div
+                  className="absolute inset-0 opacity-20 pointer-events-none mix-blend-multiply"
+                  style={{
+                    backgroundImage:
+                      "url('https://www.transparenttextures.com/patterns/stardust.png')",
+                  }}
                 />
               </div>
-              
+
               <div className="mt-6 text-center">
                 <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#564240] italic font-medium">
-                  "Highly Optimized for Career Success"
+                  &ldquo;Highly Optimized for Career Success&rdquo;
                 </p>
               </div>
             </div>
@@ -179,7 +181,10 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                 <div className="bg-white border border-[#E5D9C8] p-6 shadow-sm flex flex-col h-44 relative hover:-translate-y-1 transition-transform duration-300">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#795900] shadow-sm font-bold text-sm">
-                      <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      <span
+                        className="material-symbols-outlined text-[16px]"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
                         schedule
                       </span>
                     </div>
@@ -282,7 +287,10 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
               {isLoading && (
                 <div className="p-8 space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-20 bg-[#fff0ed] border border-[#ddc0bd]/20 rounded-none" />
+                    <Skeleton
+                      key={i}
+                      className="h-20 bg-[#fff0ed] border border-[#ddc0bd]/20 rounded-none"
+                    />
                   ))}
                 </div>
               )}
@@ -310,7 +318,9 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     description
                   </span>
                   <p className="font-['Hanken_Grotesk'] text-[#564240] text-[15px] mb-6 font-medium">
-                    {search ? 'No documents match your filter query.' : 'Your workshop repository is empty.'}
+                    {search
+                      ? 'No documents match your filter query.'
+                      : 'Your workshop repository is empty.'}
                   </p>
                   {!search && (
                     <button
@@ -341,23 +351,28 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
               <div className="bg-[#5b060c] text-white p-8 flex flex-col md:flex-row items-start md:items-center gap-6 shadow-md relative overflow-hidden">
                 {/* Paper Clip Graphic */}
                 <div className="absolute top-0 right-10 w-8 h-24 bg-[#D1C4B1]/30 rounded-b-full border-x-4 border-b-4 border-white/20 hidden md:block"></div>
-                
+
                 <div className="p-4 bg-white/10 rounded-full flex-shrink-0">
-                  <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  <span
+                    className="material-symbols-outlined text-4xl"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
                     ink_pen
                   </span>
                 </div>
-                
+
                 <div className="flex-1">
                   <h3 className="font-['Playfair_Display'] text-[22px] font-bold mb-1">
                     AI Workshop Suggestion
                   </h3>
                   <p className="font-['Hanken_Grotesk'] text-[14px] leading-[22px] text-white/90 max-w-3xl">
-                    Our analysis indicates that tailoring your Professional Summaries by focusing on quantitative achievements increases employer engagement rates by up to 12%. Apply improvements directly inside the builder page.
+                    Our analysis indicates that tailoring your Professional Summaries by focusing on
+                    quantitative achievements increases employer engagement rates by up to 12%.
+                    Apply improvements directly inside the builder page.
                   </p>
                 </div>
-                
-                <button 
+
+                <button
                   onClick={() => setShowCreate(true)}
                   className="bg-[#FFF8EE] text-[#5b060c] px-6 py-2.5 font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-wider hover:bg-white transition-all relative z-10"
                 >
@@ -365,7 +380,6 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>

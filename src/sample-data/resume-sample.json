@@ -65,7 +65,14 @@
       "startDate": "Jan 2024",
       "endDate": "Present",
       "description": "A SaaS resume builder with AI-assisted content generation, live preview, and ATS optimization. Built for job seekers who want to land interviews faster.",
-      "technologies": ["Next.js", "Prisma", "PostgreSQL", "Handlebars", "TailwindCSS", "OpenAI API"],
+      "technologies": [
+        "Next.js",
+        "Prisma",
+        "PostgreSQL",
+        "Handlebars",
+        "TailwindCSS",
+        "OpenAI API"
+      ],
       "link": "https://jobpatra.dev"
     },
     {

@@ -54,7 +54,9 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
       onClick={handleEdit}
     >
       {/* Folder Tab Indicator */}
-      <div className={`absolute left-0 top-0 h-full w-1.5 ${tabColorClass} group-hover:w-3.5 transition-all duration-300`}></div>
+      <div
+        className={`absolute left-0 top-0 h-full w-1.5 ${tabColorClass} group-hover:w-3.5 transition-all duration-300`}
+      ></div>
 
       <div className="flex-1 flex items-center min-w-0">
         <div className="w-14 h-16 bg-white border border-[#ddc0bd]/60 rounded-sm shadow-sm flex items-center justify-center mr-5 flex-shrink-0">
@@ -65,7 +67,8 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
             {resume.title}
           </h4>
           <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] text-[#564240]/80 mt-1">
-            Template: {resume.templateId} • Edited {formatDate(resume.updatedAt)} • Status: {resume.status}
+            Template: {resume.templateId} • Edited {formatDate(resume.updatedAt)} • Status:{' '}
+            {resume.status}
           </p>
         </div>
       </div>

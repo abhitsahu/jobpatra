@@ -14,7 +14,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+  font-family: Inter, 'Segoe UI', Arial, Helvetica, sans-serif;
   color: #1f2937; /* Neutral 800 - dark charcoal, not pure black for premium feel */
   background-color: #f3f4f6; /* Neutral 100 - light background for screen preview */
   line-height: 1.5;
@@ -30,7 +30,9 @@ body {
   margin: 40px auto;
   padding: 20mm 20mm;
   background-color: #ffffff;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 .content {
@@ -72,7 +74,7 @@ header {
 }
 
 #designation .organization::before {
-  content: " at ";
+  content: ' at ';
   color: #9ca3af;
 }
 
@@ -93,13 +95,13 @@ header .contact > div {
 
 /* Contact icons fallback / bullets */
 header .contact > div::after {
-  content: " •";
+  content: ' •';
   margin-left: 8px;
   color: #d1d5db;
 }
 
 header .contact > div:last-child::after {
-  content: "";
+  content: '';
 }
 
 /* ─── Section Typography & Elements ────────────────────────────────────── */
@@ -265,7 +267,7 @@ section > .title {
 #certifications .description li::before,
 #achievements .description li::before,
 #languages .description li::before {
-  content: "•";
+  content: '•';
   position: absolute;
   left: 0;
   color: #9ca3af;
@@ -295,7 +297,7 @@ section > .title {
 /* ─── Clearfix helper ────────────────────────────────────────────────────── */
 
 .clearfix::after {
-  content: "";
+  content: '';
   clear: both;
   display: table;
 }

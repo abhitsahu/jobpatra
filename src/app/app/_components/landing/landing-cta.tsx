@@ -13,7 +13,8 @@ export function LandingCta() {
         </h2>
 
         <p className="text-[#ff8b85] font-['Hanken_Grotesk'] text-[18px] leading-[28px] mb-10 max-w-lg mx-auto relative z-10">
-          Seal your success today. Join 50,000+ professionals who trust JobPatra for their most important career introductions.
+          Seal your success today. Join 50,000+ professionals who trust JobPatra for their most
+          important career introductions.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
@@ -28,7 +29,10 @@ export function LandingCta() {
         {/* Background Grain/Texture */}
         <div
           className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
-          style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/natural-paper.png')" }}
+          style={{
+            backgroundImage:
+              "url('https://www.transparenttextures.com/patterns/natural-paper.png')",
+          }}
         />
       </div>
     </section>

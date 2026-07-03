@@ -7,6 +7,15 @@ import { useTemplates } from '@/app/app/_hooks/use-templates';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface Template {
+  id: string;
+  name: string;
+  description?: string;
+  previewUrl?: string;
+  thumbnail?: string;
+  category?: string;
+}
+
 export default function NewResumeClient() {
   const router = useRouter();
   const [title, setTitle] = useState('My Resume');
@@ -31,7 +40,7 @@ export default function NewResumeClient() {
     }
   };
 
-  const getTemplateImageUrl = (t: any) => {
+  const getTemplateImageUrl = (t: Template) => {
     if (t.previewUrl && (t.previewUrl.startsWith('http') || t.previewUrl.startsWith('/'))) {
       return t.previewUrl;
     }
@@ -51,7 +60,9 @@ export default function NewResumeClient() {
         {/* Header Section */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
-            <h2 className="font-headline-md text-3xl font-bold text-on-surface mb-2">Create Resume</h2>
+            <h2 className="font-headline-md text-3xl font-bold text-on-surface mb-2">
+              Create Resume
+            </h2>
             <p className="text-on-surface-variant font-body-md text-sm md:text-base">
               Choose a professional template and start building your resume.
             </p>
@@ -61,7 +72,9 @@ export default function NewResumeClient() {
               <p className="text-on-surface-variant font-label-caps text-[10px] tracking-widest opacity-60 uppercase font-semibold">
                 Resume Count
               </p>
-              <p className="text-on-surface font-headline-md text-[24px] font-bold">{resumesCount}/15</p>
+              <p className="text-on-surface font-headline-md text-[24px] font-bold">
+                {resumesCount}/15
+              </p>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-neon-purple/10 border border-neon-purple/30 rounded-full">
               <span
@@ -70,10 +83,14 @@ export default function NewResumeClient() {
               >
                 workspace_premium
               </span>
-              <span className="text-neon-purple font-label-caps text-xs font-semibold uppercase tracking-wider">PRO</span>
+              <span className="text-neon-purple font-label-caps text-xs font-semibold uppercase tracking-wider">
+                PRO
+              </span>
             </div>
             <button className="p-2 rounded-full border border-glass-border hover:bg-white/5 transition-colors hidden sm:block">
-              <span className="material-symbols-outlined text-on-surface-variant text-xl">help_outline</span>
+              <span className="material-symbols-outlined text-on-surface-variant text-xl">
+                help_outline
+              </span>
             </button>
           </div>
         </header>
@@ -95,7 +112,9 @@ export default function NewResumeClient() {
               className="w-full bg-surface-container-lowest border border-glass-border rounded-xl px-4 py-4 text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-electric-blue focus:border-electric-blue transition-all"
               placeholder="e.g. My Software Engineer Resume"
             />
-            <p className="mt-2 text-on-surface-variant text-[11px] opacity-60">This title is only visible to you.</p>
+            <p className="mt-2 text-on-surface-variant text-[11px] opacity-60">
+              This title is only visible to you.
+            </p>
           </div>
         </section>
 
@@ -108,7 +127,10 @@ export default function NewResumeClient() {
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white/5 border border-glass-border rounded-2xl p-4 space-y-4">
+                <div
+                  key={i}
+                  className="bg-white/5 border border-glass-border rounded-2xl p-4 space-y-4"
+                >
                   <Skeleton className="aspect-[3/4] w-full rounded-xl" />
                   <Skeleton className="h-5 w-2/3" />
                   <Skeleton className="h-4 w-1/2" />
@@ -118,7 +140,7 @@ export default function NewResumeClient() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {Array.isArray(templates) && templates.length > 0 ? (
-                templates.map((t: any) => {
+                (templates as Template[]).map((t: Template) => {
                   const imageUrl = getTemplateImageUrl(t);
                   const isSelected = selectedTemplate === t.id;
 
@@ -157,7 +179,9 @@ export default function NewResumeClient() {
                             isSelected ? 'opacity-100' : 'opacity-0'
                           }`}
                         >
-                          <span className="material-symbols-outlined text-[16px] font-bold">check</span>
+                          <span className="material-symbols-outlined text-[16px] font-bold">
+                            check
+                          </span>
                         </div>
                       </div>
 

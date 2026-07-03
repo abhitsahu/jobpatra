@@ -7,7 +7,8 @@ export function LandingFeatures() {
             The Digital Ledger Suite
           </h2>
           <p className="text-[#564240] max-w-xl mx-auto font-['Hanken_Grotesk']">
-            Modern tools for the professional historian. Every feature is designed to elevate your story from a record to a legacy.
+            Modern tools for the professional historian. Every feature is designed to elevate your
+            story from a record to a legacy.
           </p>
         </div>
 
@@ -15,13 +16,19 @@ export function LandingFeatures() {
           {/* Feature 1 */}
           <div className="bg-white p-8 rounded-2xl border border-[#ddc0bd] shadow-sm hover:shadow-md transition-shadow relative group">
             <div className="w-12 h-12 bg-[#7a1f1f]/10 rounded-lg flex items-center justify-center mb-6 text-[#5b060c]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>mail</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                mail
+              </span>
             </div>
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611] mb-4">
               Letterpress Layouts
             </h3>
             <p className="text-[#564240] font-['Hanken_Grotesk']">
-              Choose from templates that prioritize clarity and tactile elegance over digital clutter. Designed for the human eye.
+              Choose from templates that prioritize clarity and tactile elegance over digital
+              clutter. Designed for the human eye.
             </p>
             <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-100 transition-opacity text-[#ddc0bd]">
               <span className="material-symbols-outlined text-4xl">inventory_2</span>
@@ -31,13 +38,19 @@ export function LandingFeatures() {
           {/* Feature 2 */}
           <div className="bg-white p-8 rounded-2xl border border-[#ddc0bd] shadow-sm hover:shadow-md transition-shadow relative group">
             <div className="w-12 h-12 bg-[#ffc641]/30 rounded-lg flex items-center justify-center mb-6 text-[#795900]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>approval</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                approval
+              </span>
             </div>
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611] mb-4">
               The AI Notary
             </h3>
             <p className="text-[#564240] font-['Hanken_Grotesk']">
-              Our AI doesn&apos;t just fill blanks—it verifies your tone, strengthens your verbs, and ensures your narrative is air-tight.
+              Our AI doesn&apos;t just fill blanks—it verifies your tone, strengthens your verbs,
+              and ensures your narrative is air-tight.
             </p>
             <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-100 transition-opacity text-[#ddc0bd]">
               <span className="material-symbols-outlined text-4xl">history_edu</span>
@@ -47,13 +60,19 @@ export function LandingFeatures() {
           {/* Feature 3 */}
           <div className="bg-white p-8 rounded-2xl border border-[#ddc0bd] shadow-sm hover:shadow-md transition-shadow relative group">
             <div className="w-12 h-12 bg-[#ffe9e4] rounded-lg flex items-center justify-center mb-6 text-[#5e0001]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>assignment</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                assignment
+              </span>
             </div>
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611] mb-4">
               ATS Delivery System
             </h3>
             <p className="text-[#564240] font-['Hanken_Grotesk']">
-              Precision-engineered formatting ensures your document remains intact through every digital sorting facility on Earth.
+              Precision-engineered formatting ensures your document remains intact through every
+              digital sorting facility on Earth.
             </p>
             <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-100 transition-opacity text-[#ddc0bd]">
               <span className="material-symbols-outlined text-4xl">local_post_office</span>

@@ -13,7 +13,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/app/dashboard', icon: 'dashboard' },
   { label: 'Build Resume', href: '/app/resume/new', icon: 'edit_note' },
-  { label: 'ATS Analyzer', href: '/app/ats', icon: 'analytics' },
+  { label: 'ATS Analyzer', href: '/app/ats-workspace', icon: 'analytics' },
   { label: 'My Resumes', href: '/app/resumes', icon: 'description' },
   { label: 'Settings', href: '/app/settings', icon: 'settings' },
 ];
@@ -49,7 +49,7 @@ export function Sidebar() {
                 "flex items-center gap-3 px-4 py-2.5 transition-all font-['Hanken_Grotesk'] text-[14px] font-semibold leading-[20px]",
                 isActive
                   ? 'text-white bg-[#5b060c] shadow-md scale-[0.98]'
-                  : 'text-[#564240] hover:bg-[#ffe2db] hover:translate-x-0.5'
+                  : 'text-[#564240] hover:bg-[#ffe2db] hover:translate-x-0.5',
               )}
             >
               <span
