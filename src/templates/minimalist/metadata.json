@@ -1,0 +1,16 @@
+{
+  "id": "minimalist",
+  "name": "The Minimalist",
+  "category": "Creative",
+  "version": "1.0.0",
+  "thumbnail": "template.png",
+  "engine": "handlebars",
+  "ats": true,
+  "sections": ["personal", "summary", "experience", "education", "skills", "projects"],
+  "slug": "minimalist",
+  "description": "Focused on content and whitespace. Pure professional elegance.",
+  "previewImage": "/api/template/minimalist/thumbnail",
+  "atsFriendly": true,
+  "isPremium": false,
+  "usageCount": 9800
+}

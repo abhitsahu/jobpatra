@@ -1,0 +1,16 @@
+{
+  "id": "executive-suite",
+  "name": "Executive Suite",
+  "category": "Executive",
+  "version": "1.0.0",
+  "thumbnail": "template.png",
+  "engine": "handlebars",
+  "ats": true,
+  "sections": ["personal", "summary", "experience", "education", "skills", "projects"],
+  "slug": "executive-suite",
+  "description": "High-level summary and strategic layout for senior leaders.",
+  "previewImage": "/api/template/executive-suite/thumbnail",
+  "atsFriendly": true,
+  "isPremium": true,
+  "usageCount": 8200
+}

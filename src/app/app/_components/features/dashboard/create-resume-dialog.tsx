@@ -12,7 +12,8 @@ export function CreateResumeDialog({ onClose }: { onClose: () => void }) {
   const [selectedTemplate, setSelectedTemplate] = useState<string>('classic-demo');
   const [title, setTitle] = useState('My Resume');
 
-  const { data: templates, isLoading } = useTemplates();
+  const { data: templatesData, isLoading } = useTemplates();
+  const templates = templatesData?.templates || [];
   const createMutation = useCreateResume();
 
   const handleCreate = async () => {

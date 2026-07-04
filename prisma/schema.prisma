@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,18 +9,20 @@ datasource db {
 // AUTH MODELS
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String    @unique
-  emailVerified  DateTime?
-  password       String?
-  image          String? 
-  jobTitle       String? 
-  industry       String? 
-  role           String    @default("USER")
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  jobTitle      String?
+  industry      String?
+  role          String    @default("USER")
 
-  accounts Account[]
-  resumes  Resume[]
+  accounts      Account[]
+  resumes       Resume[]
+  subscription  Subscription?
+  usageTracking UsageTracking[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -29,12 +30,11 @@ model User {
   @@map("users")
 }
 
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
-  provider          String 
+  provider          String
   providerAccountId String
   refresh_token     String? @db.Text
   access_token      String? @db.Text
@@ -86,18 +86,18 @@ model Resume {
   deletedAt    DateTime?
 
   // Relations
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  personalInfo    PersonalInfo?
-  experiences     WorkExperience[]
-  education       Education[]
-  projects        Project[]
-  skills          Skill[]
-  certifications  Certification[]
-  achievements    Achievement[]
-  languages       Language[]
-  references      Reference[]
-  atsAnalyses     ATSAnalysis[]
-  aiSuggestions   AISuggestion[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalInfo   PersonalInfo?
+  experiences    WorkExperience[]
+  education      Education[]
+  projects       Project[]
+  skills         Skill[]
+  certifications Certification[]
+  achievements   Achievement[]
+  languages      Language[]
+  references     Reference[]
+  atsAnalyses    ATSAnalysis[]
+  aiSuggestions  AISuggestion[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,17 +108,17 @@ model Resume {
 }
 
 model PersonalInfo {
-  id          String  @id @default(cuid())
-  resumeId    String  @unique
-  fullName    String
-  jobTitle    String?
-  email       String
-  phone       String?
-  location    String?
-  website     String?
-  linkedin    String?
-  github      String?
-  summary     String? @db.Text
+  id       String  @id @default(cuid())
+  resumeId String  @unique
+  fullName String
+  jobTitle String?
+  email    String
+  phone    String?
+  location String?
+  website  String?
+  linkedin String?
+  github   String?
+  summary  String? @db.Text
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -126,17 +126,17 @@ model PersonalInfo {
 }
 
 model WorkExperience {
-  id               String    @id @default(cuid())
+  id               String   @id @default(cuid())
   resumeId         String
   company          String
   position         String
   location         String?
   startDate        String
   endDate          String?
-  currentlyWorking Boolean   @default(false)
-  description      String?   @db.Text
-  highlights       String[]  @default([])
-  order            Int       @default(0)
+  currentlyWorking Boolean  @default(false)
+  description      String?  @db.Text
+  highlights       String[] @default([])
+  order            Int      @default(0)
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -145,15 +145,15 @@ model WorkExperience {
 }
 
 model Education {
-  id          String  @id @default(cuid())
-  resumeId    String
-  institution String
-  degree      String
+  id           String  @id @default(cuid())
+  resumeId     String
+  institution  String
+  degree       String
   fieldOfStudy String?
-  startDate   String
-  endDate     String?
-  result      String? // GPA, percentage, grade
-  order       Int     @default(0)
+  startDate    String
+  endDate      String?
+  result       String? // GPA, percentage, grade
+  order        Int     @default(0)
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -258,11 +258,11 @@ model ATSAnalysis {
   id             String @id @default(cuid())
   resumeId       String
   jobDescription String @db.Text
-  overallScore   Int    // 0–100
-  keywordMatches Json   // { matched: string[], missing: string[] }
-  suggestions    Json   // [{ section, issue, fix }]
-  formatScore    Int    // 0–100
-  contentScore   Int    // 0–100
+  overallScore   Int // 0–100
+  keywordMatches Json // { matched: string[], missing: string[] }
+  suggestions    Json // [{ section, issue, fix }]
+  formatScore    Int // 0–100
+  contentScore   Int // 0–100
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -273,12 +273,12 @@ model ATSAnalysis {
 }
 
 model AISuggestion {
-  id       String  @id @default(cuid())
-  resumeId String
-  section  String  // "summary" | "experience" | "skills" | etc.
-  original String  @db.Text
-  suggested String @db.Text
-  accepted Boolean @default(false)
+  id        String  @id @default(cuid())
+  resumeId  String
+  section   String // "summary" | "experience" | "skills" | etc.
+  original  String  @db.Text
+  suggested String  @db.Text
+  accepted  Boolean @default(false)
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
@@ -286,4 +286,109 @@ model AISuggestion {
 
   @@index([resumeId])
   @@map("ai_suggestions")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUBSCRIPTION & USAGE MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Subscription {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  plan               String    @default("FREE")    // Plan enum in TypeScript
+  status             String    @default("ACTIVE")  // SubStatus enum in TypeScript
+  paymentProvider    String?                        // "razorpay" | "stripe"
+  paymentId          String?                        // External subscription ID
+  currentPeriodStart DateTime  @default(now())
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriptions")
+}
+
+model UsageTracking {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String   // UsageAction enum in TypeScript
+  periodStart DateTime
+  periodEnd   DateTime
+  count       Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, action, periodStart])
+  @@map("usage_tracking")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRICING MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PricingPlan {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  monthlyPrice   Float
+  yearlyPrice    Float
+  yearlyDiscount Int      @default(0)   // percentage e.g. 20
+  currency       String   @default("USD")
+  description    String
+  badge          String?                // "Most Popular" | "Recommended" | null
+  badgeColor     String?                // "primary" | "secondary" | null
+  buttonText     String
+  buttonVariant  String   @default("outline") // "solid" | "outline"
+  isPopular      Boolean  @default(false)
+  displayOrder   Int      @default(0)
+  isActive       Boolean  @default(true)
+
+  features PlanFeature[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pricing_plans")
+}
+
+model PlanFeature {
+  id        String  @id @default(cuid())
+  planId    String
+  feature   String
+  available Boolean @default(true)
+  highlight Boolean @default(false)
+  order     Int     @default(0)
+
+  plan PricingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, order])
+  @@map("plan_features")
+}
+
+model ComparisonFeature {
+  id     String @id @default(cuid())
+  title  String
+  values Json   // Record<planSlug, string> — e.g. { "free": "—", "pro": "check", "enterprise": "check" }
+  order  Int    @default(0)
+
+  @@map("comparison_features")
+}
+
+model Testimonial {
+  id          String  @id @default(cuid())
+  name        String
+  designation String
+  company     String?
+  image       String?
+  review      String  @db.Text
+  rating      Int     @default(5) // 1–5
+  isActive    Boolean @default(true)
+  order       Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@map("testimonials")
 }

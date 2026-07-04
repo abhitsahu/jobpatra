@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const navLinks = [
-  { label: 'Templates', href: '/#templates', active: false },
+  { label: 'Templates', href: '/app/templates', active: false },
   { label: 'ATS Checker', href: '/app/ats-checker', active: false },
   { label: 'Features', href: '/#features', active: false },
-  { label: 'Pricing', href: '/#pricing', active: false },
+  { label: 'Pricing', href: '/app/pricing', active: false },
   { label: 'Resources', href: '/#resources', active: false },
 ];
 

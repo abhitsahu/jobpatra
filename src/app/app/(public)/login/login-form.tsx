@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { loginSchema } from '@/app/api/model/request/auth/auth';
@@ -12,8 +12,15 @@ import { loginClient, googleLoginClient } from '@/app/api/client/auth/auth-clien
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  const redirectPath = searchParams.get('redirect');
+  const template = searchParams.get('template');
+  const targetUrl = redirectPath
+    ? `${redirectPath}${template ? `?template=${template}` : ''}`
+    : '/app/dashboard';
 
   const {
     register,
@@ -31,7 +38,7 @@ export function LoginForm() {
         setServerError(result.message);
         return;
       }
-      router.push('/app/dashboard');
+      router.push(targetUrl);
       router.refresh();
     } catch (err) {
       setServerError(
@@ -43,7 +50,7 @@ export function LoginForm() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      await googleLoginClient('/app/dashboard');
+      await googleLoginClient(targetUrl);
     } finally {
       setGoogleLoading(false);
     }

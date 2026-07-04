@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { signupSchema } from '@/app/api/model/request/auth/auth';
@@ -29,9 +29,16 @@ type SignupFormValues = z.infer<typeof signupFormSchema>;
 
 export function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
   const [serverSuccess, setServerSuccess] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  const redirectPath = searchParams.get('redirect');
+  const template = searchParams.get('template');
+  const targetUrl = redirectPath
+    ? `${redirectPath}${template ? `?template=${template}` : ''}`
+    : '/app/dashboard';
 
   const {
     register,
@@ -66,7 +73,8 @@ export function SignupForm() {
       }
 
       setServerSuccess('Account created! Please check your email to verify your account.');
-      setTimeout(() => router.push('/app/login'), 2500);
+      const loginUrl = `/app/login${redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}${template ? `&template=${encodeURIComponent(template)}` : ''}` : ''}`;
+      setTimeout(() => router.push(loginUrl), 2500);
     } catch (err) {
       setServerError(
         err instanceof Error ? err.message : 'Something went wrong. Please try again.',
@@ -77,7 +85,7 @@ export function SignupForm() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      await googleLoginClient('/app/dashboard');
+      await googleLoginClient(targetUrl);
     } finally {
       setGoogleLoading(false);
     }

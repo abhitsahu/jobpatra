@@ -14,6 +14,12 @@ export interface TemplateMetadata {
   engine: string;
   ats: boolean;
   sections: string[];
+  slug?: string;
+  description?: string;
+  previewImage?: string;
+  atsFriendly?: boolean;
+  isPremium?: boolean;
+  usageCount?: number;
 }
 
 export interface TemplateInfo extends TemplateMetadata {
@@ -87,7 +93,11 @@ export function listTemplates(): TemplateInfo[] {
 
 export function getTemplate(templateId: string): TemplateInfo {
   const registry = scanTemplates();
-  const template = registry.get(templateId);
+  let template = registry.get(templateId);
+  if (!template) {
+    // Graceful fallback to classic-demo or first template
+    template = registry.get('classic-demo') || Array.from(registry.values())[0];
+  }
   if (!template) {
     throw new Error(`Template not found: ${templateId}`);
   }
