@@ -34,7 +34,7 @@ export function WhyChoose() {
           </h3>
           <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#564240]">
             Integrated with our proprietary AI workshop, tailoring every word to the specific job
-            description you're targeting.
+            description you&apos;re targeting.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export function WhyChoose() {
           </h3>
           <p className="font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#564240]">
             High-resolution PDF generation ensures your resume looks as crisp on paper as it does on
-            a recruiter's high-res screen.
+            a recruiter&apos;s high-res screen.
           </p>
         </div>
       </div>

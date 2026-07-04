@@ -16,27 +16,38 @@ export function SummaryForm({ form }: SummaryFormProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-[20px] font-bold text-white font-[Space_Grotesk] mb-2">
+        <h3 className="text-[20px] font-bold text-[#7a1f1f] font-['Playfair_Display'] mb-2">
           Professional Summary
         </h3>
-        <p className="text-[13px] text-on-surface-variant">
+        <p className="text-[13px] text-[#564240]">
           Write a short, engaging summary about your skills, experience, and what drives you.
         </p>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+        <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
           Summary
         </label>
         <textarea
           id="personalInfo-summary-standalone"
-          rows={10}
+          rows={8}
           {...register('personalInfo.summary')}
-          className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-3 text-on-surface text-[14px] leading-relaxed focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all resize-none"
+          className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-3 text-[#2b1611] text-[14px] leading-relaxed focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all resize-none font-['Hanken_Grotesk']"
           placeholder="e.g. Forward-thinking Senior Product Designer with 6+ years of experience..."
         />
+        <div className="flex justify-end mt-2">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fff0ed] hover:bg-[#ffe2db] text-[#7a1f1f] border border-[#ddc0bd]/60 rounded-full transition-all group shadow-sm text-[11px] font-bold uppercase tracking-wider cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">
+              auto_fix
+            </span>
+            <span>AI Improve</span>
+          </button>
+        </div>
         {errors.personalInfo?.summary && (
-          <span className="text-xs text-error">{errors.personalInfo.summary.message}</span>
+          <span className="text-xs text-[#7a1f1f] mt-1">{errors.personalInfo.summary.message}</span>
         )}
       </div>
     </div>

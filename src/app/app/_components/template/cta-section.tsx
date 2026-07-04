@@ -20,7 +20,7 @@ export function CtaSection({ onStartBuilding, onBrowsePlans }: CtaSectionProps) 
           for Your Next Opportunity
         </h2>
         <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] font-normal text-white/80 max-w-2xl mx-auto">
-          Join over 50,000 professionals who have advanced their careers using JobPatra's
+          Join over 50,000 professionals who have advanced their careers using JobPatra&apos;s
           precision-crafted resume workshop.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

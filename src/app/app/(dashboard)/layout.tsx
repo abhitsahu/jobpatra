@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Paper Texture Overlay */}
       <div className="fixed inset-0 auth-paper-texture pointer-events-none z-50"></div>
       <Sidebar />
-      <main className="md:ml-64 flex-1 flex flex-col h-full overflow-hidden relative z-10">
+      <main className="md:ml-56 flex-1 flex flex-col h-full overflow-hidden relative z-10">
         {children}
       </main>
     </div>

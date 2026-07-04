@@ -129,6 +129,7 @@ export interface Template {
   atsFriendly: boolean;
   isPremium: boolean;
   usageCount: number;
+  sections: string[];
 }
 
 export interface TemplatesResponse {

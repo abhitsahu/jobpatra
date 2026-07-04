@@ -24,7 +24,7 @@ export function usePricing() {
     queryKey: pricingKeys.page(),
     queryFn: getPricingClient,
     staleTime: 10 * 60 * 1000, // 10 min — pricing data rarely changes
-    gcTime: 30 * 60 * 1000,    // keep in cache for 30 min after component unmounts
+    gcTime: 30 * 60 * 1000, // keep in cache for 30 min after component unmounts
   });
 }
 

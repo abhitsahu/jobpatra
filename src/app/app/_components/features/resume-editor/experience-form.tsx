@@ -41,24 +41,37 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-[20px] font-bold text-white font-[Space_Grotesk]">Work Experience</h3>
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="flex items-center gap-1 text-electric-blue text-[14px] font-medium hover:underline"
-        >
-          <span className="material-symbols-outlined text-[18px]">add</span> Add Role
-        </button>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-[20px] font-bold text-[#7a1f1f] font-['Playfair_Display']">
+          Work Experience
+        </h3>
+        {fields.length > 0 && (
+          <button
+            type="button"
+            onClick={handleAdd}
+            className="flex items-center gap-1 text-[#7a1f1f] text-[14px] font-bold hover:underline cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">add</span> Add Role
+          </button>
+        )}
       </div>
 
       {fields.length === 0 ? (
-        <div className="text-center py-12 border border-dashed border-glass-border rounded-xl bg-white/[0.01]">
-          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 block mb-2">
-            work
-          </span>
-          <p className="text-on-surface-variant text-[14px]">No experience added yet.</p>
-        </div>
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="w-full py-12 border-2 border-dashed border-[#ddc0bd] rounded-xl flex flex-col items-center justify-center text-[#564240] hover:border-[#7a1f1f]/50 hover:bg-[#fff8f6] transition-all cursor-pointer group"
+        >
+          <div className="w-12 h-12 rounded-full bg-[#fff0ed] flex items-center justify-center mb-3 group-hover:bg-[#ffe2db] transition-colors">
+            <span className="material-symbols-outlined text-2xl text-[#7a1f1f]">add</span>
+          </div>
+          <h4 className="font-['Playfair_Display'] text-[18px] leading-[24px] font-bold text-[#7a1f1f] mb-1">
+            + Add Experience
+          </h4>
+          <p className="text-[12px] leading-[16px] text-[#564240]/60 font-['Hanken_Grotesk'] font-medium">
+            Start building your work history.
+          </p>
+        </button>
       ) : (
         <div className="space-y-4">
           {fields.map((field, index) => {
@@ -68,7 +81,7 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
             return (
               <div
                 key={field.id}
-                className="relative bg-[rgba(255,255,255,0.02)] backdrop-blur-[20px] border border-glass-border rounded-xl group transition-all duration-300 hover:bg-[rgba(255,255,255,0.04)]"
+                className="relative bg-white border border-[#ddc0bd] rounded-xl group transition-all duration-300 shadow-sm overflow-hidden"
               >
                 {/* Expand/Collapse Header */}
                 <div
@@ -85,7 +98,7 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                           e.stopPropagation();
                           reorderFieldArray(index, 'up', move);
                         }}
-                        className="text-on-surface-variant hover:text-white disabled:opacity-30"
+                        className="text-[#564240] hover:text-[#7a1f1f] disabled:opacity-30 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[16px] leading-none">
                           expand_less
@@ -98,7 +111,7 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                           e.stopPropagation();
                           reorderFieldArray(index, 'down', move);
                         }}
-                        className="text-on-surface-variant hover:text-white disabled:opacity-30"
+                        className="text-[#564240] hover:text-[#7a1f1f] disabled:opacity-30 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[16px] leading-none">
                           expand_more
@@ -107,10 +120,10 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                     </div>
 
                     <div>
-                      <h4 className="text-[15px] font-semibold text-white">
+                      <h4 className="text-[15px] font-semibold text-[#2b1611]">
                         {form.watch(`experiences.${index}.position`) || 'Untitled Position'}
                       </h4>
-                      <p className="text-[13px] text-on-surface-variant mt-0.5">
+                      <p className="text-[13px] text-[#564240]/80 mt-0.5 font-['Hanken_Grotesk']">
                         {form.watch(`experiences.${index}.company`) || 'Company Name'} ·{' '}
                         {form.watch(`experiences.${index}.startDate`) || 'Start Date'} -{' '}
                         {form.watch(`experiences.${index}.currentlyWorking`)
@@ -124,14 +137,14 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="w-8 h-8 rounded-full hover:bg-red-500/10 text-on-surface-variant hover:text-error flex items-center justify-center transition-all"
+                      className="w-8 h-8 rounded-full hover:bg-red-500/10 text-[#564240] hover:text-[#7a1f1f] flex items-center justify-center transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[18px]">delete</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                      className="w-8 h-8 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-white flex items-center justify-center transition-all"
+                      className="w-8 h-8 rounded-full hover:bg-[#fff0ed] text-[#564240] hover:text-[#7a1f1f] flex items-center justify-center transition-all cursor-pointer"
                     >
                       <span className="material-symbols-outlined">
                         {isExpanded ? 'expand_less' : 'expand_more'}
@@ -147,23 +160,23 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="overflow-hidden border-t border-glass-border"
+                      className="overflow-hidden border-t border-[#ddc0bd]/60"
                     >
-                      <div className="p-6 space-y-4">
+                      <div className="p-6 space-y-4 bg-[#fff8f6]/30">
                         <div className="grid grid-cols-2 gap-4">
                           {/* Position */}
                           <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5">
-                            <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                            <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                               Job Title / Position
                             </label>
                             <input
                               type="text"
                               {...register(`experiences.${index}.position`)}
-                              className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-2.5 text-on-surface text-[15px] focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all"
+                              className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk']"
                               placeholder="e.g. Senior Product Designer"
                             />
                             {errorObj?.position && (
-                              <span className="text-xs text-error">
+                              <span className="text-xs text-[#7a1f1f]">
                                 {errorObj.position.message}
                               </span>
                             )}
@@ -171,29 +184,31 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
 
                           {/* Company */}
                           <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5">
-                            <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                            <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                               Company Name
                             </label>
                             <input
                               type="text"
                               {...register(`experiences.${index}.company`)}
-                              className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-2.5 text-on-surface text-[15px] focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all"
+                              className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk']"
                               placeholder="e.g. TechNova Solutions"
                             />
                             {errorObj?.company && (
-                              <span className="text-xs text-error">{errorObj.company.message}</span>
+                              <span className="text-xs text-[#7a1f1f]">
+                                {errorObj.company.message}
+                              </span>
                             )}
                           </div>
 
                           {/* Location */}
                           <div className="col-span-2 md:col-span-1 flex flex-col gap-1.5">
-                            <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                            <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                               Location
                             </label>
                             <input
                               type="text"
                               {...register(`experiences.${index}.location`)}
-                              className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-2.5 text-on-surface text-[15px] focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all"
+                              className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk']"
                               placeholder="e.g. San Francisco, CA"
                             />
                           </div>
@@ -204,11 +219,11 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                               type="checkbox"
                               id={`exp-curr-${index}`}
                               {...register(`experiences.${index}.currentlyWorking`)}
-                              className="rounded border-glass-border bg-surface-container-low text-electric-blue focus:ring-electric-blue w-4 h-4"
+                              className="rounded border-[#ddc0bd] bg-white text-[#7a1f1f] focus:ring-[#7a1f1f]/20 w-4 h-4 cursor-pointer"
                             />
                             <label
                               htmlFor={`exp-curr-${index}`}
-                              className="text-[13px] text-on-surface"
+                              className="text-[13px] text-[#2b1611] font-medium font-['Hanken_Grotesk'] cursor-pointer"
                             >
                               I currently work here
                             </label>
@@ -216,17 +231,17 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
 
                           {/* Start Date */}
                           <div className="col-span-1 flex flex-col gap-1.5">
-                            <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                            <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                               Start Date
                             </label>
                             <input
                               type="text"
                               {...register(`experiences.${index}.startDate`)}
-                              className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-2.5 text-on-surface text-[15px] focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all"
+                              className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk']"
                               placeholder="e.g. Mar 2021"
                             />
                             {errorObj?.startDate && (
-                              <span className="text-xs text-error">
+                              <span className="text-xs text-[#7a1f1f]">
                                 {errorObj.startDate.message}
                               </span>
                             )}
@@ -235,13 +250,13 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
                           {/* End Date */}
                           {!form.watch(`experiences.${index}.currentlyWorking`) && (
                             <div className="col-span-1 flex flex-col gap-1.5">
-                              <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                              <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                                 End Date
                               </label>
                               <input
                                 type="text"
                                 {...register(`experiences.${index}.endDate`)}
-                                className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-2.5 text-on-surface text-[15px] focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all"
+                                className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk']"
                                 placeholder="e.g. Present"
                               />
                             </div>
@@ -250,13 +265,13 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
 
                         {/* Description */}
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[11px] tracking-wider font-semibold text-on-surface-variant uppercase">
+                          <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
                             Description
                           </label>
                           <textarea
                             rows={4}
                             {...register(`experiences.${index}.description`)}
-                            className="w-full bg-surface-container-low border border-glass-border rounded-lg px-4 py-3 text-on-surface text-[14px] leading-relaxed focus:outline-none focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-all resize-none"
+                            className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-3 text-[#2b1611] text-[14px] leading-relaxed focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all resize-none font-['Hanken_Grotesk']"
                             placeholder="Spearheaded the redesign of the core platform, increasing user retention by 24%..."
                           />
                         </div>

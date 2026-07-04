@@ -29,8 +29,20 @@ const SEED_PLANS = [
     displayOrder: 0,
     isActive: true,
     features: [
-      { id: 'ff1', feature: '1 Basic Resume Template', available: true, highlight: false, order: 0 },
-      { id: 'ff2', feature: '3 AI Content Suggestions', available: true, highlight: false, order: 1 },
+      {
+        id: 'ff1',
+        feature: '1 Basic Resume Template',
+        available: true,
+        highlight: false,
+        order: 0,
+      },
+      {
+        id: 'ff2',
+        feature: '3 AI Content Suggestions',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
       { id: 'ff3', feature: 'PDF Export Only', available: true, highlight: false, order: 2 },
     ],
   },
@@ -39,7 +51,7 @@ const SEED_PLANS = [
     name: 'Pro',
     slug: 'pro',
     monthlyPrice: 19,
-    yearlyPrice: 182.40,
+    yearlyPrice: 182.4,
     yearlyDiscount: 20,
     currency: 'USD',
     description: 'Advanced AI tools for serious job seekers and career growth.',
@@ -51,9 +63,21 @@ const SEED_PLANS = [
     displayOrder: 1,
     isActive: true,
     features: [
-      { id: 'pf1', feature: 'Unlimited Premium Templates', available: true, highlight: true, order: 0 },
+      {
+        id: 'pf1',
+        feature: 'Unlimited Premium Templates',
+        available: true,
+        highlight: true,
+        order: 0,
+      },
       { id: 'pf2', feature: 'Advanced ATS Analysis', available: true, highlight: false, order: 1 },
-      { id: 'pf3', feature: 'Cover Letter AI Generator', available: true, highlight: false, order: 2 },
+      {
+        id: 'pf3',
+        feature: 'Cover Letter AI Generator',
+        available: true,
+        highlight: false,
+        order: 2,
+      },
       { id: 'pf4', feature: 'Custom Font Selection', available: true, highlight: false, order: 3 },
     ],
   },
@@ -62,7 +86,7 @@ const SEED_PLANS = [
     name: 'Enterprise',
     slug: 'enterprise',
     monthlyPrice: 49,
-    yearlyPrice: 470.40,
+    yearlyPrice: 470.4,
     yearlyDiscount: 20,
     currency: 'USD',
     description: 'Scalable solutions for teams and recruitment agencies.',
@@ -76,7 +100,13 @@ const SEED_PLANS = [
     features: [
       { id: 'ef1', feature: 'Everything in Pro', available: true, highlight: false, order: 0 },
       { id: 'ef2', feature: 'Whitelabeling Options', available: true, highlight: false, order: 1 },
-      { id: 'ef3', feature: 'API Access for Bulk Exports', available: true, highlight: false, order: 2 },
+      {
+        id: 'ef3',
+        feature: 'API Access for Bulk Exports',
+        available: true,
+        highlight: false,
+        order: 2,
+      },
     ],
   },
 ];
@@ -183,7 +213,13 @@ function formatPlan(plan: {
   buttonVariant: string;
   isPopular: boolean;
   displayOrder: number;
-  features: { id: string; feature: string; available: boolean; highlight: boolean; order: number }[];
+  features: {
+    id: string;
+    feature: string;
+    available: boolean;
+    highlight: boolean;
+    order: number;
+  }[];
 }): PricingPlanResponse {
   return {
     id: plan.id,

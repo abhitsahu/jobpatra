@@ -1,38 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateResume, useResumes } from '@/app/app/_hooks/use-resumes';
 import { useTemplates } from '@/app/app/_hooks/use-templates';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/app/app/_util/cn';
+import type { Template } from '@/app/api/client/resume/resume-client';
 
-interface Template {
-  id: string;
-  name: string;
-  description?: string;
-  previewUrl?: string;
-  thumbnail?: string;
-  category?: string;
-}
+const MAX_RESUMES = 15;
 
 export default function NewResumeClient() {
   const router = useRouter();
-  const [title, setTitle] = useState('My Resume');
-  const [selectedTemplate, setSelectedTemplate] = useState('classic-demo');
+  const [title, setTitle] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const nibRef = useRef<HTMLSpanElement>(null);
 
-  const { data: templates, isLoading } = useTemplates();
+  const { data: templatesData, isLoading } = useTemplates();
   const { data: resumesData } = useResumes();
   const createMutation = useCreateResume();
 
   const resumesCount = resumesData?.total ?? 0;
+  const allTemplates: Template[] = templatesData?.templates ?? [];
+  const categories: string[] = templatesData?.categories ?? ['All'];
+
+  // Dynamic search + category filter
+  const filtered = useMemo(() => {
+    return allTemplates.filter((t) => {
+      const matchesCategory = activeCategory === 'All' || t.category === activeCategory;
+      const matchesSearch =
+        !search.trim() ||
+        t.name.toLowerCase().includes(search.toLowerCase()) ||
+        t.category.toLowerCase().includes(search.toLowerCase()) ||
+        t.description.toLowerCase().includes(search.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [allTemplates, activeCategory, search]);
+
+  const canCreate = title.trim().length > 0 && !!selectedTemplate;
 
   const handleCreate = async () => {
-    if (!title.trim() || !selectedTemplate) return;
+    if (!canCreate) return;
     try {
       const resume = await createMutation.mutateAsync({
         title: title.trim(),
-        templateId: selectedTemplate,
+        templateId: selectedTemplate!,
       });
       router.push(`/app/resume/${resume.id}`);
     } catch (err) {
@@ -40,223 +54,434 @@ export default function NewResumeClient() {
     }
   };
 
-  const getTemplateImageUrl = (t: Template) => {
-    if (t.previewUrl && (t.previewUrl.startsWith('http') || t.previewUrl.startsWith('/'))) {
-      return t.previewUrl;
-    }
-    if (t.thumbnail && (t.thumbnail.startsWith('http') || t.thumbnail.startsWith('/'))) {
-      return t.thumbnail;
-    }
-    return `/api/template/${encodeURIComponent(t.id)}/thumbnail`;
-  };
-
   return (
-    <div className="flex-1 min-h-screen bg-surface-charcoal text-on-surface flex flex-col relative overflow-y-auto pb-32">
-      {/* Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-deep-indigo/20 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] rounded-full bg-electric-blue/10 blur-[100px] pointer-events-none z-0" />
+    // Warm desk base — paper texture backdrop
+    <div className="flex-1 min-h-screen pb-32 overflow-y-auto" style={{ background: '#F8F2E8' }}>
+      {/* Natural paper texture overlay */}
+      <div
+        className="pointer-events-none fixed inset-0 z-[1]"
+        style={{
+          backgroundImage: "url('https://www.transparenttextures.com/patterns/natural-paper.png')",
+          opacity: 0.03,
+        }}
+      />
 
-      <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12 pt-12 relative z-10">
-        {/* Header Section */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+      <div className="relative z-[2] max-w-5xl mx-auto px-12 py-10">
+        {/* ── Header ──────────────────────────────────────────────────────── */}
+        <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
           <div>
-            <h2 className="font-headline-md text-3xl font-bold text-on-surface mb-2">
+            <h1
+              className="text-[48px] leading-[56px] tracking-[-0.02em] font-bold text-[#5b060c] mb-2"
+              style={{ fontFamily: 'Playfair Display, serif' }}
+            >
               Create Resume
-            </h2>
-            <p className="text-on-surface-variant font-body-md text-sm md:text-base">
+            </h1>
+            <p
+              className="text-[18px] leading-[28px] text-[#564240]"
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
               Choose a professional template and start building your resume.
             </p>
           </div>
-          <div className="flex items-center gap-6 self-stretch md:self-auto justify-between md:justify-end">
-            <div className="text-right">
-              <p className="text-on-surface-variant font-label-caps text-[10px] tracking-widest opacity-60 uppercase font-semibold">
-                Resume Count
-              </p>
-              <p className="text-on-surface font-headline-md text-[24px] font-bold">
-                {resumesCount}/15
-              </p>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-neon-purple/10 border border-neon-purple/30 rounded-full">
+
+          {/* Workspace Card */}
+          <div
+            className="flex items-center gap-4 px-6 py-4 rounded-xl border border-[#E5D9C8] transition-all duration-300 hover:-translate-y-0.5 shrink-0"
+            style={{
+              background: '#FFF8EE',
+              boxShadow: '0 10px 30px -10px rgba(78,52,46,0.08)',
+            }}
+          >
+            <div className="flex flex-col">
               <span
-                className="material-symbols-outlined text-neon-purple text-[18px]"
-                style={{ fontVariationSettings: "'FILL' 1" }}
+                className="text-[12px] leading-[16px] font-medium text-[#564240] uppercase tracking-widest"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
-                workspace_premium
+                Workspace
               </span>
-              <span className="text-neon-purple font-label-caps text-xs font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-2 mt-0.5">
+                <span
+                  className="text-[24px] leading-[32px] font-semibold text-[#5b060c]"
+                  style={{ fontFamily: 'Playfair Display, serif' }}
+                >
+                  {resumesCount} / {MAX_RESUMES}
+                </span>
+                <span
+                  className="text-[12px] text-[#564240]"
+                  style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                >
+                  Resumes
+                </span>
+              </div>
+            </div>
+
+            <div className="w-px h-10 bg-[#ddc0bd]" />
+
+            <div className="flex flex-col items-end gap-2">
+              {/* Gold PRO Badge */}
+              <span
+                className="px-2 py-0.5 rounded text-[10px] text-white font-bold tracking-tighter"
+                style={{
+                  background: 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
+                  boxShadow: 'inset 0 -1px 2px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1)',
+                  fontFamily: 'Hanken Grotesk, sans-serif',
+                }}
+              >
                 PRO
               </span>
+              <button
+                className="text-[#795900] text-[12px] font-semibold hover:underline"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                Upgrade
+              </button>
             </div>
-            <button className="p-2 rounded-full border border-glass-border hover:bg-white/5 transition-colors hidden sm:block">
-              <span className="material-symbols-outlined text-on-surface-variant text-xl">
-                help_outline
-              </span>
-            </button>
           </div>
-        </header>
+        </div>
 
-        {/* Resume Title Section */}
-        <section className="mb-12 max-w-xl">
-          <div className="relative group">
-            <label
-              htmlFor="resume-title"
-              className="absolute -top-2 left-4 px-1.5 bg-surface-charcoal text-electric-blue font-label-caps text-[10px] font-bold tracking-wider z-10"
+        {/* ── Resume Title ─────────────────────────────────────────────────── */}
+        <section className="mb-16">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <span
+                ref={nibRef}
+                className="material-symbols-outlined text-[#5b060c] transition-all duration-300"
+                style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
+              >
+                edit_note
+              </span>
+              <h2
+                className="text-[14px] leading-[20px] uppercase tracking-widest font-semibold text-[#564240]"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                Resume Title
+              </h2>
+            </div>
+
+            {/* Paper-style input shell */}
+            <div
+              className="p-1 rounded-lg"
+              style={{
+                background: '#FFF8EE',
+                border: '1px solid #E5D9C8',
+                boxShadow: '0 10px 30px -10px rgba(78,52,46,0.08)',
+              }}
             >
-              RESUME TITLE
-            </label>
-            <input
-              id="resume-title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-surface-container-lowest border border-glass-border rounded-xl px-4 py-4 text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-electric-blue focus:border-electric-blue transition-all"
-              placeholder="e.g. My Software Engineer Resume"
-            />
-            <p className="mt-2 text-on-surface-variant text-[11px] opacity-60">
+              <input
+                id="resume-title"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onFocus={() => {
+                  if (nibRef.current) {
+                    nibRef.current.style.transform = 'scale(1.2)';
+                    nibRef.current.style.color = '#795900';
+                  }
+                }}
+                onBlur={() => {
+                  if (nibRef.current) {
+                    nibRef.current.style.transform = 'scale(1)';
+                    nibRef.current.style.color = '#5b060c';
+                  }
+                }}
+                className="w-full bg-transparent border-none outline-none ring-0 px-6 py-4 text-[#5b060c] placeholder:text-[#8a716f]/60"
+                style={{
+                  fontFamily: 'Playfair Display, serif',
+                  fontSize: 24,
+                  lineHeight: '32px',
+                  fontWeight: 600,
+                }}
+                placeholder="e.g. Senior Product Designer - 2024"
+              />
+            </div>
+            <p
+              className="mt-2 text-[12px] text-[#564240] italic"
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
               This title is only visible to you.
             </p>
           </div>
         </section>
 
-        {/* Template Gallery */}
-        <section className="mb-12">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-on-surface-variant mb-6">
-            Choose a Template
-          </h3>
+        {/* ── Template Section ─────────────────────────────────────────────── */}
+        <section>
+          {/* Section header + search */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+              <h2
+                className="text-[32px] leading-[40px] font-semibold text-[#5b060c] mb-1"
+                style={{ fontFamily: 'Playfair Display, serif' }}
+              >
+                Choose a Template
+              </h2>
+              <p
+                className="text-[16px] text-[#564240]"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                Select a resume template to begin editing. You can change your template later.
+              </p>
+            </div>
 
+            {/* Search bar */}
+            <div className="relative w-full md:w-80 shrink-0">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]">
+                search
+              </span>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search templates..."
+                className="w-full pl-12 pr-4 py-3 border border-[#ddc0bd] rounded-full transition-all outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20"
+                style={{
+                  background: '#fff0ed',
+                  fontFamily: 'Hanken Grotesk, sans-serif',
+                  fontSize: 14,
+                  lineHeight: '20px',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Category chips */}
+          <div className="flex flex-wrap gap-2 mb-10 overflow-x-auto pb-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  'px-5 py-2 rounded-full text-[14px] font-semibold whitespace-nowrap transition-colors',
+                  activeCategory === cat
+                    ? 'bg-[#5b060c] text-white'
+                    : 'text-[#564240] hover:bg-[#ddc0bd]/30',
+                )}
+                style={{
+                  fontFamily: 'Hanken Grotesk, sans-serif',
+                  background: activeCategory === cat ? '#5b060c' : '#ffe2db',
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Template grid */}
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="bg-white/5 border border-glass-border rounded-2xl p-4 space-y-4"
-                >
-                  <Skeleton className="aspect-[3/4] w-full rounded-xl" />
-                  <Skeleton className="h-5 w-2/3" />
-                  <Skeleton className="h-4 w-1/2" />
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="flex flex-col gap-3">
+                  <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-3 w-1/2" />
                 </div>
               ))}
             </div>
+          ) : filtered.length === 0 ? (
+            <div className="col-span-full text-center py-20 border border-dashed border-[#ddc0bd] rounded-xl">
+              <span className="material-symbols-outlined text-4xl text-[#564240]/40 block mb-2">
+                search_off
+              </span>
+              <p
+                className="text-[#564240] text-sm"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                No templates match your search.
+              </p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array.isArray(templates) && templates.length > 0 ? (
-                (templates as Template[]).map((t: Template) => {
-                  const imageUrl = getTemplateImageUrl(t);
-                  const isSelected = selectedTemplate === t.id;
-
-                  return (
-                    <motion.div
-                      key={t.id}
+              {filtered.map((t) => {
+                const isSelected = selectedTemplate === t.id;
+                return (
+                  <div key={t.id} className="group relative">
+                    {/* Card shell */}
+                    <div
                       onClick={() => setSelectedTemplate(t.id)}
-                      whileHover={{ y: -4 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className={`p-4 rounded-2xl cursor-pointer flex flex-col h-full transition-all duration-300 relative ${
+                      className={cn(
+                        'aspect-[3/4] rounded-lg overflow-hidden relative cursor-pointer transition-all duration-300',
                         isSelected
-                          ? 'bg-white/5 border border-electric-blue shadow-[0_0_20px_rgba(26,145,240,0.25)] scale-[1.01]'
-                          : 'bg-white/[0.02] hover:bg-white/[0.04] border border-glass-border hover:border-white/20'
-                      }`}
+                          ? 'border-[#5b060c]'
+                          : 'border-[#E5D9C8] hover:border-[#5b060c]/40',
+                      )}
+                      style={{
+                        background: '#FFF8EE',
+                        border: isSelected ? '2px solid #5b060c' : '1px solid #E5D9C8',
+                        boxShadow: isSelected
+                          ? '0 0 0 4px rgba(91,6,12,0.05), 0 10px 30px -10px rgba(78,52,46,0.12)'
+                          : '0 10px 30px -10px rgba(78,52,46,0.08)',
+                      }}
                     >
-                      <div className="flex-1 aspect-[3/4] mb-4 rounded-xl overflow-hidden relative border border-glass-border bg-surface-container-lowest flex items-center justify-center">
-                        {imageUrl ? (
-                          <div
-                            className="w-full h-full bg-cover bg-top transition-transform duration-500 hover:scale-105"
-                            style={{ backgroundImage: `url(${imageUrl})` }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-surface-container to-surface-container-low flex flex-col items-center justify-center p-6 text-center">
-                            <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-2">
-                              description
-                            </span>
-                            <span className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest">
-                              {t.category || 'Classic'}
-                            </span>
-                          </div>
-                        )}
+                      {/* Selected primary overlay tint */}
+                      {isSelected && (
+                        <div className="absolute inset-0 bg-[#5b060c]/5 pointer-events-none z-10" />
+                      )}
 
-                        {/* Selected Icon Overlay */}
-                        <div
-                          className={`absolute top-3 right-3 bg-electric-blue text-white w-6 h-6 rounded-full flex items-center justify-center transition-opacity duration-300 ${
-                            isSelected ? 'opacity-100' : 'opacity-0'
-                          }`}
-                        >
-                          <span className="material-symbols-outlined text-[16px] font-bold">
-                            check
+                      {/* Template preview image */}
+                      <div
+                        className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                        style={{
+                          backgroundImage: `url('${t.previewImage}')`,
+                          backgroundSize: 'cover',
+                        }}
+                      />
+
+                      {/* Fallback pattern if no image */}
+                      {!t.previewImage && (
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE] to-[#ffe2db] flex flex-col items-center justify-center p-4 text-center">
+                          <span className="material-symbols-outlined text-4xl text-[#564240]/40 mb-2">
+                            description
+                          </span>
+                          <span
+                            className="text-[10px] font-semibold text-[#564240]/60 uppercase tracking-widest"
+                            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                          >
+                            {t.category}
                           </span>
                         </div>
+                      )}
+
+                      {/* Selected checkmark */}
+                      <div
+                        className={cn(
+                          'absolute top-3 right-3 z-20 w-8 h-8 bg-[#5b060c] rounded-full flex items-center justify-center shadow-lg transition-all duration-300',
+                          isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-75',
+                        )}
+                      >
+                        <span
+                          className="material-symbols-outlined text-white text-sm"
+                          style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }}
+                        >
+                          check
+                        </span>
                       </div>
 
-                      <div className="mt-2">
-                        <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-semibold text-[15px] text-white">{t.name}</h4>
-                          {t.id === 'classic-demo' && (
-                            <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider">
-                              POPULAR
-                            </span>
-                          )}
+                      {/* ATS badge */}
+                      {t.atsFriendly && (
+                        <div className="absolute top-3 left-3 z-20">
+                          <span
+                            className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider text-white"
+                            style={{
+                              background: '#2d6a4f',
+                              fontFamily: 'Hanken Grotesk, sans-serif',
+                            }}
+                          >
+                            ATS
+                          </span>
                         </div>
-                        <p className="text-on-surface-variant text-[12px]">
-                          {t.description || 'ATS Friendly, Modern'}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })
-              ) : (
-                <div className="col-span-full text-center py-16 border border-dashed border-glass-border rounded-2xl bg-white/[0.01]">
-                  <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 block mb-2">
-                    description
-                  </span>
-                  <p className="text-on-surface-variant text-sm">No templates available</p>
-                </div>
-              )}
+                      )}
+
+                      {/* Premium badge */}
+                      {t.isPremium && (
+                        <div className="absolute bottom-3 right-3 z-20">
+                          <span
+                            className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-tighter text-white"
+                            style={{
+                              background: 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
+                              fontFamily: 'Hanken Grotesk, sans-serif',
+                            }}
+                          >
+                            PRO
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Card info */}
+                    <div className="mt-3">
+                      <h3
+                        className={cn(
+                          'text-[14px] font-semibold leading-[20px] tracking-[0.05em] transition-colors',
+                          isSelected ? 'text-[#5b060c]' : 'text-[#2b1611]',
+                        )}
+                        style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                      >
+                        {t.name}
+                      </h3>
+                      <p
+                        className="text-[12px] text-[#564240] mt-0.5"
+                        style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                      >
+                        {t.category}
+                        {t.atsFriendly ? ' • ATS Friendly' : ''}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
       </div>
 
-      {/* Sticky Footer Action Bar */}
-      <footer className="fixed bottom-0 right-0 w-full md:w-[calc(100%-16rem)] bg-surface-container-low/90 backdrop-blur-xl border-t border-glass-border p-6 z-50">
-        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center">
+      {/* ── Sticky Footer Action Bar ────────────────────────────────────────── */}
+      <footer
+        className="fixed bottom-0 left-56 right-0 z-50 border-t border-[#ddc0bd] px-12 py-5 flex items-center justify-between"
+        style={{ background: '#ffffff' }}
+      >
+        {/* AI hint */}
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-[#795900] text-xl"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            auto_fix
+          </span>
+          <p
+            className="text-[12px] text-[#564240]"
+            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+          >
+            <span className="font-bold text-[#795900]">AI Assistant Ready:</span>{' '}
+            {selectedTemplate
+              ? 'Selected template is ready to use.'
+              : 'Select a template to get started.'}
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-4">
           <button
             onClick={() => router.push('/app/dashboard')}
-            className="px-6 py-3 rounded-full border border-glass-border text-on-surface-variant text-sm font-semibold hover:bg-white/5 transition-all"
+            className="px-6 py-2.5 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-colors"
+            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
           >
             Cancel
           </button>
-          <div className="flex items-center gap-6">
-            <AnimatePresence>
-              {!selectedTemplate && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="text-on-surface-variant text-sm italic"
-                >
-                  Please select a template
-                </motion.p>
-              )}
-            </AnimatePresence>
-            <button
-              onClick={handleCreate}
-              disabled={createMutation.isPending || !title.trim() || !selectedTemplate}
-              className={`px-10 py-3 rounded-full font-semibold text-sm transition-all active:scale-95 flex items-center gap-2 ${
-                !title.trim() || !selectedTemplate
-                  ? 'bg-electric-blue/50 text-white/50 cursor-not-allowed'
-                  : 'bg-electric-blue text-white hover:brightness-110 shadow-[0_0_15px_rgba(26,145,240,0.3)]'
-              }`}
-            >
-              {createMutation.isPending ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Creating...</span>
-                </>
-              ) : (
+
+          <button
+            onClick={handleCreate}
+            disabled={!canCreate || createMutation.isPending}
+            className={cn(
+              'flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold text-[14px] transition-all shadow-lg',
+              canCreate && !createMutation.isPending
+                ? 'bg-[#5b060c] text-white hover:opacity-95 active:scale-[0.98]'
+                : 'bg-[#5b060c]/40 text-white/60 cursor-not-allowed',
+            )}
+            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+          >
+            {createMutation.isPending ? (
+              <>
+                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Creating...</span>
+              </>
+            ) : (
+              <>
                 <span>Create Resume</span>
-              )}
-            </button>
-          </div>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </>
+            )}
+          </button>
         </div>
       </footer>
+
+      {/* Decorative paper clip */}
+      <div className="fixed top-24 right-12 z-[3] pointer-events-none opacity-40">
+        <span
+          className="material-symbols-outlined text-[#8a716f]"
+          style={{ fontSize: 48, transform: 'rotate(45deg)', display: 'block' }}
+        >
+          attach_file
+        </span>
+      </div>
     </div>
   );
 }

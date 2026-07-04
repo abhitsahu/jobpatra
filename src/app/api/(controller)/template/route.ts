@@ -16,6 +16,7 @@ export async function GET() {
       atsFriendly: t.atsFriendly ?? t.ats ?? true,
       isPremium: t.isPremium ?? false,
       usageCount: t.usageCount ?? 12000,
+      sections: t.sections ?? [],
     }));
 
     const categoriesSet = new Set(templates.map((t) => t.category));

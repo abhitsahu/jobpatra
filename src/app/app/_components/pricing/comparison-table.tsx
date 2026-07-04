@@ -1,5 +1,8 @@
 import React from 'react';
-import type { ComparisonFeatureResponse, PricingPlanResponse } from '@/app/api/model/response/pricing';
+import type {
+  ComparisonFeatureResponse,
+  PricingPlanResponse,
+} from '@/app/api/model/response/pricing';
 
 interface ComparisonTableProps {
   plans: PricingPlanResponse[];
@@ -36,13 +39,14 @@ export function ComparisonTable({ plans, comparison }: ComparisonTableProps) {
               className="grid p-6 hover:bg-[#fff0ed]/50 transition-colors items-center"
               style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
             >
-              <div className="col-span-1 font-medium text-[#2b1611]">
-                {row.title}
-              </div>
+              <div className="col-span-1 font-medium text-[#2b1611]">{row.title}</div>
               {plans.map((plan) => {
                 const val = row.values[plan.slug] || '—';
                 return (
-                  <div key={plan.id} className="text-center text-[#564240] text-sm flex justify-center items-center">
+                  <div
+                    key={plan.id}
+                    className="text-center text-[#564240] text-sm flex justify-center items-center"
+                  >
                     {val === 'check' ? (
                       <span
                         className="material-symbols-outlined text-[#5b060c] text-xl"

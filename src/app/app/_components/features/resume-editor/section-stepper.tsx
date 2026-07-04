@@ -1,71 +1,137 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { cn } from '@/app/app/_util/cn';
-import { HorizontalScrollTabs } from '@/app/app/_components/common/horizontal-scroll-tabs';
-
-const SECTIONS = [
-  { key: 'personalInfo', label: 'Personal Info' },
-  { key: 'summary', label: 'Summary' },
-  { key: 'experience', label: 'Experience' },
-  { key: 'education', label: 'Education' },
-  { key: 'projects', label: 'Projects' },
-  { key: 'skills', label: 'Skills' },
-  { key: 'certifications', label: 'Certifications' },
-  { key: 'achievements', label: 'Achievements' },
-  { key: 'languages', label: 'Languages' },
-  { key: 'references', label: 'References' },
-];
+import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
+import { SECTION_REGISTRY } from './section-registry';
 
 interface SectionStepperProps {
   active: string;
   onChange: (key: string) => void;
+  form: UseFormReturn<UpdateResumeDTO>;
+  /** Raw section keys from template metadata.json (e.g. "personal", "experience"). */
+  templateSections?: string[];
 }
 
-export function SectionStepper({ active, onChange }: SectionStepperProps) {
+export function SectionStepper({ active, onChange, form, templateSections }: SectionStepperProps) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
-  // Scroll the active tab into view whenever it changes
+  // Filter the registry to only sections declared by the chosen template.
+  // Order comes from metadata.json; labels and form keys come from the registry.
+  const visibleSections =
+    templateSections && templateSections.length > 0
+      ? SECTION_REGISTRY.filter((s) => templateSections.includes(s.templateKey))
+      : SECTION_REGISTRY; // fallback while template data loads
+
+  // Reactive form values — completion ticks update as user types
+  const values = form.watch();
+
+  const isSectionCompleted = (key: string): boolean => {
+    switch (key) {
+      case 'personalInfo':
+        return !!(values.personalInfo?.fullName && values.personalInfo?.email);
+      case 'summary':
+        return !!values.personalInfo?.summary;
+      case 'experience':
+        return !!(values.experiences && values.experiences.length > 0);
+      case 'education':
+        return !!(values.education && values.education.length > 0);
+      case 'projects':
+        return !!(values.projects && values.projects.length > 0);
+      case 'skills':
+        return !!(values.skills && values.skills.length > 0);
+      case 'certifications':
+        return !!(values.certifications && values.certifications.length > 0);
+      case 'achievements':
+        return !!(values.achievements && values.achievements.length > 0);
+      case 'languages':
+        return !!(values.languages && values.languages.length > 0);
+      case 'references':
+        return !!(values.references && values.references.length > 0);
+      default:
+        return false;
+    }
+  };
+
+  // Scroll active tab into view whenever it changes
   useEffect(() => {
     activeRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
-      inline: 'nearest',
+      inline: 'center',
     });
   }, [active]);
 
+  const handleScroll = (direction: 'left' | 'right') => {
+    scrollRef.current?.scrollBy({
+      left: direction === 'left' ? -150 : 150,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <HorizontalScrollTabs className="border-b border-glass-border" scrollClassName="space-x-1 pb-2">
-      {SECTIONS.map((s) => (
-        <button
-          key={s.key}
-          id={`stepper-${s.key}`}
-          role="tab"
-          aria-selected={active === s.key}
-          ref={active === s.key ? activeRef : null}
-          onClick={() => onChange(s.key)}
-          onKeyDown={(e) => {
-            // Arrow key navigation between tabs
-            const idx = SECTIONS.findIndex((x) => x.key === s.key);
-            if (e.key === 'ArrowRight') {
-              const next = SECTIONS[idx + 1];
-              if (next) onChange(next.key);
-            } else if (e.key === 'ArrowLeft') {
-              const prev = SECTIONS[idx - 1];
-              if (prev) onChange(prev.key);
-            }
-          }}
-          className={cn(
-            'shrink-0 pb-3 px-1 border-b-2 text-[11px] tracking-wider font-semibold uppercase whitespace-nowrap transition-colors',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-electric-blue/60 focus-visible:rounded-sm',
-            active === s.key
-              ? 'border-electric-blue text-electric-blue'
-              : 'border-transparent text-on-surface-variant hover:text-on-surface',
-          )}
-        >
-          {s.label}
-        </button>
-      ))}
-    </HorizontalScrollTabs>
+    <nav className="h-12 bg-white border-b border-[#ddc0bd] flex items-center px-4 shrink-0 overflow-hidden select-none">
+      {/* Scroll Left */}
+      <button
+        type="button"
+        onClick={() => handleScroll('left')}
+        className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none"
+        aria-label="Scroll tabs left"
+      >
+        <span className="material-symbols-outlined text-xl">chevron_left</span>
+      </button>
+
+      {/* Tab list */}
+      <div
+        ref={scrollRef}
+        className="flex-1 flex items-center px-4 gap-8 h-full overflow-x-auto"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {visibleSections.map((s) => {
+          const isCompleted = isSectionCompleted(s.key);
+          const isActive = active === s.key;
+
+          return (
+            <button
+              key={s.key}
+              id={`stepper-${s.key}`}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              ref={isActive ? activeRef : null}
+              onClick={() => onChange(s.key)}
+              className={cn(
+                "relative h-full flex items-center gap-1.5 font-['Hanken_Grotesk'] text-[14px] font-semibold transition-all whitespace-nowrap px-1 cursor-pointer focus:outline-none",
+                isActive
+                  ? 'text-[#7a1f1f] font-bold border-b-2 border-[#7a1f1f]'
+                  : 'text-[#564240] hover:text-[#7a1f1f]',
+              )}
+            >
+              {isCompleted && (
+                <span
+                  className="material-symbols-outlined text-sm text-[#7a1f1f]"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+              )}
+              <span>{s.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Scroll Right */}
+      <button
+        type="button"
+        onClick={() => handleScroll('right')}
+        className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none"
+        aria-label="Scroll tabs right"
+      >
+        <span className="material-symbols-outlined text-xl">chevron_right</span>
+      </button>
+    </nav>
   );
 }

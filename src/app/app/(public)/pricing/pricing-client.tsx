@@ -30,7 +30,10 @@ export function PricingClient() {
         {/* Pricing Cards Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="sheet-bg border border-[#ddc0bd]/30 p-8 rounded-lg h-96 flex flex-col justify-between">
+            <div
+              key={i}
+              className="sheet-bg border border-[#ddc0bd]/30 p-8 rounded-lg h-96 flex flex-col justify-between"
+            >
               <div>
                 <div className="h-6 w-24 bg-[#ddc0bd]/20 rounded mb-4"></div>
                 <div className="h-10 w-32 bg-[#ddc0bd]/20 rounded mb-6"></div>
@@ -72,7 +75,8 @@ export function PricingClient() {
           Invest in Your Future
         </h1>
         <p className="text-[#564240] max-w-2xl mx-auto font-['Hanken_Grotesk'] text-[18px] leading-[28px]">
-          Select the toolset that fits your career stage. From early exploration to executive excellence.
+          Select the toolset that fits your career stage. From early exploration to executive
+          excellence.
         </p>
         {/* Billing Toggle */}
         <BillingToggle
@@ -83,17 +87,10 @@ export function PricingClient() {
       </header>
 
       {/* Pricing Cards Grid */}
-      <PricingGrid
-        plans={data.plans}
-        isYearly={isYearly}
-        onSelectPlan={handleSelectPlan}
-      />
+      <PricingGrid plans={data.plans} isYearly={isYearly} onSelectPlan={handleSelectPlan} />
 
       {/* Detailed Feature Ledger */}
-      <ComparisonTable
-        plans={data.plans}
-        comparison={data.comparison}
-      />
+      <ComparisonTable plans={data.plans} comparison={data.comparison} />
 
       {/* Testimonial / Trust Section */}
       <TestimonialSection testimonials={data.testimonials} />

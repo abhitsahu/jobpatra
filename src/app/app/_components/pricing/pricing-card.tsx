@@ -37,17 +37,20 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
 
   // Determine monthly rate or yearly rate divided by 12, or total yearly rate
   const symbol = getCurrencySymbol(currency);
-  
+
   // Design specifies monthlyPrice as monthly rate (e.g. $19),
   // and yearly rate can be displayed as yearlyPrice/12 or as it is.
   // The design for Pro has: "$19" -> "/month".
   // If yearly is active, let's display the yearly price adjusted to monthly equivalent or direct yearly total.
   // The design: "$19" /month. If yearly, we can show:
   // (yearlyPrice / 12) or the yearlyPrice. Let's calculate the display price:
-  const displayPrice = isYearly 
-    ? (slug === 'free' ? 0 : Math.round(yearlyPrice / 12)) 
+  const displayPrice = isYearly
+    ? slug === 'free'
+      ? 0
+      : Math.round(yearlyPrice / 12)
     : monthlyPrice;
-  const billingIntervalLabel = slug === 'free' ? '/forever' : (isYearly ? '/month (billed yearly)' : '/month');
+  const billingIntervalLabel =
+    slug === 'free' ? '/forever' : isYearly ? '/month (billed yearly)' : '/month';
 
   return (
     <div
@@ -60,7 +63,10 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
       {/* Premium / Wax Seal Badge */}
       {isPopular ? (
         <div className="absolute -top-3 -right-3 w-20 h-20 wax-seal rounded-full flex items-center justify-center transform rotate-12 shadow-xl border-4 border-[#5b060c] z-20 select-none pointer-events-none">
-          <span className="material-symbols-outlined text-white text-2xl font-filled" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <span
+            className="material-symbols-outlined text-white text-2xl font-filled"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
             workspace_premium
           </span>
         </div>
@@ -75,16 +81,19 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
       )}
 
       {/* Plan Title */}
-      <h3 className={`font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold mb-2 ${
-        isPopular ? 'text-[#5b060c]' : 'text-[#2b1611]'
-      }`}>
+      <h3
+        className={`font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold mb-2 ${
+          isPopular ? 'text-[#5b060c]' : 'text-[#2b1611]'
+        }`}
+      >
         {name}
       </h3>
 
       {/* Pricing display */}
       <div className="flex items-baseline mb-6">
         <span className="text-4xl font-bold font-['Playfair_Display'] text-[36px] text-[#5b060c]">
-          {symbol}{displayPrice}
+          {symbol}
+          {displayPrice}
         </span>
         <span className="text-[#564240] ml-2 font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold">
           {billingIntervalLabel}
@@ -103,9 +112,11 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
             <span className="material-symbols-outlined text-[#5b060c] text-lg select-none">
               {feat.available ? 'check' : 'close'}
             </span>
-            <span className={`font-['Hanken_Grotesk'] text-[16px] leading-[24px] ${
-              feat.highlight ? 'font-semibold text-[#2b1611]' : 'text-[#564240]'
-            }`}>
+            <span
+              className={`font-['Hanken_Grotesk'] text-[16px] leading-[24px] ${
+                feat.highlight ? 'font-semibold text-[#2b1611]' : 'text-[#564240]'
+              }`}
+            >
               {feat.feature}
             </span>
           </li>

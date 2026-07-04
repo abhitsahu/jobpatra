@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { SECTION_REGISTRY } from '@/app/app/_components/features/resume-editor/section-registry';
 
 import {
   useResume,
@@ -9,6 +10,7 @@ import {
   useDownloadPdf,
   useResumePreview,
 } from '@/app/app/_hooks/use-resumes';
+import { useTemplate } from '@/app/app/_hooks/use-templates';
 import { SectionStepper } from '@/app/app/_components/features/resume-editor/section-stepper';
 import { PersonalInfoForm } from '@/app/app/_components/features/resume-editor/personal-info-form';
 import { SummaryForm } from '@/app/app/_components/features/resume-editor/summary-form';
@@ -30,15 +32,24 @@ interface ResumeEditorClientProps {
   resumeId: string;
 }
 
+// Derived dynamically from SECTION_REGISTRY — no section names hardcoded here.
+// Maps template metadata.json key (e.g. "personal") → editor form key (e.g. "personalInfo").
+const TEMPLATE_KEY_TO_EDITOR = Object.fromEntries(
+  SECTION_REGISTRY.map((s) => [s.templateKey, s.key]),
+);
+
 export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState('personalInfo');
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'failed'>('saved');
   const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const [zoom, setZoom] = useState(100);
+  const [showAiWorkspace, setShowAiWorkspace] = useState(true);
 
   // Fetch resume data and live preview html via TanStack Query
   const { data: resume, isLoading, isError } = useResume(resumeId);
   const { data: previewHtml, isLoading: isPreviewLoading } = useResumePreview(resumeId);
+  const { data: templateData } = useTemplate(resume?.templateId ?? '');
   const updateMutation = useUpdateResume(resumeId);
   const downloadPdfMutation = useDownloadPdf();
 
@@ -72,6 +83,21 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     watch,
     formState: { isDirty },
   } = form;
+
+  // ── Derive visible sections directly from template metadata ─────────────
+  // Order and presence come 100% from the `sections` array in metadata.json.
+  // No hardcoded list lives here — TEMPLATE_KEY_TO_EDITOR is just a translator.
+  const templateRawSections = (templateData as { sections?: string[] } | null)?.sections ?? [];
+  const visibleSectionsKeys = templateRawSections
+    .map((k) => TEMPLATE_KEY_TO_EDITOR[k])
+    .filter(Boolean) as string[];
+
+  // Auto-correct active section when template changes and active section is no longer visible
+  useEffect(() => {
+    if (visibleSectionsKeys.length > 0 && !visibleSectionsKeys.includes(activeSection)) {
+      setActiveSection(visibleSectionsKeys[0]);
+    }
+  }, [visibleSectionsKeys, activeSection]);
 
   // Track initialization and last saved values to prevent form resets and redundant patches
   const isInitialized = useRef<string | null>(null); // stores the resumeId that was initialized
@@ -180,10 +206,8 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       let payload: UpdateResumeDTO;
 
       if (isSampleDataRef.current) {
-        // Send the entire form data so the sample data is saved to the DB
         payload = values;
       } else {
-        // Send a sparse patch payload by comparing against lastSavedValues
         const patchPayload: UpdateResumeDTO = {};
         let hasChanges = false;
 
@@ -218,7 +242,6 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     }
   };
 
-  // Title changes save callback
   const handleTitleChange = (newTitle: string) => {
     form.setValue('title', newTitle, { shouldDirty: true });
   };
@@ -245,13 +268,13 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
 
   if (isError || !resume) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <span className="material-symbols-outlined text-5xl text-error mb-4">error</span>
-        <h3 className="text-xl font-bold text-white mb-2">Resume Not Found</h3>
-        <p className="text-on-surface-variant mb-6">This resume may have been deleted.</p>
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-[#fff8f6]">
+        <span className="material-symbols-outlined text-5xl text-[#7a1f1f] mb-4">error</span>
+        <h3 className="text-xl font-bold text-[#2b1611] mb-2">Resume Not Found</h3>
+        <p className="text-[#564240] mb-6">This resume may have been deleted.</p>
         <button
           onClick={() => router.push('/app/dashboard')}
-          className="px-6 py-2.5 rounded-full bg-electric-blue text-white text-[14px]"
+          className="px-6 py-2.5 rounded-full bg-[#7a1f1f] text-white text-[14px] font-bold cursor-pointer"
         >
           Back to Dashboard
         </button>
@@ -259,46 +282,63 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     );
   }
 
-  return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-      {/* Editor Header */}
-      <header className="h-[72px] shrink-0 border-b border-glass-border bg-surface-container-lowest/80 backdrop-blur-xl flex items-center justify-between px-6 z-20">
-        <div className="flex items-center gap-4 min-w-0">
-          <input
-            id="editor-resume-title"
-            type="text"
-            // eslint-disable-next-line react-hooks/incompatible-library
-            value={watch('title') || ''}
-            onChange={(e) => handleTitleChange(e.target.value)}
-            className="bg-transparent border-none focus:ring-0 text-on-surface font-[Space_Grotesk] text-[20px] font-bold p-0 w-[200px] sm:w-[300px] hover:bg-white/5 rounded px-2 py-0.5 transition-colors -ml-2 truncate"
-          />
+  const currentIdx = visibleSectionsKeys.indexOf(activeSection);
+  const prevSection = visibleSectionsKeys[currentIdx - 1];
+  const nextSection = visibleSectionsKeys[currentIdx + 1];
 
-          <div className="flex items-center gap-1.5 text-on-surface-variant text-[13px] font-medium bg-white/5 px-2.5 py-1 rounded-full border border-glass-border shrink-0">
+  return (
+    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-white">
+      {/* Editor Header / Top Application Bar */}
+      <header className="h-16 border-b border-[#ddc0bd] bg-white flex items-center justify-between px-6 z-20 shrink-0">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#7a1f1f]">description</span>
+            <input
+              id="editor-resume-title"
+              type="text"
+              // eslint-disable-next-line react-hooks/incompatible-library
+              value={watch('title') || ''}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              className="bg-transparent border-none focus:ring-1 focus:ring-[#7a1f1f]/20 text-[#2b1611] font-['Hanken_Grotesk'] text-[15px] font-bold p-1 w-[150px] sm:w-[220px] hover:bg-[#fff0ed] rounded transition-colors truncate focus:outline-none"
+            />
+          </div>
+
+          <div className="h-4 w-px bg-[#ddc0bd] hidden sm:block"></div>
+
+          <div className="hidden sm:flex items-center gap-2 text-[#564240]">
+            <span className="material-symbols-outlined text-sm">auto_stories</span>
+            <span className="text-[12px] font-semibold">
+              Template:{' '}
+              <span className="font-bold text-[#2b1611]">{resume.templateId || 'Default'}</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[#564240] text-[12px] font-semibold bg-[#fff0ed] px-2.5 py-1 rounded-full border border-[#ddc0bd]/60 shrink-0">
             {saveStatus === 'saving' ? (
               <>
-                <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin shrink-0" />
+                <span className="w-3.5 h-3.5 border-2 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin shrink-0" />
                 <span>Saving...</span>
               </>
             ) : saveStatus === 'failed' ? (
               <>
-                <span className="material-symbols-outlined text-[16px] text-error shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-[#7a1f1f] shrink-0">
                   cloud_off
                 </span>
-                <span className="text-error">Save failed</span>
+                <span className="text-[#7a1f1f]">Save failed</span>
               </>
             ) : isDirty ? (
               <>
-                <span className="material-symbols-outlined text-[16px] text-amber-400 shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-[#795900] shrink-0">
                   pending
                 </span>
-                <span className="text-amber-400">Unsaved changes</span>
+                <span className="text-[#795900]">Unsaved changes</span>
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[16px] text-emerald-400 shrink-0">
+                <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">
                   cloud_done
                 </span>
-                <span className="text-emerald-400">Saved</span>
+                <span className="text-emerald-600">Saved</span>
               </>
             )}
           </div>
@@ -308,7 +348,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           {/* Mobile Preview toggle */}
           <button
             onClick={() => setShowMobilePreview((prev) => !prev)}
-            className="md:hidden p-2 rounded-full hover:bg-white/10 border border-glass-border text-on-surface"
+            className="md:hidden p-2 rounded-full hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240]"
             aria-label="Toggle preview"
           >
             <span className="material-symbols-outlined">
@@ -319,35 +359,24 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           <button
             onClick={form.handleSubmit(onSubmit)}
             disabled={updateMutation.isPending}
-            className="flex items-center gap-2 px-5 py-2 rounded-full bg-electric-blue text-white font-[Space_Grotesk] text-[14px] font-medium shadow-[0_0_15px_rgba(26,145,240,0.2)] hover:bg-electric-blue/90 hover:shadow-[0_0_25px_rgba(26,145,240,0.4)] transition-all disabled:opacity-50"
+            className="px-4 py-2 text-[#7a1f1f] font-bold text-[14px] hover:bg-[#fff0ed] rounded-lg transition-colors cursor-pointer disabled:opacity-50"
           >
-            {updateMutation.isPending ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Saving...</span>
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-[18px]">save</span>
-                <span>Save</span>
-              </>
-            )}
+            {updateMutation.isPending ? 'Saving...' : 'Save'}
           </button>
 
           <button
             onClick={handleDownloadPdf}
             disabled={downloadPdfMutation.isPending}
-            className="flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-deep-indigo to-electric-blue text-white font-[Space_Grotesk] text-[14px] font-medium shadow-[0_0_15px_rgba(26,145,240,0.2)] hover:shadow-[0_0_25px_rgba(26,145,240,0.4)] transition-all disabled:opacity-50"
+            className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[14px] shadow-sm hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
           >
             {downloadPdfMutation.isPending ? (
               <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span>Exporting...</span>
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                <span>Download PDF</span>
+                <span>Finish & Download</span>
               </>
             )}
           </button>
@@ -358,18 +387,21 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       <div className="flex-1 flex overflow-hidden">
         {/* Left Form Panel */}
         <section
-          className={`w-full md:w-[500px] lg:w-[600px] shrink-0 flex flex-col border-r border-glass-border bg-surface relative z-10 transition-all ${
+          className={`w-full md:w-[480px] lg:w-[540px] shrink-0 flex flex-col border-r border-[#ddc0bd] bg-white relative z-10 transition-all ${
             showMobilePreview ? 'hidden md:flex' : 'flex'
           }`}
         >
-          {/* Stepper */}
-          <div className="px-8 pt-8 pb-4">
-            <SectionStepper active={activeSection} onChange={setActiveSection} />
-          </div>
+          {/* Stepper / Horizontal Section Navigation */}
+          <SectionStepper
+            active={activeSection}
+            onChange={setActiveSection}
+            form={form}
+            templateSections={(templateData as { sections?: string[] } | null)?.sections}
+          />
 
           {/* Form Canvas */}
-          <div className="flex-1 overflow-y-auto px-8 pb-12 pt-4">
-            <form onSubmit={(e) => e.preventDefault()}>
+          <div className="flex-1 overflow-y-auto px-8 pb-12 pt-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
               {activeSection === 'personalInfo' && <PersonalInfoForm form={form} />}
               {activeSection === 'summary' && <SummaryForm form={form} />}
               {activeSection === 'experience' && <ExperienceForm form={form} />}
@@ -380,42 +412,117 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               {activeSection === 'achievements' && <AchievementsForm form={form} />}
               {activeSection === 'languages' && <LanguagesForm form={form} />}
               {activeSection === 'references' && <ReferencesForm form={form} />}
+
+              {/* Navigation Controls */}
+              <div className="flex justify-between items-center pt-8 border-t border-[#ddc0bd]/30 mt-8">
+                {prevSection ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveSection(prevSection)}
+                    className="text-[#564240] font-semibold text-[13px] tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#fff0ed] transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">west</span>
+                    Previous
+                  </button>
+                ) : (
+                  <div />
+                )}
+                {nextSection && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveSection(nextSection)}
+                    className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[13px] tracking-wider uppercase shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    Next Section
+                    <span className="material-symbols-outlined text-base">east</span>
+                  </button>
+                )}
+              </div>
             </form>
           </div>
         </section>
 
-        {/* Right Iframe Live Preview Panel */}
+        {/* Right Preview Panel (Centered, simulated A4 print preview) */}
         <section
-          className={`flex-1 bg-[#05080a] relative overflow-hidden flex flex-col items-center justify-center p-6 md:p-10 ${
+          className={`flex-1 bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between ${
             showMobilePreview ? 'flex' : 'hidden md:flex'
           }`}
         >
-          {/* Background Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-electric-blue/5 rounded-full blur-[100px] pointer-events-none" />
-
-          {/* Simulated Resume Paper Box */}
-          <div className="w-full max-w-[800px] h-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-lg relative z-10 flex flex-col overflow-hidden">
-            {isPreviewLoading && (
-              <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px] z-50 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-electric-blue/30 border-t-electric-blue rounded-full animate-spin" />
-              </div>
-            )}
-
-            {/* Resume Preview Document Iframe */}
-            {previewHtml ? (
-              <iframe
-                id="resume-preview-iframe"
-                srcDoc={previewHtml}
-                className="w-full h-full border-none bg-white"
-                title="Resume Preview"
-              />
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant p-8 text-center bg-[#0b1014]">
-                <span className="material-symbols-outlined text-4xl block mb-2">find_in_page</span>
-                <p className="text-[14px]">Loading live preview...</p>
-              </div>
-            )}
+          {/* Floating Preview Toolbar */}
+          <div className="w-full h-12 border-b border-[#ddc0bd]/30 px-6 flex items-center justify-between bg-white/50 backdrop-blur-sm z-20 shrink-0">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/60">
+              Live Preview
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Zoom Out"
+              >
+                <span className="material-symbols-outlined text-base">remove</span>
+              </button>
+              <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
+                {zoom}%
+              </span>
+              <button
+                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Zoom In"
+              >
+                <span className="material-symbols-outlined text-base">add</span>
+              </button>
+              <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
+              <button
+                onClick={handleDownloadPdf}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Download PDF"
+              >
+                <span className="material-symbols-outlined text-base">download</span>
+              </button>
+            </div>
           </div>
+
+          {/* Simulated Resume Paper Box Container */}
+          <div className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto custom-scrollbar">
+            <div
+              style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
+              className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
+            >
+              {isPreviewLoading && (
+                <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
+                </div>
+              )}
+
+              {/* Resume Preview Document Iframe */}
+              {previewHtml ? (
+                <iframe
+                  id="resume-preview-iframe"
+                  srcDoc={previewHtml}
+                  className="w-full h-full border-none bg-white"
+                  title="Resume Preview"
+                />
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
+                  <span className="material-symbols-outlined text-4xl block mb-2">
+                    find_in_page
+                  </span>
+                  <p className="text-[14px]">Loading live preview...</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mini Toggle for Collapsed State */}
+          {!showAiWorkspace && (
+            <button
+              onClick={() => setShowAiWorkspace(true)}
+              className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
+              title="Open AI Suggestions"
+            >
+              <span className="material-symbols-outlined text-lg">sparkles</span>
+            </button>
+          )}
         </section>
       </div>
     </div>

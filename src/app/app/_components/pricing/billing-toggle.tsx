@@ -9,7 +9,9 @@ interface BillingToggleProps {
 export function BillingToggle({ isYearly, onToggle, discountPercentage }: BillingToggleProps) {
   return (
     <div className="mt-12 flex items-center justify-center gap-4">
-      <span className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${!isYearly ? 'text-[#2b1611]' : 'text-[#564240]'}`}>
+      <span
+        className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${!isYearly ? 'text-[#2b1611]' : 'text-[#564240]'}`}
+      >
         Monthly
       </span>
       <button
@@ -25,7 +27,9 @@ export function BillingToggle({ isYearly, onToggle, discountPercentage }: Billin
           id="toggle-circle"
         ></div>
       </button>
-      <span className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${isYearly ? 'text-[#2b1611]' : 'text-[#564240]'}`}>
+      <span
+        className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${isYearly ? 'text-[#2b1611]' : 'text-[#564240]'}`}
+      >
         Yearly
       </span>
       {discountPercentage > 0 && (

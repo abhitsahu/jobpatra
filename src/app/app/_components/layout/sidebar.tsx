@@ -14,7 +14,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/app/dashboard', icon: 'dashboard' },
   { label: 'Build Resume', href: '/app/resume/new', icon: 'edit_note' },
   { label: 'ATS Analyzer', href: '/app/ats-workspace', icon: 'analytics' },
-  { label: 'My Resumes', href: '/app/resumes', icon: 'description' },
   { label: 'Settings', href: '/app/settings', icon: 'settings' },
 ];
 
@@ -22,19 +21,19 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col h-screen fixed left-0 top-0 py-10 w-64 bg-[#fff0ed] border-r border-[#ddc0bd] shadow-sm z-50 hidden md:flex">
+    <aside className="flex flex-col h-screen fixed left-0 top-0 py-8 w-56 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 hidden md:flex">
       {/* Brand */}
-      <div className="px-6 mb-10">
-        <h1 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-bold text-[#5b060c] mb-1">
+      <div className="px-5 mb-8">
+        <h1 className="font-['Playfair_Display'] text-[22px] leading-[30px] font-bold text-[#7a1f1f] mb-1 tracking-tight">
           JobPatra
         </h1>
-        <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] tracking-wider uppercase">
+        <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#564240]/60 tracking-widest uppercase">
           AI Career Workshop
         </p>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-3 space-y-1">
         {NAV_ITEMS.map((item) => {
           const isActive =
             item.href === '/app/dashboard'
@@ -46,14 +45,14 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-4 py-2.5 transition-all font-['Hanken_Grotesk'] text-[14px] font-semibold leading-[20px]",
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 font-['Hanken_Grotesk'] text-[13px] font-semibold leading-[18px] cursor-pointer",
                 isActive
-                  ? 'text-white bg-[#5b060c] shadow-md scale-[0.98]'
-                  : 'text-[#564240] hover:bg-[#ffe2db] hover:translate-x-0.5',
+                  ? 'text-white bg-[#7a1f1f] shadow-sm shadow-[#7a1f1f]/10'
+                  : 'text-[#564240] hover:bg-[#fff0ed] hover:text-[#7a1f1f] hover:translate-x-0.5',
               )}
             >
               <span
-                className="material-symbols-outlined text-[20px]"
+                className="material-symbols-outlined text-[18px]"
                 style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
               >
                 {item.icon}
@@ -65,13 +64,13 @@ export function Sidebar() {
       </nav>
 
       {/* Signature Edition Info */}
-      <div className="px-6 mt-8">
-        <div className="p-4 bg-[#ffe2db]/50 rounded border border-[#ddc0bd]/30 text-center">
-          <span className="material-symbols-outlined text-[#5b060c] mb-2 text-2xl">
-            history_edu
+      <div className="px-3 mt-auto">
+        <div className="p-3 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group">
+          <span className="material-symbols-outlined text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform">
+            workspace_premium
           </span>
-          <p className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-wider">
-            Signature Edition
+          <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
+            Pro Plan Active
           </p>
         </div>
       </div>
