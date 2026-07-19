@@ -172,6 +172,7 @@ async function seedPricingData(): Promise<void> {
       update: {},
       create: {
         ...planData,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         features: { create: features.map(({ id: _id, ...f }) => f) },
       },
     });

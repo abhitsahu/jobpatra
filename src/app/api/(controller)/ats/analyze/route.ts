@@ -17,7 +17,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { analyzeATS } from '@/app/service/ai/ats.service';
+import { analyzeATS, analyzeATSStream } from '@/app/service/ai/ats.service';
 import { AIServiceError } from '@/app/service/ai/client';
 
 // ---------------------------------------------------------------------------
@@ -25,8 +25,11 @@ import { AIServiceError } from '@/app/service/ai/client';
 // ---------------------------------------------------------------------------
 
 const atsAnalyzeSchema = z.object({
-  resumeText: z.string().min(1, 'Resume text is required'),
+  resumeText: z.string().optional(),
+  resumeFileName: z.string().optional(),
+  resumeFileBytes: z.string().optional(),
   jobDescriptionText: z.string().min(1, 'Job description text is required'),
+  stream: z.boolean().optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -44,8 +47,29 @@ export async function POST(req: Request) {
     if (result.error) return result.error;
 
     // 3. Delegate to ATS service
+    if (result.data.stream) {
+      const { stream, requestId } = await analyzeATSStream({
+        resumeText: result.data.resumeText,
+        resumeFileName: result.data.resumeFileName,
+        resumeFileBytes: result.data.resumeFileBytes,
+        jobDescriptionText: result.data.jobDescriptionText,
+      });
+
+      return new Response(stream, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          Connection: 'keep-alive',
+          'X-Request-ID': requestId,
+        },
+      });
+    }
+
     const { report, requestId } = await analyzeATS({
       resumeText: result.data.resumeText,
+      resumeFileName: result.data.resumeFileName,
+      resumeFileBytes: result.data.resumeFileBytes,
       jobDescriptionText: result.data.jobDescriptionText,
     });
 

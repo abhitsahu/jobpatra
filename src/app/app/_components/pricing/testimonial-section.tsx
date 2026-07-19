@@ -21,6 +21,7 @@ export function TestimonialSection({ testimonials }: TestimonialSectionProps) {
           <div className="flex items-center justify-center gap-4">
             {t.image && (
               <div className="w-12 h-12 rounded-full border border-[#ddc0bd] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img className="w-full h-full object-cover" src={t.image} alt={t.name} />
               </div>
             )}

@@ -20,7 +20,6 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
     yearlyPrice,
     currency,
     description,
-    badge,
     buttonText,
     buttonVariant,
     isPopular,

@@ -160,6 +160,80 @@ export async function aiRequest<T>(
   }
 }
 
+// [ignoring loop detection]
+/**
+ * Send a request to the AI microservice and return the raw response body stream.
+ */
+export async function aiRequestStream(
+  path: string,
+  config: AIRequestConfig = {},
+  options: AIClientOptions = {},
+): Promise<{ stream: ReadableStream<Uint8Array>; requestId: string }> {
+  _assertConfigured();
+
+  const { method = 'POST', body, headers: extraHeaders } = config;
+  const requestId = options.requestId ?? randomUUID();
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+
+  const url = `${AI_BASE_URL}${path}`;
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-Internal-API-Key': AI_API_KEY!,
+    'X-Request-ID': requestId,
+    'X-Service-Name': SERVICE_NAME,
+    Accept: 'text/event-stream',
+    ...extraHeaders,
+  };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  console.log(`[AI Client Stream] [${requestId.slice(0, 8)}] ${method} ${path}`);
+
+  try {
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: body != null ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const errorBody = (await response.json().catch(() => null)) as AIErrorBody | null;
+      const code = errorBody?.error?.code ?? 'UNKNOWN_ERROR';
+      const message = errorBody?.error?.message ?? `AI service returned ${response.status}`;
+      throw new AIServiceError(response.status, code, message, requestId);
+    }
+
+    if (!response.body) {
+      throw new AIServiceError(
+        500,
+        'NO_STREAM_BODY',
+        'No response stream body from AI service',
+        requestId,
+      );
+    }
+
+    clearTimeout(timer);
+    return { stream: response.body, requestId };
+  } catch (err) {
+    clearTimeout(timer);
+    if (err instanceof AIServiceError) {
+      throw err;
+    }
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new AIServiceError(
+        504,
+        'AI_TIMEOUT',
+        `AI service did not respond within ${timeoutMs}ms`,
+        requestId,
+      );
+    }
+    throw new AIServiceError(503, 'AI_UNAVAILABLE', 'AI service is unavailable', requestId);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Private helpers
 // ---------------------------------------------------------------------------

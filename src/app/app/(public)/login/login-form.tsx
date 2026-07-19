@@ -215,6 +215,7 @@ export function LoginForm() {
                   className="w-full bg-white border border-[#ddc0bd] text-[#2b1611] py-3 rounded-none font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold flex items-center justify-center gap-3 hover:bg-[#fff0ed] transition-colors shadow-sm disabled:opacity-50"
                   type="button"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt="Google"
                     className="w-5 h-5"

@@ -6,7 +6,6 @@ import { useCreateResume, useResumes } from '@/app/app/_hooks/use-resumes';
 import { useTemplates } from '@/app/app/_hooks/use-templates';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { cn } from '@/app/app/_util/cn';
-import type { Template } from '@/app/api/client/resume/resume-client';
 
 const MAX_RESUMES = 15;
 
@@ -23,12 +22,12 @@ export default function NewResumeClient() {
   const createMutation = useCreateResume();
 
   const resumesCount = resumesData?.total ?? 0;
-  const allTemplates: Template[] = templatesData?.templates ?? [];
   const categories: string[] = templatesData?.categories ?? ['All'];
 
   // Dynamic search + category filter
   const filtered = useMemo(() => {
-    return allTemplates.filter((t) => {
+    const templates = templatesData?.templates ?? [];
+    return templates.filter((t) => {
       const matchesCategory = activeCategory === 'All' || t.category === activeCategory;
       const matchesSearch =
         !search.trim() ||
@@ -37,7 +36,7 @@ export default function NewResumeClient() {
         t.description.toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [allTemplates, activeCategory, search]);
+  }, [templatesData?.templates, activeCategory, search]);
 
   const canCreate = title.trim().length > 0 && !!selectedTemplate;
 

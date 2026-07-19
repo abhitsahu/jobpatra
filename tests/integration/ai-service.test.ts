@@ -216,8 +216,8 @@ describe('Python AI service — response schema', () => {
     assert.ok(t > 0, `processing_time_ms = ${t}`);
   });
 
-  test('version is "1.0"', () => {
-    assert.equal(body.version, '1.0');
+  test('version is "1.2"', () => {
+    assert.equal(body.version, '1.2');
   });
 });
 

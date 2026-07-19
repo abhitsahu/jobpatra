@@ -24,6 +24,7 @@ export interface ATSAnalyzeRequestBody {
     /** Raw job description text. */
     text: string;
   };
+  stream?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -45,6 +46,30 @@ export interface ExperienceSummary {
 export interface EducationSummary {
   highest_degree: string | null;
   certifications: string[];
+}
+
+export interface SectionExplanation {
+  section: string;
+  score: number;
+  explanation: string;
+}
+
+export interface Recommendation {
+  priority: 'High' | 'Medium' | 'Low';
+  issue: string;
+  why: string;
+  copy_paste_content: string;
+  placement: string;
+  ats_impact: string;
+}
+
+export interface ATSExplanation {
+  strengths: string[];
+  weaknesses: string[];
+  section_explanations: SectionExplanation[];
+  suggestions: string[];
+  summary: string;
+  recommendations?: Recommendation[];
 }
 
 export interface ATSAnalyzeResponse {
@@ -72,4 +97,8 @@ export interface ATSAnalyzeResponse {
   // Meta
   processing_time_ms: number;
   version: string;
+
+  // AI explanation and advisor fields (version 1.2 schemas)
+  ai_status: 'ok' | 'unavailable';
+  ai_explanation: ATSExplanation | null;
 }

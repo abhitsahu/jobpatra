@@ -197,7 +197,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       lastSavedValues.current = initialValues;
       isInitialized.current = resumeId;
     }
-  }, [resume, reset]);
+  }, [resume, reset, resumeId]);
 
   // Manual save logic
   const onSubmit = async (values: UpdateResumeDTO) => {

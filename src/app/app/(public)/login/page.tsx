@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { AuthLayout } from '../../_components/auth/auth-layout';
 import { LoginForm } from './login-form';
 
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthLayout>
-      <LoginForm />
+      <Suspense
+        fallback={<div className="text-center py-8 text-[#564240]">Loading login form...</div>}
+      >
+        <LoginForm />
+      </Suspense>
     </AuthLayout>
   );
 }

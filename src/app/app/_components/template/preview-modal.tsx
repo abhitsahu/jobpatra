@@ -28,6 +28,7 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
 
         {/* Left: Template Preview Image */}
         <div className="flex-1 bg-white border-r border-[#E5D9C8] p-6 flex items-center justify-center overflow-y-auto max-h-[40vh] md:max-h-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={template.previewImage}
             alt={`${template.name} Template Preview`}

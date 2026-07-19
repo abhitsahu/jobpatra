@@ -24,7 +24,9 @@ interface ATSAnalyzeApiResponse {
 }
 
 export interface ATSAnalyzeInput {
-  resumeText: string;
+  resumeText?: string;
+  resumeFileName?: string;
+  resumeFileBytes?: string;
   jobDescriptionText: string;
 }
 
