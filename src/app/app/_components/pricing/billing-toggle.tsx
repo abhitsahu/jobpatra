@@ -30,7 +30,7 @@ export function BillingToggle({ isYearly, onToggle, discountPercentage }: Billin
       <span
         className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${isYearly ? 'text-[#2b1611]' : 'text-[#564240]'}`}
       >
-        Yearly
+        Quarterly
       </span>
       {discountPercentage > 0 && (
         <span className="bg-[#ffc641] text-[#715300] text-[10px] font-bold px-2 py-0.5 rounded-full">

@@ -3,6 +3,7 @@ import { prisma } from '@/app/_lib/prisma';
 import path from 'path';
 import fs from 'fs';
 import type { Prisma } from '@prisma/client';
+import { checkAndIncrementUsage, decrementUsage } from '@/app/service/subscription/usage.service';
 import type {
   CreateResumeDTO,
   UpdateResumeDTO,
@@ -55,20 +56,24 @@ async function verifyOwnership(resumeId: string, userId: string) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function createResume(userId: string, data: CreateResumeDTO) {
-  return prisma.resume.create({
-    data: {
-      userId,
-      title: data.title,
-      templateId: data.templateId ?? 'classic-demo',
-      // Create empty PersonalInfo shell so the editor always has a record to upsert into
-      personalInfo: {
-        create: {
-          fullName: '',
-          email: '',
+  return prisma.$transaction(async (tx) => {
+    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
+
+    return tx.resume.create({
+      data: {
+        userId,
+        title: data.title,
+        templateId: data.templateId ?? 'classic-demo',
+        // Create empty PersonalInfo shell so the editor always has a record to upsert into
+        personalInfo: {
+          create: {
+            fullName: '',
+            email: '',
+          },
         },
       },
-    },
-    include: FULL_RESUME_INCLUDE,
+      include: FULL_RESUME_INCLUDE,
+    });
   });
 }
 
@@ -390,6 +395,8 @@ export async function duplicateResume(resumeId: string, userId: string) {
   const source = await getResume(resumeId, userId);
 
   return prisma.$transaction(async (tx) => {
+    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
+
     const copy = await tx.resume.create({
       data: {
         userId,
@@ -511,9 +518,12 @@ export async function duplicateResume(resumeId: string, userId: string) {
 
 export async function deleteResume(resumeId: string, userId: string) {
   await verifyOwnership(resumeId, userId);
-  await prisma.resume.update({
-    where: { id: resumeId },
-    data: { deletedAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    await tx.resume.update({
+      where: { id: resumeId },
+      data: { deletedAt: new Date() },
+    });
+    await decrementUsage(tx, userId, 'RESUME_CREATE');
   });
 }
 

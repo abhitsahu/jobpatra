@@ -17,7 +17,7 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
     name,
     slug,
     monthlyPrice,
-    yearlyPrice,
+    quarterlyPrice,
     currency,
     description,
     buttonText,
@@ -46,10 +46,10 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
   const displayPrice = isYearly
     ? slug === 'free'
       ? 0
-      : Math.round(yearlyPrice / 12)
+      : Math.round(quarterlyPrice / 4)
     : monthlyPrice;
   const billingIntervalLabel =
-    slug === 'free' ? '/forever' : isYearly ? '/month (billed yearly)' : '/month';
+    slug === 'free' ? '/forever' : isYearly ? '/month (billed quarterly)' : '/month';
 
   return (
     <div

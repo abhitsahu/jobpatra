@@ -9,20 +9,22 @@ datasource db {
 // AUTH MODELS
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  jobTitle      String?
-  industry      String?
-  role          String    @default("USER")
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String    @unique
+  emailVerified      DateTime?
+  password           String?
+  image              String?
+  jobTitle           String?
+  industry           String?
+  role               String    @default("USER")
+  razorpayCustomerId String?   @unique
 
   accounts      Account[]
   resumes       Resume[]
   subscription  Subscription?
   usageTracking UsageTracking[]
+  payments      Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -293,15 +295,17 @@ model AISuggestion {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model Subscription {
-  id                 String    @id @default(cuid())
-  userId             String    @unique
-  plan               String    @default("FREE")    // Plan enum in TypeScript
-  status             String    @default("ACTIVE")  // SubStatus enum in TypeScript
-  paymentProvider    String?                        // "razorpay" | "stripe"
-  paymentId          String?                        // External subscription ID
-  currentPeriodStart DateTime  @default(now())
-  currentPeriodEnd   DateTime?
-  cancelAtPeriodEnd  Boolean   @default(false)
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  plan                   String    @default("FREE")    // Plan enum in TypeScript
+  status                 String    @default("ACTIVE")  // SubStatus enum in TypeScript
+  paymentProvider        String?                        // "razorpay" | "stripe"
+  paymentId              String?                        // External subscription ID
+  razorpaySubscriptionId String?   @unique
+  razorpayStatus         String?
+  currentPeriodStart     DateTime  @default(now())
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean   @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -312,16 +316,17 @@ model Subscription {
 }
 
 model UsageTracking {
-  id          String   @id @default(cuid())
-  userId      String
-  action      String   // UsageAction enum in TypeScript
-  periodStart DateTime
-  periodEnd   DateTime
-  count       Int      @default(0)
+  userId        String
+  feature       String    // e.g., "RESUME_CREATE", "ATS_ANALYSIS", "AI_SUGGESTION", "DOWNLOAD_PDF"
+  used          Int       @default(0)
+  lastResetDate DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, action, periodStart])
+  @@id([userId, feature])
   @@map("usage_tracking")
 }
 
@@ -330,21 +335,28 @@ model UsageTracking {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model PricingPlan {
-  id             String   @id @default(cuid())
-  name           String
-  slug           String   @unique
-  monthlyPrice   Float
-  yearlyPrice    Float
-  yearlyDiscount Int      @default(0)   // percentage e.g. 20
-  currency       String   @default("USD")
-  description    String
-  badge          String?                // "Most Popular" | "Recommended" | null
-  badgeColor     String?                // "primary" | "secondary" | null
-  buttonText     String
-  buttonVariant  String   @default("outline") // "solid" | "outline"
-  isPopular      Boolean  @default(false)
-  displayOrder   Int      @default(0)
-  isActive       Boolean  @default(true)
+  id                      String   @id @default(cuid())
+  name                    String
+  slug                    String   @unique
+  monthlyPrice            Float
+  quarterlyPrice          Float
+  quarterlyDiscount       Int      @default(0)   // percentage e.g. 20
+  currency                String   @default("USD")
+  description             String
+  badge                   String?                // "Most Popular" | "Recommended" | null
+  badgeColor              String?                // "primary" | "secondary" | null
+  buttonText              String
+  buttonVariant           String   @default("outline") // "solid" | "outline"
+  isPopular               Boolean  @default(false)
+  displayOrder            Int      @default(0)
+  isActive                Boolean  @default(true)
+  razorpayPlanIdMonthly   String?
+  razorpayPlanIdQuarterly String?
+
+  limitResumeCreate       Int      @default(3)
+  limitAtsAnalysis        Int      @default(1)
+  limitAiSuggestion       Int      @default(1)
+  limitDownloadPdf        Int      @default(3)
 
   features PlanFeature[]
 
@@ -391,4 +403,20 @@ model Testimonial {
   createdAt DateTime @default(now())
 
   @@map("testimonials")
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  userId            String
+  razorpayOrderId   String   @unique
+  razorpayPaymentId String?  @unique
+  amount            Float
+  currency          String
+  status            String   @default("PENDING") // PENDING, COMPLETED, FAILED
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
 }

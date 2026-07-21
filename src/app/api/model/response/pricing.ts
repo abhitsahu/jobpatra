@@ -16,8 +16,8 @@ export interface PricingPlanResponse {
   name: string;
   slug: string;
   monthlyPrice: number;
-  yearlyPrice: number;
-  yearlyDiscount: number;
+  quarterlyPrice: number;
+  quarterlyDiscount: number;
   currency: string;
   description: string;
   badge: string | null;
@@ -60,6 +60,6 @@ export interface PricingPageResponse {
   plans: PricingPlanResponse[];
   comparison: ComparisonFeatureResponse[];
   testimonials: TestimonialResponse[];
-  /** Max yearlyDiscount across active plans — used in the billing toggle badge */
+  /** Max quarterlyDiscount across active plans — used in the billing toggle badge */
   globalDiscount: number;
 }

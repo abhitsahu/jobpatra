@@ -7,14 +7,126 @@ import { BillingToggle } from '../../_components/pricing/billing-toggle';
 import { PricingGrid } from '../../_components/pricing/pricing-grid';
 import { ComparisonTable } from '../../_components/pricing/comparison-table';
 import { TestimonialSection } from '../../_components/pricing/testimonial-section';
+import { BillingPeriod } from '@/app/api/model/enums/subscription';
+import { createOrderClient, verifyPaymentClient } from '@/app/api/client/payments/payments-client';
+import { getSessionClient } from '@/app/api/client/auth/auth-client';
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export function PricingClient() {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const { data, isLoading, isError } = usePricing();
 
-  const handleSelectPlan = (slug: string) => {
-    router.push(`/app/signup?plan=${slug}&interval=${isYearly ? 'yearly' : 'monthly'}`);
+  const handleSelectPlan = async (slug: string) => {
+    try {
+      setLoadingPlan(slug);
+      const session = await getSessionClient();
+
+      if (!session) {
+        // Redirect guest user to login page
+        router.push(`/app/login?redirect=/app/subscription&plan=${slug}&interval=${isYearly ? 'quarterly' : 'monthly'}`);
+        return;
+      }
+
+      // Determine active currency
+      const activeCurrency = data?.plans?.find((p) => p.slug === slug)?.currency || 'INR';
+
+      // 1. Create order on the server
+      const orderRes = await createOrderClient({
+        planSlug: slug,
+        billingPeriod: isYearly ? BillingPeriod.QUARTERLY : BillingPeriod.MONTHLY,
+        currency: activeCurrency as 'INR' | 'USD',
+      });
+
+      if (!orderRes.success) {
+        alert(orderRes.message || 'Failed to initiate payment.');
+        setLoadingPlan(null);
+        return;
+      }
+
+      // 2. Handle immediate activation for free plan
+      if (orderRes.isFree) {
+        alert('Free plan activated successfully!');
+        router.push('/app/settings#subscription');
+        router.refresh();
+        setLoadingPlan(null);
+        return;
+      }
+
+      // 3. Dynamically load Razorpay Checkout script if not loaded
+      if (!(window as any).Razorpay) {
+        const loaded = await loadRazorpayScript();
+        if (!loaded) {
+          alert('Failed to load payment gateway script. Please check your internet connection.');
+          setLoadingPlan(null);
+          return;
+        }
+      }
+
+      // 4. Open Razorpay Checkout modal
+      const options = {
+        key: orderRes.keyId,
+        amount: orderRes.amount,
+        currency: orderRes.currency,
+        name: 'JobPatra',
+        description: `Upgrade to ${slug.toUpperCase()} Plan`,
+        order_id: orderRes.orderId,
+        handler: async function (response: any) {
+          try {
+            setLoadingPlan(slug);
+            const verifyRes = await verifyPaymentClient({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planSlug: slug,
+              billingPeriod: isYearly ? BillingPeriod.QUARTERLY : BillingPeriod.MONTHLY,
+            });
+
+            if (verifyRes.success) {
+              alert('Payment verified and subscription activated successfully!');
+              router.push('/app/settings#subscription');
+              router.refresh();
+            } else {
+              alert(verifyRes.message || 'Signature verification failed.');
+            }
+          } catch (err: any) {
+            console.error('Payment verification failed:', err);
+            alert(err.message || 'An error occurred during payment verification.');
+          } finally {
+            setLoadingPlan(null);
+          }
+        },
+        prefill: {
+          name: orderRes.customer?.name || '',
+          email: orderRes.customer?.email || '',
+        },
+        theme: {
+          color: '#5b060c',
+        },
+        modal: {
+          ondismiss: function () {
+            setLoadingPlan(null);
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      console.error('Checkout failed:', err);
+      alert(err.message || 'An error occurred during checkout initialization.');
+      setLoadingPlan(null);
+    }
   };
 
   if (isLoading) {

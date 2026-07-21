@@ -1,8 +1,8 @@
-'use client';
-
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/app/app/_util/cn';
+import { getSubscriptionStatusClient } from '@/app/api/client/payments/payments-client';
 
 interface NavItem {
   label: string;
@@ -19,6 +19,28 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [plan, setPlan] = useState<string>('FREE');
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    let active = true;
+    async function fetchPlan() {
+      try {
+        const res = await getSubscriptionStatusClient();
+        if (res.success && active) {
+          setPlan(res.subscription?.plan || 'FREE');
+        }
+      } catch (err) {
+        console.error('Sidebar: failed to fetch plan status:', err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    fetchPlan();
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
 
   return (
     <aside className="flex flex-col h-screen fixed left-0 top-0 py-8 w-56 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 hidden md:flex">
@@ -65,14 +87,33 @@ export function Sidebar() {
 
       {/* Signature Edition Info */}
       <div className="px-3 mt-auto">
-        <div className="p-3 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group">
-          <span className="material-symbols-outlined text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform">
-            workspace_premium
-          </span>
-          <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
-            Pro Plan Active
-          </p>
-        </div>
+        {loading ? (
+          <div className="p-3 bg-[#fff0ed] animate-pulse rounded-xl h-14 border border-[#ddc0bd]/40" />
+        ) : plan === 'FREE' ? (
+          <Link
+            href="/app/subscription"
+            className="block p-3 bg-[#f6be39] hover:bg-[#e0ab2b] border border-[#ddc0bd]/40 rounded-xl text-center transition-all group shadow-sm cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[#261a00] mb-1 text-xl group-hover:scale-110 transition-transform">
+              workspace_premium
+            </span>
+            <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#261a00] uppercase tracking-widest">
+              Upgrade to Pro
+            </p>
+          </Link>
+        ) : (
+          <Link
+            href="/app/settings#subscription"
+            className="block p-3 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform">
+              verified
+            </span>
+            <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
+              Pro Active
+            </p>
+          </Link>
+        )}
       </div>
     </aside>
   );

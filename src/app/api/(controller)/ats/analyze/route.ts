@@ -36,17 +36,30 @@ const atsAnalyzeSchema = z.object({
 // Route handler
 // ---------------------------------------------------------------------------
 
+import { prisma } from '@/app/_lib/prisma';
+import { checkAndIncrementUsage, decrementUsage } from '@/app/service/subscription/usage.service';
+
 export async function POST(req: Request) {
+  let userId = '';
+  let incremented = false;
+
   try {
     // 1. Auth
-    const { error } = await requireAuth();
-    if (error) return error;
+    const authResult = await requireAuth();
+    if (authResult.error) return authResult.error;
+    userId = authResult.session!.user.id;
 
     // 2. Validate
     const result = await validateRequest(req, atsAnalyzeSchema);
     if (result.error) return result.error;
 
-    // 3. Delegate to ATS service
+    // 3. Check and increment ATS usage limit inside an explicit transaction
+    await prisma.$transaction(async (tx) => {
+      await checkAndIncrementUsage(tx, userId, 'ATS_ANALYSIS');
+    });
+    incremented = true;
+
+    // 4. Delegate to ATS service
     if (result.data.stream) {
       const { stream, requestId } = await analyzeATSStream({
         resumeText: result.data.resumeText,
@@ -73,7 +86,7 @@ export async function POST(req: Request) {
       jobDescriptionText: result.data.jobDescriptionText,
     });
 
-    // 4. Return success
+    // 5. Return success
     return NextResponse.json(
       {
         success: true,
@@ -86,6 +99,25 @@ export async function POST(req: Request) {
       },
     );
   } catch (err) {
+    // Refund the usage counter inside an explicit transaction if the external AI service failed
+    if (incremented && userId) {
+      try {
+        await prisma.$transaction(async (tx) => {
+          await decrementUsage(tx, userId, 'ATS_ANALYSIS');
+        });
+      } catch (refundErr) {
+        console.error('Failed to refund ATS usage:', refundErr);
+      }
+    }
+
+    // Map limits exceeded error specifically
+    if (err instanceof Error && (err as any).code === 'LIMIT_EXCEEDED') {
+      return NextResponse.json(
+        { success: false, message: err.message },
+        { status: 403 }
+      );
+    }
+
     return _handleError(err);
   }
 }
