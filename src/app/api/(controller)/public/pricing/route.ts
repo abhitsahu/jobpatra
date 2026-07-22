@@ -1,16 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPricingPage } from '@/app/service/pricing/pricing.service';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/public/pricing
-//
-// Public endpoint — no authentication required.
-// Returns everything needed for the pricing page in a single round-trip:
-//   - Active pricing plans (with features)
-//   - Feature comparison table rows
-//   - Testimonials
-//   - Global yearly discount percentage for the toggle badge
-// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/public/pricing──
 
 export async function GET(request: Request) {
   try {

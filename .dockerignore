@@ -1,0 +1,35 @@
+# Dependencies and generated build output
+node_modules
+.next
+out
+coverage
+
+# Environment files and secrets — pass these at runtime instead
+.env
+.env.*
+!.env.example
+
+# Version-control and editor files
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs and local operating-system files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+
+# Docker-related local files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Tests and documentation are not needed in the production image
+tests
+README.md
