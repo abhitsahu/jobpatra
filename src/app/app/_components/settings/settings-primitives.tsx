@@ -157,7 +157,7 @@ export function PrimaryBtn({
       type={type}
       onClick={onClick}
       className={cn(
-        'bg-[#5b060c] text-white px-8 py-3 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity',
+        'bg-[#5b060c] text-white px-8 py-3 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity cursor-pointer',
         className,
       )}
       style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}

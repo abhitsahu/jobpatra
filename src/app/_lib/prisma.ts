@@ -50,6 +50,13 @@ async function createPrismaClient() {
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // The default 2-second wait is too short for a hosted, shared Postgres
+    // pool when several page queries arrive together. Transactions themselves
+    // remain short; this only gives the pool time to hand one out.
+    transactionOptions: {
+      maxWait: 10_000,
+      timeout: 10_000,
+    },
   });
 }
 

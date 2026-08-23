@@ -17,7 +17,7 @@ export function AccountSection() {
             Update Password
           </button>
         </SettingsRow>
-
+{/* 
         <SettingsRow
           label="Two-Factor Authentication"
           description="Secure your account with SMS or Authenticator App"
@@ -35,7 +35,7 @@ export function AccountSection() {
             </span>
             <Toggle on={true} />
           </div>
-        </SettingsRow>
+        </SettingsRow> */}
 
         <SettingsRow
           label="Verified Email Identity"

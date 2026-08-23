@@ -2,6 +2,7 @@
 
 import { UseFormReturn } from 'react-hook-form';
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
+import { FormTextarea } from './form-field';
 
 interface SummaryFormProps {
   form: UseFormReturn<UpdateResumeDTO>;
@@ -25,14 +26,12 @@ export function SummaryForm({ form }: SummaryFormProps) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-[11px] font-bold text-[#564240] uppercase tracking-wider">
-          Summary
-        </label>
-        <textarea
+        <FormTextarea
           id="personalInfo-summary-standalone"
+          label="Summary"
           rows={8}
-          {...register('personalInfo.summary')}
-          className="w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-3 text-[#2b1611] text-[14px] leading-relaxed focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all resize-none font-['Hanken_Grotesk']"
+          registration={register('personalInfo.summary')}
+          error={errors.personalInfo?.summary}
           placeholder="e.g. Forward-thinking Senior Product Designer with 6+ years of experience..."
         />
         <div className="flex justify-end mt-2">
@@ -46,9 +45,6 @@ export function SummaryForm({ form }: SummaryFormProps) {
             <span>AI Improve</span>
           </button>
         </div>
-        {errors.personalInfo?.summary && (
-          <span className="text-xs text-[#7a1f1f] mt-1">{errors.personalInfo.summary.message}</span>
-        )}
       </div>
     </div>
   );

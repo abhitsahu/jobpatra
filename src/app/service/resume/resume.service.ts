@@ -269,7 +269,10 @@ export async function getResume(resumeId: string, userId: string): Promise<Resum
     throw new Error('Resume not found');
   }
 
-  if (isResumeEmpty(resume)) {
+  // The career profile must stay genuinely empty until the user enters data.
+  // Demo data is useful for a new resume editor, but showing it in the profile
+  // would let a later save accidentally persist the demo as profile data.
+  if (resume.status !== 'PROFILE' && isResumeEmpty(resume)) {
     const populated = populateWithSampleData(resume);
     return {
       ...populated,
@@ -291,7 +294,8 @@ export async function listResumes(userId: string, query: ListResumesQueryDTO) {
   const where: Prisma.ResumeWhereInput = {
     userId,
     deletedAt: null,
-    ...(status ? { status } : {}),
+    // Always exclude the reserved profile resume from dashboard listings
+    status: { not: 'PROFILE', ...(status ? { equals: status } : {}) },
   };
 
   const [resumes, total] = await Promise.all([

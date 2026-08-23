@@ -7,6 +7,11 @@ import { toResumeDetail } from '@/app/api/model/response/resume';
 
 type Params = { params: Promise<{ id: string }> };
 
+// Resume content changes frequently in the editor and profile settings. Route
+// responses must always come from Postgres, never a Next.js or browser cache.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET /api/resume/:id — get full resume with all sections
 export async function GET(_req: Request, { params }: Params) {
   try {
@@ -15,7 +20,10 @@ export async function GET(_req: Request, { params }: Params) {
 
     const { id } = await params;
     const resume = await getResume(id, session!.user.id);
-    return NextResponse.json({ success: true, data: toResumeDetail(resume) });
+    return NextResponse.json(
+      { success: true, data: toResumeDetail(resume) },
+      { headers: { 'Cache-Control': 'private, no-store, max-age=0' } },
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to get resume';
     if (message === 'Resume not found') {

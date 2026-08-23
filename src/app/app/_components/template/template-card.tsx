@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 export interface TemplateData {
@@ -26,69 +28,81 @@ export function TemplateCard({ template, onUseTemplate, onPreview }: TemplateCar
     name,
     description,
     previewImage,
-    tag = template.atsFriendly ? 'ATS OK' : 'DESIGN',
-    rotateClass = 'group-hover:rotate-1',
+    atsFriendly,
+    isPremium,
   } = template;
 
   return (
-    <div className="group relative flex flex-col">
-      {/* Paper Sheet Wrapper */}
-      <div
-        className={`sheet paper-texture p-4 aspect-[3/4] flex flex-col transition-all duration-300 group-hover:-translate-y-4 ${rotateClass} group-hover:shadow-2xl overflow-hidden rounded-lg`}
-      >
-        {/* Inner Preview / Placeholder */}
-        <div
-          className="w-full h-full bg-cover bg-center bg-white border border-[#ddc0bd]/30 flex flex-col p-6 overflow-hidden relative"
-          style={{ backgroundImage: `url('${previewImage}')` }}
-        >
-          {/* Simulated document decorations if image doesn't load */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/20 pointer-events-none" />
-          <div className="h-8 w-1/3 bg-[#5b060c]/5 mb-6 relative z-10"></div>
-          <div className="space-y-4 relative z-10">
-            <div className="h-2 w-full bg-[#564240]/10"></div>
-            <div className="h-2 w-full bg-[#564240]/10"></div>
-            <div className="h-2 w-3/4 bg-[#564240]/10"></div>
-          </div>
-        </div>
+    <div className="group relative flex flex-col gap-5 cursor-pointer">
+      {/* Frame Container */}
+      <div className="relative w-full aspect-[3/4] bg-white p-2 shadow-sm transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:shadow-[#5b060c]/10 rounded-sm border border-[#E5D9C8] overflow-hidden">
+        <div className="absolute inset-0 border border-[#E5D9C8]/60 m-2 pointer-events-none z-10"></div>
+        
+        {/* Preview Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={previewImage}
+          alt={name}
+          className="w-full h-full object-cover rounded-sm transition-transform duration-700 group-hover:scale-[1.02]"
+        />
 
         {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-[#5b060c]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-4 p-8 text-center z-20">
-          <h4 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-white">
-            {name}
-          </h4>
-          <p className="text-white/80 font-['Hanken_Grotesk'] text-[15px] leading-[22px] mb-4">
-            {description}
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => onUseTemplate(id)}
-              className="seal-button px-5 py-2 rounded font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-white cursor-pointer active:scale-95 transition-transform"
-            >
-              Use Template
-            </button>
-            <button
-              onClick={() => onPreview(id)}
-              className="px-5 py-2 border border-white text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold hover:bg-white/10 cursor-pointer transition-colors"
-            >
-              Preview
-            </button>
-          </div>
+        <div className="absolute inset-0 bg-[#FFF8EE]/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-4 m-2 z-20">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onUseTemplate(id);
+            }}
+            className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-75 shadow-lg hover:bg-[#7a1f1f] cursor-pointer active:scale-95"
+          >
+            Use Design
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPreview(id);
+            }}
+            className="text-[#5b060c] font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] border border-[#5b060c]/30 bg-white px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-150 hover:bg-[#fff0ed] cursor-pointer active:scale-95"
+          >
+            Preview
+          </button>
         </div>
+
+        {/* Badge Seal */}
+        {isPremium ? (
+          <div className="absolute -right-3 -top-3 w-12 h-12 bg-[#f6be39] rounded-full flex items-center justify-center shadow-md rotate-12 group-hover:rotate-0 transition-transform duration-500 z-30">
+            <span
+              className="material-symbols-outlined text-[#2b1611] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              workspace_premium
+            </span>
+          </div>
+        ) : atsFriendly ? (
+          <div className="absolute -right-3 -top-3 w-12 h-12 bg-[#2a7040] text-white rounded-full flex items-center justify-center shadow-md -rotate-6 group-hover:rotate-0 transition-transform duration-500 z-30">
+            <span
+              className="material-symbols-outlined text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              verified
+            </span>
+          </div>
+        ) : null}
       </div>
 
-      {/* Card Info Footer */}
-      <div className="mt-4 flex justify-between items-start">
-        <div>
-          <h3 className="font-['Playfair_Display'] text-[20px] leading-[28px] font-semibold text-[#2b1611]">
+      {/* Info Header */}
+      <div className="flex flex-col gap-1.5 px-1">
+        <div className="flex justify-between items-start gap-2">
+          <h3 className="font-['Playfair_Display'] text-[20px] font-semibold text-[#2b1611] group-hover:text-[#5b060c] transition-colors leading-snug">
             {name}
           </h3>
-          <p className="font-['Hanken_Grotesk'] text-[14px] text-[#564240] mt-0.5">
-            {template.category} Template
-          </p>
+          <span className="font-['Hanken_Grotesk'] text-[11px] font-semibold uppercase tracking-widest bg-[#ffe9e5] text-[#5b060c] px-2.5 py-1 rounded-sm shrink-0">
+            {isPremium ? 'Premium' : 'Free'}
+          </span>
         </div>
-        <span className="postal-chip font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold uppercase">
-          {tag}
-        </span>
+        <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#564240] line-clamp-2">
+          {description}
+        </p>
       </div>
     </div>
   );

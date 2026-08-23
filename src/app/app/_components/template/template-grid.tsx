@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { TemplateCard } from './template-card';
 import type { TemplateData } from './template-card';
@@ -12,7 +14,7 @@ export function TemplateGrid({ templates, onUseTemplate, onPreview }: TemplateGr
   if (templates.length === 0) {
     return (
       <section className="max-w-7xl mx-auto px-4 md:px-16 py-16 text-center">
-        <div className="sheet paper-texture p-12 max-w-xl mx-auto rounded-xl border border-[#ddc0bd] shadow-sm">
+        <div className="bg-white p-12 max-w-xl mx-auto rounded-xl border border-[#E5D9C8] shadow-sm">
           <span className="material-symbols-outlined text-[64px] text-[#5b060c] opacity-40 mb-4">
             find_in_page
           </span>
@@ -28,15 +30,17 @@ export function TemplateGrid({ templates, onUseTemplate, onPreview }: TemplateGr
   }
 
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 py-8">
-      {templates.map((tpl) => (
-        <TemplateCard
-          key={tpl.id}
-          template={tpl}
-          onUseTemplate={onUseTemplate}
-          onPreview={onPreview}
-        />
-      ))}
+    <section className="max-w-7xl mx-auto px-4 md:px-16 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
+        {templates.map((tpl) => (
+          <TemplateCard
+            key={tpl.id}
+            template={tpl}
+            onUseTemplate={onUseTemplate}
+            onPreview={onPreview}
+          />
+        ))}
+      </div>
     </section>
   );
 }

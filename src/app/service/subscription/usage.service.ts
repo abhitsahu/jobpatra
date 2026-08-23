@@ -1,20 +1,24 @@
-import { prisma } from '@/app/_lib/prisma';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { getPlanLimits } from './plan-limit.service';
 
 const RESETTABLE_FEATURES = ['ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
+type UsageClient = Prisma.TransactionClient | PrismaClient;
+type UsageTrackingRow = { used: number; lastResetDate: Date | null };
 
 export async function checkAndIncrementUsage(
-  tx: any,
+  tx: UsageClient,
   userId: string,
   feature: string,
-  incrementBy = 1
+  incrementBy = 1,
 ) {
   // 1. Fetch user subscription to resolve plan
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
   const planSlug = subscription?.plan?.toUpperCase() || 'FREE';
-  const limits = await getPlanLimits(planSlug);
+  // Use the supplied transaction client. Using the global Prisma client here
+  // would require a second connection while this transaction holds the first.
+  const limits = await getPlanLimits(planSlug, tx);
 
   const featureLimitMap: Record<string, keyof typeof limits> = {
     RESUME_CREATE: 'limitResumeCreate',
@@ -35,7 +39,7 @@ export async function checkAndIncrementUsage(
   `;
 
   // 3. Acquire pessimistic write lock (FOR UPDATE)
-  const lockedRecords = await tx.$queryRaw<any[]>`
+  const lockedRecords = await tx.$queryRaw<UsageTrackingRow[]>`
     SELECT * FROM "usage_tracking"
     WHERE "userId" = ${userId} AND "feature" = ${feature}
     FOR UPDATE
@@ -51,7 +55,7 @@ export async function checkAndIncrementUsage(
   // 4. Handle anniversary monthly resets for metered features
   if (RESETTABLE_FEATURES.includes(feature)) {
     const cycleStart = new Date(subscription?.currentPeriodStart || now);
-    let anniversaryDate = new Date(cycleStart);
+    const anniversaryDate = new Date(cycleStart);
     while (anniversaryDate <= now) {
       anniversaryDate.setMonth(anniversaryDate.getMonth() + 1);
     }
@@ -67,7 +71,7 @@ export async function checkAndIncrementUsage(
   // 5. Assert limits check
   if (limit !== -1 && currentUsed + incrementBy > limit) {
     const err = new Error(`Usage limit exceeded for feature: ${feature}`);
-    (err as any).code = 'LIMIT_EXCEEDED';
+    (err as Error & { code?: string }).code = 'LIMIT_EXCEEDED';
     throw err;
   }
 
@@ -81,7 +85,12 @@ export async function checkAndIncrementUsage(
   });
 }
 
-export async function decrementUsage(tx: any, userId: string, feature: string, decrementBy = 1) {
+export async function decrementUsage(
+  tx: UsageClient,
+  userId: string,
+  feature: string,
+  decrementBy = 1,
+) {
   const now = new Date();
 
   // Ensure row exists
@@ -91,7 +100,7 @@ export async function decrementUsage(tx: any, userId: string, feature: string, d
     ON CONFLICT ("userId", "feature") DO NOTHING
   `;
 
-  const lockedRecords = await tx.$queryRaw<any[]>`
+  const lockedRecords = await tx.$queryRaw<UsageTrackingRow[]>`
     SELECT * FROM "usage_tracking"
     WHERE "userId" = ${userId} AND "feature" = ${feature}
     FOR UPDATE
@@ -109,13 +118,13 @@ export async function decrementUsage(tx: any, userId: string, feature: string, d
   });
 }
 
-export async function getOrSeedUsage(tx: any, userId: string, feature: string) {
+export async function getOrSeedUsage(tx: UsageClient, userId: string, feature: string) {
   // 1. Fetch user plan limits
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
   const planSlug = subscription?.plan?.toUpperCase() || 'FREE';
-  const limits = await getPlanLimits(planSlug);
+  const limits = await getPlanLimits(planSlug, tx);
 
   const featureLimitMap: Record<string, keyof typeof limits> = {
     RESUME_CREATE: 'limitResumeCreate',
@@ -142,7 +151,7 @@ export async function getOrSeedUsage(tx: any, userId: string, feature: string) {
   // 3. Resettable check
   if (RESETTABLE_FEATURES.includes(feature)) {
     const cycleStart = new Date(subscription?.currentPeriodStart || now);
-    let anniversaryDate = new Date(cycleStart);
+    const anniversaryDate = new Date(cycleStart);
     while (anniversaryDate <= now) {
       anniversaryDate.setMonth(anniversaryDate.getMonth() + 1);
     }

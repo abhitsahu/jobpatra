@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import type { TemplateData } from './template-card';
 
@@ -12,32 +14,35 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
   if (!isOpen || !template) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
       {/* Modal Container */}
       <div
-        className="relative w-full max-w-4xl bg-[#FFF8EE] border border-[#E5D9C8] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] paper-texture animate-scale-up"
+        className="relative w-full max-w-4xl bg-[#FFF8EE] border border-[#E5D9C8] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 p-2 rounded-full bg-white/80 hover:bg-[#5b060c] hover:text-white border border-[#E5D9C8] text-[#564240] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-30 p-2 rounded-full bg-white/90 hover:bg-[#5b060c] hover:text-white border border-[#E5D9C8] text-[#564240] transition-colors cursor-pointer"
         >
           <span className="material-symbols-outlined text-[20px]">close</span>
         </button>
 
         {/* Left: Template Preview Image */}
-        <div className="flex-1 bg-white border-r border-[#E5D9C8] p-6 flex items-center justify-center overflow-y-auto max-h-[40vh] md:max-h-full">
+        <div className="flex-1 bg-white border-r border-[#E5D9C8] p-6 flex items-center justify-center overflow-y-auto max-h-[45vh] md:max-h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={template.previewImage}
             alt={`${template.name} Template Preview`}
-            className="max-w-full max-h-[60vh] object-contain shadow-md border border-[#ddc0bd]/40"
+            className="max-w-full max-h-[65vh] object-contain shadow-md border border-[#E5D9C8]/60 rounded-sm"
           />
         </div>
 
         {/* Right: Template Details */}
-        <div className="w-full md:w-80 p-8 flex flex-col justify-between bg-[#fff8f6] relative">
+        <div className="w-full md:w-80 p-8 flex flex-col justify-between bg-[#FFF8EE] relative">
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-[#795900] font-['Hanken_Grotesk'] text-[12px] uppercase tracking-wider font-semibold">
               <span className="material-symbols-outlined text-[16px]">bookmark</span>
@@ -52,19 +57,19 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
               {template.description}
             </p>
 
-            <div className="space-y-3 pt-4 border-t border-[#ddc0bd]">
+            <div className="space-y-3 pt-4 border-t border-[#E5D9C8]">
               <div className="flex justify-between text-[14px]">
-                <span className="text-[#564240] font-medium">ATS Score Compatibility</span>
+                <span className="text-[#564240] font-medium">ATS Compatibility</span>
                 <span className="font-semibold text-[#5b060c]">
-                  {template.atsFriendly ? 'High (ATS Friendly)' : 'Medium'}
+                  {template.atsFriendly ? 'High (ATS Ready)' : 'Standard'}
                 </span>
               </div>
               <div className="flex justify-between text-[14px]">
                 <span className="text-[#564240] font-medium">Layout Style</span>
-                <span className="font-semibold text-[#2b1611]">Professional Artifact</span>
+                <span className="font-semibold text-[#2b1611]">Bespoke Letterpress</span>
               </div>
               <div className="flex justify-between text-[14px]">
-                <span className="text-[#564240] font-medium">Pricing tier</span>
+                <span className="text-[#564240] font-medium">Pricing Tier</span>
                 <span className="font-semibold text-[#795900]">
                   {template.isPremium ? 'Premium Plan' : 'Free Plan'}
                 </span>
@@ -74,14 +79,17 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
 
           <div className="pt-8 space-y-3">
             <button
-              onClick={() => onUseTemplate(template.id)}
-              className="seal-button w-full py-3 rounded-lg font-['Playfair_Display'] text-[18px] font-semibold text-white cursor-pointer active:scale-95 transition-transform text-center"
+              onClick={() => {
+                onUseTemplate(template.id);
+                onClose();
+              }}
+              className="w-full py-3.5 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-[0.15em] rounded-full shadow-md hover:bg-[#7a1f1f] cursor-pointer active:scale-95 transition-all text-center"
             >
               Use This Template
             </button>
             <button
               onClick={onClose}
-              className="w-full py-3 border border-[#ddc0bd] hover:bg-[#ffe2db] text-[#564240] font-['Hanken_Grotesk'] text-[14px] font-semibold rounded-lg transition-colors cursor-pointer"
+              className="w-full py-3 border border-[#E5D9C8] hover:bg-[#ffe2db] text-[#564240] font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-wider rounded-full transition-colors cursor-pointer"
             >
               Back to Gallery
             </button>

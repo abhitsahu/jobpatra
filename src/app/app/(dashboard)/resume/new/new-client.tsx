@@ -4,8 +4,11 @@ import { useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateResume, useResumes } from '@/app/app/_hooks/use-resumes';
 import { useTemplates } from '@/app/app/_hooks/use-templates';
+import { useUserProfile } from '@/app/app/_hooks/use-user-profile';
+import { getResumeClient } from '@/app/api/client/resume/resume-client';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { cn } from '@/app/app/_util/cn';
+import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume';
 
 const MAX_RESUMES = 15;
 
@@ -15,14 +18,19 @@ export default function NewResumeClient() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [showImportPrompt, setShowImportPrompt] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const nibRef = useRef<HTMLSpanElement>(null);
 
   const { data: templatesData, isLoading } = useTemplates();
   const { data: resumesData } = useResumes();
+  const { data: userProfile } = useUserProfile();
   const createMutation = useCreateResume();
 
+  // We need the update mutation lazily — we'll call the client directly after creation
   const resumesCount = resumesData?.total ?? 0;
   const categories: string[] = templatesData?.categories ?? ['All'];
+  const hasProfile = !!userProfile?.profileResumeId;
 
   // Dynamic search + category filter
   const filtered = useMemo(() => {
@@ -40,8 +48,20 @@ export default function NewResumeClient() {
 
   const canCreate = title.trim().length > 0 && !!selectedTemplate;
 
-  const handleCreate = async () => {
+  /** Called when user clicks "Create Resume" in the sticky footer */
+  const handleCreate = () => {
     if (!canCreate) return;
+    // If the user has a saved profile, show the import prompt
+    if (hasProfile) {
+      setShowImportPrompt(true);
+    } else {
+      createBlank();
+    }
+  };
+
+  /** Create resume without importing any profile data */
+  const createBlank = async () => {
+    setIsCreating(true);
     try {
       const resume = await createMutation.mutateAsync({
         title: title.trim(),
@@ -50,8 +70,117 @@ export default function NewResumeClient() {
       router.push(`/app/resume/${resume.id}`);
     } catch (err) {
       console.error('Failed to create resume:', err);
+      setIsCreating(false);
     }
   };
+
+  /**
+   * Create resume then SNAPSHOT-COPY all sections from the profile resume.
+   * The two resumes are fully independent after this — editing one never
+   * touches the other (each section row belongs to its own resumeId).
+   */
+  const createWithProfileImport = async () => {
+    if (!userProfile?.profileResumeId) return createBlank();
+    setIsCreating(true);
+    try {
+      // 1. Create blank resume
+      const resume = await createMutation.mutateAsync({
+        title: title.trim(),
+        templateId: selectedTemplate!,
+      });
+
+      // 2. Fetch full profile resume (all sections)
+      const profileData = await getResumeClient(userProfile.profileResumeId);
+
+      // 3. Build a clean payload — strip DB fields, keep only DTO-compatible fields
+      const importPayload = {
+        personalInfo: profileData.personalInfo
+          ? {
+              fullName: profileData.personalInfo.fullName ?? '',
+              jobTitle: profileData.personalInfo.jobTitle ?? '',
+              email: profileData.personalInfo.email ?? '',
+              phone: profileData.personalInfo.phone ?? '',
+              location: profileData.personalInfo.location ?? '',
+              website: profileData.personalInfo.website ?? '',
+              linkedin: profileData.personalInfo.linkedin ?? '',
+              github: profileData.personalInfo.github ?? '',
+              summary: profileData.personalInfo.summary ?? '',
+            }
+          : undefined,
+        experiences: profileData.experiences?.map((e, i) => ({
+          company: e.company,
+          position: e.position,
+          location: e.location ?? '',
+          startDate: e.startDate,
+          endDate: e.endDate ?? '',
+          currentlyWorking: e.currentlyWorking ?? false,
+          description: e.description ?? '',
+          highlights: e.highlights ?? [],
+          order: i,
+        })) ?? [],
+        education: profileData.education?.map((e, i) => ({
+          institution: e.institution,
+          degree: e.degree,
+          fieldOfStudy: e.fieldOfStudy ?? '',
+          startDate: e.startDate,
+          endDate: e.endDate ?? '',
+          result: e.result ?? '',
+          order: i,
+        })) ?? [],
+        projects: profileData.projects?.map((p, i) => ({
+          title: p.title,
+          field: p.field ?? '',
+          startDate: p.startDate ?? '',
+          endDate: p.endDate ?? '',
+          description: p.description ?? '',
+          technologies: p.technologies ?? [],
+          link: p.link ?? '',
+          order: i,
+        })) ?? [],
+        skills: profileData.skills?.map((s, i) => ({
+          name: s.name,
+          category: s.category as SkillCategory,
+          order: i,
+        })) ?? [],
+        certifications: profileData.certifications?.map((c, i) => ({
+          name: c.name,
+          issuer: c.issuer ?? '',
+          date: c.date ?? '',
+          url: c.url ?? '',
+          order: i,
+        })) ?? [],
+        achievements: profileData.achievements?.map((a, i) => ({
+          title: a.title,
+          date: a.date ?? '',
+          description: a.description ?? '',
+          order: i,
+        })) ?? [],
+        languages: profileData.languages?.map((l, i) => ({
+          name: l.name,
+          proficiency: l.proficiency as LanguageProficiency,
+          order: i,
+        })) ?? [],
+        references: profileData.references?.map((r, i) => ({
+          name: r.name,
+          designation: r.designation ?? '',
+          company: r.company ?? '',
+          email: r.email ?? '',
+          phone: r.phone ?? '',
+          order: i,
+        })) ?? [],
+      };
+
+      // 4. PATCH all sections into the new resume (existing transactional endpoint)
+      const { updateResumeClient } = await import('@/app/api/client/resume/resume-client');
+      await updateResumeClient(resume.id, importPayload);
+
+      router.push(`/app/resume/${resume.id}`);
+    } catch (err) {
+      console.error('Failed to import profile data:', err);
+      setIsCreating(false);
+    }
+  };
+
 
   return (
     // Warm desk base — paper texture backdrop
@@ -417,7 +546,7 @@ export default function NewResumeClient() {
         className="fixed bottom-0 left-56 right-0 z-50 border-t border-[#ddc0bd] px-12 py-5 flex items-center justify-between"
         style={{ background: '#ffffff' }}
       >
-        {/* AI hint */}
+        {/* Hint */}
         <div className="flex items-center gap-3">
           <span
             className="material-symbols-outlined text-[#795900] text-xl"
@@ -431,7 +560,9 @@ export default function NewResumeClient() {
           >
             <span className="font-bold text-[#795900]">AI Assistant Ready:</span>{' '}
             {selectedTemplate
-              ? 'Selected template is ready to use.'
+              ? hasProfile
+                ? 'Profile detected — you can auto-fill this resume.'
+                : 'Selected template is ready to use.'
               : 'Select a template to get started.'}
           </p>
         </div>
@@ -440,7 +571,7 @@ export default function NewResumeClient() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push('/app/dashboard')}
-            className="px-6 py-2.5 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-colors"
+            className="px-6 py-2.5 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-colors cursor-pointer"
             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
           >
             Cancel
@@ -448,16 +579,16 @@ export default function NewResumeClient() {
 
           <button
             onClick={handleCreate}
-            disabled={!canCreate || createMutation.isPending}
+            disabled={!canCreate || isCreating}
             className={cn(
-              'flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold text-[14px] transition-all shadow-lg',
-              canCreate && !createMutation.isPending
+              'flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold text-[14px] transition-all shadow-lg cursor-pointer',
+              canCreate && !isCreating
                 ? 'bg-[#5b060c] text-white hover:opacity-95 active:scale-[0.98]'
                 : 'bg-[#5b060c]/40 text-white/60 cursor-not-allowed',
             )}
             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
           >
-            {createMutation.isPending ? (
+            {isCreating ? (
               <>
                 <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span>Creating...</span>
@@ -471,6 +602,83 @@ export default function NewResumeClient() {
           </button>
         </div>
       </footer>
+
+      {/* ── Import from Profile Modal ─────────────────────────────────────────── */}
+      {showImportPrompt && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-6"
+          style={{ background: 'rgba(43,22,17,0.55)', backdropFilter: 'blur(4px)' }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl p-8 shadow-2xl"
+            style={{ background: '#FFF8EE', border: '1px solid #E5D9C8' }}
+          >
+            {/* Decorative corner */}
+            <div className="absolute top-0 right-0 w-20 h-20 bg-[#5b060c]/5 rounded-bl-full pointer-events-none" />
+
+            {/* Icon */}
+            <div className="w-14 h-14 rounded-full bg-[#fff0ed] border-2 border-[#ddc0bd] flex items-center justify-center mb-5">
+              <span
+                className="material-symbols-outlined text-[#5b060c] text-[28px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                download_for_offline
+              </span>
+            </div>
+
+            <h2
+              className="text-[22px] font-bold text-[#5b060c] mb-2"
+              style={{ fontFamily: 'Playfair Display, serif' }}
+            >
+              Import from Profile?
+            </h2>
+            <p
+              className="text-[14px] text-[#564240] mb-6 leading-relaxed"
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
+              Your saved career profile will be copied into this resume — all sections
+              (experience, education, skills, etc.). You can edit them freely without
+              affecting your profile.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowImportPrompt(false);
+                  createWithProfileImport();
+                }}
+                disabled={isCreating}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#5b060c] text-white px-5 py-3 rounded-lg font-semibold text-[14px] hover:opacity-90 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  download_for_offline
+                </span>
+                Yes, Auto-fill
+              </button>
+              <button
+                onClick={() => {
+                  setShowImportPrompt(false);
+                  createBlank();
+                }}
+                disabled={isCreating}
+                className="flex-1 px-5 py-3 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-all cursor-pointer disabled:opacity-50"
+                style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+              >
+                Start Blank
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowImportPrompt(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#ffe2db] transition-colors text-[#564240] cursor-pointer"
+              aria-label="Close"
+            >
+              <span className="material-symbols-outlined text-base">close</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Decorative paper clip */}
       <div className="fixed top-24 right-12 z-[3] pointer-events-none opacity-40">

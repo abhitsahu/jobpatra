@@ -20,6 +20,12 @@ model User {
   role               String    @default("USER")
   razorpayCustomerId String?   @unique
 
+  // Pointer to the reserved "profile resume" (status = PROFILE).
+  // Created on the user's first explicit Profile save. It reuses the resume
+  // section tables but remains a separate, hidden data source.
+  profileResumeId    String?   @unique
+  profileResume      Resume?   @relation("UserProfileResume", fields: [profileResumeId], references: [id], onDelete: SetNull)
+
   accounts      Account[]
   resumes       Resume[]
   subscription  Subscription?
@@ -31,6 +37,7 @@ model User {
 
   @@map("users")
 }
+
 
 model Account {
   id                String  @id @default(cuid())
@@ -89,6 +96,7 @@ model Resume {
 
   // Relations
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileOwner   User?            @relation("UserProfileResume")
   personalInfo   PersonalInfo?
   experiences    WorkExperience[]
   education      Education[]
@@ -297,10 +305,10 @@ model AISuggestion {
 model Subscription {
   id                     String    @id @default(cuid())
   userId                 String    @unique
-  plan                   String    @default("FREE")    // Plan enum in TypeScript
-  status                 String    @default("ACTIVE")  // SubStatus enum in TypeScript
-  paymentProvider        String?                        // "razorpay" | "stripe"
-  paymentId              String?                        // External subscription ID
+  plan                   String    @default("FREE") // Plan enum in TypeScript
+  status                 String    @default("ACTIVE") // SubStatus enum in TypeScript
+  paymentProvider        String? // "razorpay" | "stripe"
+  paymentId              String? // External subscription ID
   razorpaySubscriptionId String?   @unique
   razorpayStatus         String?
   currentPeriodStart     DateTime  @default(now())
@@ -317,12 +325,12 @@ model Subscription {
 
 model UsageTracking {
   userId        String
-  feature       String    // e.g., "RESUME_CREATE", "ATS_ANALYSIS", "AI_SUGGESTION", "DOWNLOAD_PDF"
+  feature       String // e.g., "RESUME_CREATE", "ATS_ANALYSIS", "AI_SUGGESTION", "DOWNLOAD_PDF"
   used          Int       @default(0)
   lastResetDate DateTime?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -335,28 +343,28 @@ model UsageTracking {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model PricingPlan {
-  id                      String   @id @default(cuid())
+  id                      String  @id @default(cuid())
   name                    String
-  slug                    String   @unique
+  slug                    String  @unique
   monthlyPrice            Float
   quarterlyPrice          Float
-  quarterlyDiscount       Int      @default(0)   // percentage e.g. 20
-  currency                String   @default("USD")
+  quarterlyDiscount       Int     @default(0) // percentage e.g. 20
+  currency                String  @default("USD")
   description             String
-  badge                   String?                // "Most Popular" | "Recommended" | null
-  badgeColor              String?                // "primary" | "secondary" | null
+  badge                   String? // "Most Popular" | "Recommended" | null
+  badgeColor              String? // "primary" | "secondary" | null
   buttonText              String
-  buttonVariant           String   @default("outline") // "solid" | "outline"
-  isPopular               Boolean  @default(false)
-  displayOrder            Int      @default(0)
-  isActive                Boolean  @default(true)
+  buttonVariant           String  @default("outline") // "solid" | "outline"
+  isPopular               Boolean @default(false)
+  displayOrder            Int     @default(0)
+  isActive                Boolean @default(true)
   razorpayPlanIdMonthly   String?
   razorpayPlanIdQuarterly String?
 
-  limitResumeCreate       Int      @default(3)
-  limitAtsAnalysis        Int      @default(1)
-  limitAiSuggestion       Int      @default(1)
-  limitDownloadPdf        Int      @default(3)
+  limitResumeCreate Int @default(3)
+  limitAtsAnalysis  Int @default(1)
+  limitAiSuggestion Int @default(1)
+  limitDownloadPdf  Int @default(3)
 
   features PlanFeature[]
 
@@ -383,7 +391,7 @@ model PlanFeature {
 model ComparisonFeature {
   id     String @id @default(cuid())
   title  String
-  values Json   // Record<planSlug, string> — e.g. { "free": "—", "pro": "check", "enterprise": "check" }
+  values Json // Record<planSlug, string> — e.g. { "free": "—", "pro": "check", "enterprise": "check" }
   order  Int    @default(0)
 
   @@map("comparison_features")
