@@ -5,7 +5,7 @@ import { useRef, useCallback } from 'react';
 const testimonials = [
   {
     postmark: 'NYC',
-    year: '2024',
+    year: '2026',
     quote:
       'The AI suggestions felt less like a machine and more like a seasoned mentor guiding my hand. I landed my role at Google within two weeks.',
     image:
@@ -18,7 +18,7 @@ const testimonials = [
   },
   {
     postmark: 'LON',
-    year: '2024',
+    year: '2026',
     quote:
       'The tactile interface makes resume building feel like an art. It\u2019s the most sophisticated career tool I have used in 15 years.',
     image:

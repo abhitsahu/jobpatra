@@ -34,8 +34,8 @@ const publicPaths = [
   '/app/resources',
   '/app/about',
   '/verify-email',
-  '/reset-password',
-  '/forgot-password',
+  '/app/forgot-password',
+  '/app/reset-password',
 ];
 
 // API paths that DON'T require authentication
@@ -78,6 +78,14 @@ export async function proxy(request: NextRequest) {
 
   const isAuthenticated = !!token;
 
+  // Legacy paths from older reset emails
+  if (pathname === '/reset-password' || pathname === '/forgot-password') {
+    const legacyUrl = request.nextUrl.clone();
+    legacyUrl.pathname =
+      pathname === '/reset-password' ? '/app/reset-password' : '/app/forgot-password';
+    return NextResponse.redirect(legacyUrl);
+  }
+
   // 1. PUBLIC API routes → always allow
 
   if (isPublicApi(pathname)) {
@@ -95,7 +103,12 @@ export async function proxy(request: NextRequest) {
 
   // 3. AUTH PAGES → redirect to dashboard if already logged in
 
-  if (pathname === '/app/login' || pathname === '/app/signup') {
+  if (
+    pathname === '/app/login' ||
+    pathname === '/app/signup' ||
+    pathname === '/app/forgot-password' ||
+    pathname === '/app/reset-password'
+  ) {
     if (isAuthenticated) {
       return NextResponse.redirect(new URL('/app/dashboard', request.url));
     }

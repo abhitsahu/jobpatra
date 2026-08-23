@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useResumes, useResumePreview } from '@/app/app/_hooks/use-resumes';
 import { ResumeCard } from '@/app/app/_components/features/dashboard/resume-card';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
-import { CreateResumeDialog } from '@/app/app/_components/features/dashboard/create-resume-dialog';
+import Link from 'next/link';
 import { LandingFooter } from '@/app/app/_components/landing/landing-footer';
 import { LogoutButton } from './logout-button';
 
@@ -54,7 +54,6 @@ function QuickPreviewDialog({ resumeId, onClose }: { resumeId: string; onClose: 
 }
 
 export default function DashboardPageClient({ userName }: { userName: string }) {
-  const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'updated' | 'title-asc' | 'title-desc'>('updated');
   const [previewResumeId, setPreviewResumeId] = useState<string | null>(null);
@@ -272,14 +271,14 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                   </div>
 
                   {/* Create */}
-                  <button
+                  <Link
                     id="create-resume-btn"
-                    onClick={() => setShowCreate(true)}
+                    href="/app/resume/new"
                     className="flex items-center justify-center gap-2 px-6 py-2 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold tracking-wider uppercase hover:bg-[#7a1f1f] transition-all"
                   >
                     <span className="material-symbols-outlined text-[18px]">add</span>
                     New Document
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -323,13 +322,13 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                       : 'Your workshop repository is empty.'}
                   </p>
                   {!search && (
-                    <button
-                      onClick={() => setShowCreate(true)}
+                    <Link
+                      href="/app/resume/new"
                       className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-wider hover:bg-[#7a1f1f] transition-all"
                     >
                       <span className="material-symbols-outlined text-[18px]">add</span>
                       Create First Document
-                    </button>
+                    </Link>
                   )}
                 </motion.div>
               )}
@@ -345,50 +344,12 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                 </AnimatePresence>
               )}
             </div>
-
-            {/* Suggestion Card (AI Artifact) */}
-            <div className="col-span-12 mt-6">
-              <div className="bg-[#5b060c] text-white p-8 flex flex-col md:flex-row items-start md:items-center gap-6 shadow-md relative overflow-hidden">
-                {/* Paper Clip Graphic */}
-                <div className="absolute top-0 right-10 w-8 h-24 bg-[#D1C4B1]/30 rounded-b-full border-x-4 border-b-4 border-white/20 hidden md:block"></div>
-
-                <div className="p-4 bg-white/10 rounded-full flex-shrink-0">
-                  <span
-                    className="material-symbols-outlined text-4xl"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    ink_pen
-                  </span>
-                </div>
-
-                <div className="flex-1">
-                  <h3 className="font-['Playfair_Display'] text-[22px] font-bold mb-1">
-                    AI Workshop Suggestion
-                  </h3>
-                  <p className="font-['Hanken_Grotesk'] text-[14px] leading-[22px] text-white/90 max-w-3xl">
-                    Our analysis indicates that tailoring your Professional Summaries by focusing on
-                    quantitative achievements increases employer engagement rates by up to 12%.
-                    Apply improvements directly inside the builder page.
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="bg-[#FFF8EE] text-[#5b060c] px-6 py-2.5 font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-wider hover:bg-white transition-all relative z-10"
-                >
-                  Apply Improvements
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Reusable Footer Component */}
       <LandingFooter />
-
-      {/* Create dialog */}
-      {showCreate && <CreateResumeDialog onClose={() => setShowCreate(false)} />}
 
       {/* Quick Preview dialog */}
       {previewResumeId && (

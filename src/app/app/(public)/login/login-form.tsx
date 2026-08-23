@@ -161,7 +161,7 @@ export function LoginForm() {
                     </label>
                     <Link
                       className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#5b060c] hover:underline"
-                      href="/app/public/forgot-password"
+                      href="/app/forgot-password"
                     >
                       Forgot?
                     </Link>

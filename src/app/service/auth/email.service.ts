@@ -39,7 +39,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
  * Send password reset link.
  */
 export async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
-  const resetUrl = `${APP_URL}/reset-password?token=${token}`;
+  const resetUrl = `${APP_URL}/app/reset-password?token=${token}`;
 
   await resend.emails.send({
     from: `JobPatra <${FROM_EMAIL}>`,
