@@ -47,3 +47,25 @@ export async function analyzeATSClient(input: ATSAnalyzeInput): Promise<ATSAnaly
   });
   return res.data;
 }
+
+export interface ExtractJdClientResponse {
+  success: boolean;
+  text: string;
+  source: 'httpx' | 'playwright';
+  charCount: number;
+  requestId: string;
+}
+
+/**
+ * Extract job description text from a target URL.
+ *
+ * @param url - target job posting URL
+ * @returns Extracted text and metadata
+ */
+export async function extractJdFromUrlClient(url: string): Promise<ExtractJdClientResponse> {
+  return await apiFetch<ExtractJdClientResponse>('/api/ats/extract-jd', {
+    method: 'POST',
+    body: JSON.stringify({ url }),
+  });
+}
+

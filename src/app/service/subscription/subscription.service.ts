@@ -87,6 +87,21 @@ export async function activateUserSubscription({
       },
     });
 
+    // 3. Reset all usage counters for the new billing period.
+    //    This ensures re-subscribing always starts fresh at 0 —
+    //    the anniversary logic handles mid-period resets month-to-month.
+    const RESETTABLE_FEATURES_ON_SUBSCRIBE = ['RESUME_CREATE', 'ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
+    await Promise.all(
+      RESETTABLE_FEATURES_ON_SUBSCRIBE.map((feature) =>
+        tx.$executeRaw`
+          INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
+          VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
+          ON CONFLICT ("userId", "feature")
+          DO UPDATE SET "used" = 0, "lastResetDate" = ${now}, "updatedAt" = ${now}
+        `
+      )
+    );
+
     return subscription;
   });
 

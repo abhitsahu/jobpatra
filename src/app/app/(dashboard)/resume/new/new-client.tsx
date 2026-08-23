@@ -2,15 +2,14 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCreateResume, useResumes } from '@/app/app/_hooks/use-resumes';
+import { useCreateResume } from '@/app/app/_hooks/use-resumes';
 import { useTemplates } from '@/app/app/_hooks/use-templates';
 import { useUserProfile } from '@/app/app/_hooks/use-user-profile';
+import { useSubscriptionStatus } from '@/app/app/_hooks/use-subscription';
 import { getResumeClient } from '@/app/api/client/resume/resume-client';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { cn } from '@/app/app/_util/cn';
 import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume';
-
-const MAX_RESUMES = 15;
 
 export default function NewResumeClient() {
   const router = useRouter();
@@ -23,12 +22,14 @@ export default function NewResumeClient() {
   const nibRef = useRef<HTMLSpanElement>(null);
 
   const { data: templatesData, isLoading } = useTemplates();
-  const { data: resumesData } = useResumes();
   const { data: userProfile } = useUserProfile();
+  const { data: subData } = useSubscriptionStatus();
   const createMutation = useCreateResume();
 
-  // We need the update mutation lazily — we'll call the client directly after creation
-  const resumesCount = resumesData?.total ?? 0;
+  // Resume count from subscription usage (same source as Dashboard) — not raw DB count
+  const resumesUsed = subData?.usage?.resumes?.current ?? 0;
+  const resumesMax = subData?.usage?.resumes?.max;
+  const resumesMaxLabel = resumesMax === -1 ? '∞' : (resumesMax ?? '—');
   const categories: string[] = templatesData?.categories ?? ['All'];
   const hasProfile = !!userProfile?.profileResumeId;
 
@@ -46,7 +47,9 @@ export default function NewResumeClient() {
     });
   }, [templatesData?.templates, activeCategory, search]);
 
-  const canCreate = title.trim().length > 0 && !!selectedTemplate;
+  // Limit check using live usage data (matches Dashboard) — -1 means unlimited
+  const atLimit = resumesMax !== undefined && resumesMax !== -1 && resumesUsed >= resumesMax;
+  const canCreate = title.trim().length > 0 && !!selectedTemplate && !atLimit;
 
   /** Called when user clicks "Create Resume" in the sticky footer */
   const handleCreate = () => {
@@ -232,7 +235,7 @@ export default function NewResumeClient() {
                   className="text-[24px] leading-[32px] font-semibold text-[#5b060c]"
                   style={{ fontFamily: 'Playfair Display, serif' }}
                 >
-                  {resumesCount} / {MAX_RESUMES}
+                  {resumesUsed} / {resumesMaxLabel}
                 </span>
                 <span
                   className="text-[12px] text-[#564240]"

@@ -105,3 +105,27 @@ export async function analyzeATSStream(
 
   return { stream, requestId };
 }
+
+export interface ExtractJdResult {
+  text: string;
+  source: 'httpx' | 'playwright';
+  char_count: number;
+  url: string;
+}
+
+/**
+ * Extract job description text from a public URL using 2-tier AI backend scraping.
+ */
+export async function extractJdFromUrl(
+  url: string,
+  options?: AIClientOptions,
+): Promise<{ result: ExtractJdResult; requestId: string }> {
+  const { data, requestId } = await aiRequest<ExtractJdResult>(
+    '/v1/jd/extract',
+    { method: 'POST', body: { url } },
+    { timeoutMs: 35_000, ...options }, // Playwright Tier 2 can take up to 25s
+  );
+
+  return { result: data, requestId };
+}
+

@@ -1,7 +1,8 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { getPlanLimits } from './plan-limit.service';
 
-const RESETTABLE_FEATURES = ['ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
+const RESETTABLE_FEATURES = ['RESUME_CREATE', 'ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
+
 type UsageClient = Prisma.TransactionClient | PrismaClient;
 type UsageTrackingRow = { used: number; lastResetDate: Date | null };
 
