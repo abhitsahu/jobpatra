@@ -1,109 +1,92 @@
+'use client';
+
 import Link from 'next/link';
-
-const exploreLinks = [
-  { label: 'Resume Templates', href: '#' },
-  { label: 'CV Maker', href: '#' },
-  { label: 'Cover Letters', href: '#' },
-];
-
-const companyLinks = [
-  { label: 'About Us', href: '#' },
-  { label: 'Careers', href: '#' },
-  { label: 'Privacy', href: '#' },
-];
-
-const connectLinks = [
-  { label: 'Support', href: '#' },
-  { label: 'Twitter', href: '#' },
-  { label: 'LinkedIn', href: '#' },
-];
-
-const bottomLinks = [
-  { label: 'Terms', href: '#' },
-  { label: 'Privacy', href: '#' },
-  { label: 'Support', href: '#' },
-  { label: 'Contact', href: '#' },
-];
+import { Logo } from '@/app/app/_components/common/logo';
 
 export function LandingFooter() {
   return (
-    <footer className="bg-white border-t border-[#ddc0bd] py-16">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 md:px-16 w-full max-w-7xl mx-auto">
-        {/* Brand */}
-        <div className="col-span-1">
-          <div className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#5b060c] mb-4">
-            JobPatra
+    <footer className="w-full bg-[#fff0ee] border-t border-[#E5D9C8] py-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          {/* Brand Col */}
+          <div className="col-span-1">
+            <Link href="/" className="inline-block mb-4">
+              <Logo iconClassName="h-6 w-auto" textClassName="font-['Playfair_Display'] text-xl font-semibold text-[#370003]" />
+            </Link>
+            <p className="text-[#564240] font-['Hanken_Grotesk'] text-sm">
+              Elevating professional storytelling through the digital nib.
+            </p>
           </div>
-          <p className="text-[#564240] font-['Hanken_Grotesk'] text-[16px] leading-[24px]">
-            Architecting the future of professional storytelling through the lens of timeless
-            elegance and AI precision.
-          </p>
+
+          {/* Product Links */}
+          <div className="flex flex-col gap-3">
+            <h4 className="font-['Hanken_Grotesk'] text-xs font-semibold text-[#370003] uppercase tracking-widest mb-2">
+              Product
+            </h4>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/app/templates"
+            >
+              Templates
+            </Link>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/#features"
+            >
+              AI Editor
+            </Link>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/app/ats-checker"
+            >
+              ATS Score
+            </Link>
+          </div>
+
+          {/* Company Links */}
+          <div className="flex flex-col gap-3">
+            <h4 className="font-['Hanken_Grotesk'] text-xs font-semibold text-[#370003] uppercase tracking-widest mb-2">
+              Company
+            </h4>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/#features"
+            >
+              About Us
+            </Link>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/#features"
+            >
+              Careers
+            </Link>
+            <Link
+              className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
+              href="/#features"
+            >
+              Privacy
+            </Link>
+          </div>
+
+          {/* Connect */}
+          <div className="flex flex-col gap-3">
+            <h4 className="font-['Hanken_Grotesk'] text-xs font-semibold text-[#370003] uppercase tracking-widest mb-2">
+              Connect
+            </h4>
+            <div className="flex gap-4">
+              <span className="material-symbols-outlined text-[#370003] cursor-pointer hover:scale-110 transition-transform">
+                share
+              </span>
+              <span className="material-symbols-outlined text-[#370003] cursor-pointer hover:scale-110 transition-transform">
+                mail
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Explore */}
-        <div className="flex flex-col gap-4">
-          <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold uppercase text-[#5b060c]">
-            Explore
-          </h4>
-          {exploreLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[#564240] hover:text-[#5b060c] transition-colors font-['Hanken_Grotesk']"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Company */}
-        <div className="flex flex-col gap-4">
-          <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold uppercase text-[#5b060c]">
-            Company
-          </h4>
-          {companyLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[#564240] hover:text-[#5b060c] transition-colors font-['Hanken_Grotesk']"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Connect */}
-        <div className="flex flex-col gap-4">
-          <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold uppercase text-[#5b060c]">
-            Connect
-          </h4>
-          {connectLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[#564240] hover:text-[#5b060c] transition-colors font-['Hanken_Grotesk']"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="max-w-7xl mx-auto px-4 md:px-16 mt-20 pt-8 border-t border-[#ddc0bd]/30 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-[#564240] font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium">
-          © 2024 JobPatra. Crafted with professional precision.
-        </p>
-        <div className="flex gap-8">
-          {bottomLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[#564240] hover:text-[#5b060c] font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="pt-8 border-t border-[#E5D9C8] flex flex-col sm:flex-row justify-between gap-4 text-[#564240] font-['Hanken_Grotesk'] text-xs">
+          <p>© 2026 JobPatra. All rights reserved.</p>
+          <p>Crafted for the modern professional.</p>
         </div>
       </div>
     </footer>

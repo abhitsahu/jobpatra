@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/app/app/_util/cn';
 import { getSubscriptionStatusClient } from '@/app/api/client/payments/payments-client';
+import { Logo } from '@/app/app/_components/common/logo';
 
 interface NavItem {
   label: string;
@@ -46,10 +47,10 @@ export function Sidebar() {
     <aside className="flex flex-col h-screen fixed left-0 top-0 py-8 w-56 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 hidden md:flex">
       {/* Brand */}
       <div className="px-5 mb-8">
-        <h1 className="font-['Playfair_Display'] text-[22px] leading-[30px] font-bold text-[#7a1f1f] mb-1 tracking-tight">
-          JobPatra
-        </h1>
-        <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#564240]/60 tracking-widest uppercase">
+        <Link href="/">
+          <Logo iconClassName="h-7 w-auto" textClassName="font-['Playfair_Display'] text-[20px] font-bold text-[#7a1f1f]" />
+        </Link>
+        <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#564240]/60 tracking-widest uppercase mt-1">
           AI Career Workshop
         </p>
       </div>

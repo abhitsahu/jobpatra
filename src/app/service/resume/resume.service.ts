@@ -294,7 +294,7 @@ export async function listResumes(userId: string, query: ListResumesQueryDTO) {
     ...(status ? { status } : {}),
   };
 
-  const [resumes, total] = await prisma.$transaction([
+  const [resumes, total] = await Promise.all([
     prisma.resume.findMany({
       where,
       orderBy: { updatedAt: 'desc' },

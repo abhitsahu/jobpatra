@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useResumes, useResumePreview } from '@/app/app/_hooks/use-resumes';
+import { useSubscriptionStatus } from '@/app/app/_hooks/use-subscription';
 import { ResumeCard } from '@/app/app/_components/features/dashboard/resume-card';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import Link from 'next/link';
@@ -59,6 +60,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
   const [previewResumeId, setPreviewResumeId] = useState<string | null>(null);
 
   const { data, isLoading, isError } = useResumes({ limit: 20 });
+  const { data: subData, isLoading: isSubLoading } = useSubscriptionStatus();
 
   const resumes = data?.data ?? [];
   const filtered = resumes.filter((r) => r.title.toLowerCase().includes(search.toLowerCase()));
@@ -104,121 +106,140 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-12 gap-6">
-            {/* ATS Score Widget (Postage Stamp) */}
-            <div className="col-span-12 lg:col-span-4 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-8 flex flex-col items-center justify-center relative overflow-hidden">
-              <div className="absolute top-4 left-4 font-['Hanken_Grotesk'] text-[11px] font-semibold uppercase tracking-wider text-[#8a716f]">
-                Postage Metric
-              </div>
-
-              {/* The Stamp Mark */}
-              <div className="w-44 h-44 border-4 border-dashed border-[#5b060c]/20 rounded-full flex flex-col items-center justify-center relative p-4 rotate-[-5deg]">
-                <div className="absolute inset-0 border-2 border-[#5b060c]/10 rounded-full m-2"></div>
-                <span className="font-['Hanken_Grotesk'] text-[10px] font-semibold text-[#5b060c]/60 mb-1 tracking-widest">
-                  ATS INDEX
-                </span>
-                <span className="font-['Playfair_Display'] text-[#5b060c] text-6xl font-bold">
-                  94
-                </span>
-                <span className="font-['Hanken_Grotesk'] text-[10px] font-semibold text-[#5b060c]/60 mt-1 tracking-wider">
-                  PERCENTILE
-                </span>
-                {/* Rubber Stamp Texture Overlay */}
-                <div
-                  className="absolute inset-0 opacity-20 pointer-events-none mix-blend-multiply"
-                  style={{
-                    backgroundImage:
-                      "url('https://www.transparenttextures.com/patterns/stardust.png')",
-                  }}
-                />
-              </div>
-
-              <div className="mt-6 text-center">
-                <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#564240] italic font-medium">
-                  &ldquo;Highly Optimized for Career Success&rdquo;
-                </p>
-              </div>
-            </div>
-
-            {/* Active Correspondences (Envelope Rack) */}
-            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-8 overflow-hidden flex flex-col justify-between">
-              <div className="flex justify-between items-end mb-8">
+            {/* Widget 1: Plan & Usage Summary (col-span-12 lg:col-span-8) */}
+            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-between relative overflow-hidden">
+              <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#5b060c] mb-1">
-                    Active Correspondences
+                  <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#5b060c]">
+                    Workshop Plan & Usage
                   </h3>
-                  <p className="font-['Hanken_Grotesk'] text-[13px] text-[#564240]">
-                    Pending resume activities and metric benchmarks
+                  <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]">
+                    Current account limits and consumption
                   </p>
                 </div>
-                <div className="font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-wider text-[#5b060c] bg-[#fff0ed] px-3 py-1 border border-[#ddc0bd]/40">
-                  {resumes.length} Document{resumes.length !== 1 ? 's' : ''} Archive
+                <div className={`font-['Hanken_Grotesk'] text-[11px] font-bold uppercase tracking-wider px-3 py-1 border ${
+                  (subData?.subscription?.plan ?? 'FREE') === 'FREE' 
+                    ? 'bg-[#fff8c4] border-[#d8be75] text-[#745a1c]' 
+                    : 'bg-[#fff0ed] border-[#ddc0bd]/40 text-[#5b060c]'
+                }`}>
+                  {subData?.subscription?.planName || 'Free Plan'}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Envelope 1 */}
-                <div className="bg-white border border-[#E5D9C8] p-6 shadow-sm flex flex-col h-44 relative hover:-translate-y-1 transition-transform duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#5b060c] shadow-sm font-bold text-sm">
-                      <span className="material-symbols-outlined text-[16px]">send</span>
-                    </div>
-                    <span className="font-['Hanken_Grotesk'] text-[11px] font-semibold text-[#8a716f]">
-                      2 Days Ago
-                    </span>
-                  </div>
-                  <div className="mt-auto">
-                    <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] font-bold text-[#5b060c]">
-                      Executive Master
-                    </h4>
-                    <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]">
-                      Tailored Design Artifact
-                    </p>
-                  </div>
+              {isSubLoading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-10 bg-[#fff0ed] animate-pulse rounded-none" />
+                  ))}
                 </div>
-
-                {/* Envelope 2 */}
-                <div className="bg-white border border-[#E5D9C8] p-6 shadow-sm flex flex-col h-44 relative hover:-translate-y-1 transition-transform duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#795900] shadow-sm font-bold text-sm">
-                      <span
-                        className="material-symbols-outlined text-[16px]"
-                        style={{ fontVariationSettings: "'FILL' 1" }}
-                      >
-                        schedule
+              ) : (
+                <div className="space-y-4">
+                  {/* Resumes Usage */}
+                  <div>
+                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                      <span>Resumes Created</span>
+                      <span>
+                        {subData?.usage?.resumes?.current ?? resumes.length} /{' '}
+                        {subData?.usage?.resumes?.max === -1 ? '∞' : (subData?.usage?.resumes?.max ?? 3)}
                       </span>
                     </div>
-                    <span className="font-['Hanken_Grotesk'] text-[11px] font-semibold text-[#8a716f]">
-                      In Review
-                    </span>
+                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                      <div
+                        className="bg-[#5b060c] h-full transition-all duration-500"
+                        style={{ width: `${subData?.usage?.resumes?.percent ?? 0}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="mt-auto">
-                    <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] font-bold text-[#5b060c]">
-                      ATS Compliance
-                    </h4>
-                    <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]">
-                      Scan Ready Portfolio
-                    </p>
+
+                  {/* ATS Scans Usage */}
+                  <div>
+                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                      <span>ATS Analyses</span>
+                      <span>
+                        {subData?.usage?.atsScans?.current ?? 0} /{' '}
+                        {subData?.usage?.atsScans?.max === -1 ? '∞' : (subData?.usage?.atsScans?.max ?? 5)}
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                      <div
+                        className="bg-[#795900] h-full transition-all duration-500"
+                        style={{ width: `${subData?.usage?.atsScans?.percent ?? 0}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* AI Suggestions Usage */}
+                  <div>
+                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                      <span>AI Suggestions Used</span>
+                      <span>
+                        {subData?.usage?.aiOptimizations?.current ?? 0} /{' '}
+                        {subData?.usage?.aiOptimizations?.max === -1 ? '∞' : (subData?.usage?.aiOptimizations?.max ?? 10)}
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                      <div
+                        className="bg-[#1b5e20] h-full transition-all duration-500"
+                        style={{ width: `${subData?.usage?.aiOptimizations?.percent ?? 0}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* PDF Downloads Usage */}
+                  <div>
+                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                      <span>PDF Exports</span>
+                      <span>
+                        {subData?.usage?.pdfDownloads?.current ?? 0} /{' '}
+                        {subData?.usage?.pdfDownloads?.max === -1 ? '∞' : (subData?.usage?.pdfDownloads?.max ?? 5)}
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                      <div
+                        className="bg-[#564240] h-full transition-all duration-500"
+                        style={{ width: `${subData?.usage?.pdfDownloads?.percent ?? 0}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
+              )}
+            </div>
 
-                {/* Envelope 3 */}
-                <div className="bg-white border border-[#E5D9C8] p-6 shadow-sm flex flex-col h-44 relative hover:-translate-y-1 transition-transform duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white bg-[#1B5E20] shadow-sm font-bold text-sm">
-                      <span className="material-symbols-outlined text-[16px]">verified</span>
-                    </div>
-                    <span className="font-['Hanken_Grotesk'] text-[11px] font-semibold text-[#8a716f]">
-                      Elite tier
-                    </span>
-                  </div>
-                  <div className="mt-auto">
-                    <h4 className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] font-bold text-[#5b060c]">
-                      Pro Account
-                    </h4>
-                    <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]">
-                      Signature License
-                    </p>
-                  </div>
+            {/* Widget 2: Quick Stats (col-span-12 lg:col-span-4) */}
+            <div className="col-span-12 lg:col-span-4 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-between relative overflow-hidden">
+              <div>
+                <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#5b060c] mb-1">
+                  Workshop Stats
+                </h3>
+                <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240] mb-4">
+                  Overview of your document folder
+                </p>
+              </div>
+
+              <div className="space-y-3.5 flex-1 flex flex-col justify-center">
+                <div className="flex justify-between items-center border-b border-[#ddc0bd]/30 pb-2">
+                  <span className="font-['Hanken_Grotesk'] text-[13px] font-semibold text-[#564240]">Total Resumes</span>
+                  <span className="font-['Playfair_Display'] text-[18px] font-bold text-[#5b060c]">{resumes.length}</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#ddc0bd]/30 pb-2">
+                  <span className="font-['Hanken_Grotesk'] text-[13px] font-semibold text-[#564240]">Completed</span>
+                  <span className="font-['Playfair_Display'] text-[18px] font-bold text-[#1b5e20]">
+                    {resumes.filter(r => r.status === 'COMPLETE' || r.status === 'completed').length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-b border-[#ddc0bd]/30 pb-2">
+                  <span className="font-['Hanken_Grotesk'] text-[13px] font-semibold text-[#564240]">Drafts</span>
+                  <span className="font-['Playfair_Display'] text-[18px] font-bold text-[#795900]">
+                    {resumes.filter(r => r.status !== 'COMPLETE' && r.status !== 'completed').length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pb-1">
+                  <span className="font-['Hanken_Grotesk'] text-[13px] font-semibold text-[#564240]">Last Edited</span>
+                  <span className="font-['Hanken_Grotesk'] text-[12px] font-semibold text-[#5b060c]">
+                    {resumes.length > 0 
+                      ? new Date(resumes[0].updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      : 'Never'}
+                  </span>
                 </div>
               </div>
             </div>

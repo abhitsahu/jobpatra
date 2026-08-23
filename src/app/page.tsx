@@ -8,6 +8,7 @@ import { LandingHero } from '@/app/app/_components/landing/landing-hero';
 import { LandingFeatures } from '@/app/app/_components/landing/landing-features';
 import { LandingTestimonials } from '@/app/app/_components/landing/landing-testimonials';
 import { LandingCta } from '@/app/app/_components/landing/landing-cta';
+import { LandingFaq } from '@/app/app/_components/landing/landing-faq';
 import { LandingFooter } from '@/app/app/_components/landing/landing-footer';
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default async function RootPage() {
   }
 
   return (
-    <div className="landing-body-bg landing-nib-cursor font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#2b1611] overflow-x-hidden min-h-screen">
+    <div className="landing-root landing-body-bg landing-nib-cursor font-['Hanken_Grotesk'] text-[16px] leading-[24px] text-[#2b1611] overflow-x-hidden min-h-screen">
       <LandingNavbar />
 
       <main>
@@ -32,6 +33,7 @@ export default async function RootPage() {
         <LandingFeatures />
         <LandingTestimonials />
         <LandingCta />
+        <LandingFaq />
       </main>
 
       <LandingFooter />

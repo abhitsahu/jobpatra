@@ -1,133 +1,198 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useCallback } from 'react';
 
 export function LandingHero() {
-  const paperRef = useRef<HTMLDivElement>(null);
-
-  const handleEnter = useCallback(() => {
-    const el = paperRef.current;
-    if (!el) return;
-    el.style.transform = 'translateY(-10px) rotate(0deg)';
-    el.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    el.style.boxShadow = '0 20px 40px rgba(78, 52, 46, 0.08)';
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    const el = paperRef.current;
-    if (!el) return;
-    el.style.transform = 'translateY(0) rotate(-3deg)';
-    el.style.boxShadow = '0 4px 20px rgba(78, 52, 46, 0.04)';
-  }, []);
-
   return (
-    <header className="relative w-full max-w-7xl mx-auto px-4 md:px-16 py-20 overflow-visible">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-        {/* Left: Hero Text */}
-        <div className="z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#ffe9e4] rounded-full mb-6">
-            <span className="material-symbols-outlined text-[#5b060c] text-[18px]">verified</span>
-            <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#5b060c] uppercase tracking-widest">
-              Postage Paid • AI Enhanced
+    <section className="relative w-full overflow-hidden bg-[#FFF8F6] pt-12 pb-32">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#5b060c]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#fed174]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 md:px-16 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+        {/* Typography & CTA */}
+        <div className="flex flex-col items-start gap-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ffe9e5] rounded-full shadow-sm">
+            <span
+              className="material-symbols-outlined text-[#370003] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              auto_awesome
+            </span>
+            <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-widest">
+              Introducing The Digital Nib
             </span>
           </div>
 
-          <h1 className="font-['Playfair_Display'] text-[32px] md:text-[48px] md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#2b1611] mb-8 leading-tight">
-            Craft Your <span className="italic text-[#5b060c]">Career Letter</span> With AI
+          <h1 className="font-['Playfair_Display'] text-[36px] md:text-[48px] md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] max-w-2xl">
+            Craft Your Career Letter With AI
           </h1>
 
-          <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] mb-10 max-w-lg">
-            Transform your professional history into a bespoke artifact of value. JobPatra uses
-            artisanal AI to weave your experience into a narrative that captures eyes and passes
-            every digital gatekeeper.
+          <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] max-w-xl">
+            Elevate your professional narrative. JobPatra merges the heritage of tactile
+            storytelling with advanced AI to architect resumes and cover letters that pass the
+            gatekeepers and resonate with decision-makers.
           </p>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-6 mt-4 flex-wrap">
             <Link
               href="/app/signup"
-              className="bg-[#5b060c] text-white px-8 py-4 rounded-xl font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold flex items-center gap-3 hover:scale-105 transition-transform shadow-lg"
+              className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-8 py-4 rounded-full shadow-xl hover:scale-105 transition-transform duration-300 flex items-center gap-2 group"
             >
-              Start Drafting <span className="material-symbols-outlined">edit_note</span>
+              Start Architecting
+              <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
             </Link>
-            <button className="border border-[#8a716f] px-8 py-4 rounded-xl font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold hover:bg-[#ffe9e4] transition-colors text-[#2b1611]">
-              View Samples
-            </button>
-          </div>
 
-          <div className="mt-12 flex items-center gap-6 opacity-60">
-            <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium uppercase tracking-widest text-[#564240]">
-              Trusted By Leaders At
-            </span>
-            <div className="flex gap-4 items-center grayscale text-[#564240]">
-              <span className="material-symbols-outlined">star</span>
-              <span className="material-symbols-outlined">work</span>
-              <span className="material-symbols-outlined">group</span>
+            <div className="flex flex-col gap-1">
+              <div className="flex -space-x-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-30"
+                  alt="Professional woman"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD04HIz-aC3QXXzLqVE5j1X9G4dzaENdDv5_2Bj4u760oBfvnEsulO-kZed3ypsbpqLcs-E77nVuQUMqesoG0lczY1EOypj79Gr00XNux9qbLiQ3dnQYht00o_f1VzSLuAd8v3O72FfQ5x7fq6ul3FR6Q9GepvAgeuRU7vqnEm2bpJdOVSbNJ3waw4A4CWLafPWBzz1tyiaUs1BtFFamZqR-nPsAwgJowrAf2joCCnHcvaPo9YtFzLg8w"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-20"
+                  alt="Professional man"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa5mUyXaw2gHuIREoLSR1WdEQAldLul9d6JqG0765GDmV4mujcR-UWdUQbQ1gVlJXYkZgWCHfRXRKW7tng5r5GQ0BaTGbcTzhWDixCzAl_QT3lDTKcvNoxRQ_zThdVcPh5vrlwNUe37OqsssADb3mVo1fIiOHnk4kixBx9aq3sTdBCo5YoJVFWn5bzzIluZqGdDVHkENiI9Gz3bEllOmzXqLFxjDbZDHXxXH-isdFtXyhb3iSH-nopdA"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-10"
+                  alt="Executive"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkdddeZJs2ZXHJqVbS0cIlBE0RrijJhKLqBLlil6o9zkOedtMY1hk2Sai0WfrGZhq_R3XTsvHpopBCysHs-1saljVBBW6KZ2iN58g07H7H9YPIp1jT-aVFK9iA0Ad8iUtvwUGLwYyqBiRTovql0tg21VTcOIB1ggH7_2iyDeqq3F04YeC9LGu7XhQ-iOQ7pmB6wZ8QMbjotnUhMQ54lgyI9igDvqobsW-xDAQrWfLM8G2K0iB4pileTg"
+                />
+              </div>
+              <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#564240]">
+                Join 10,000+ professionals
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right: Premium Envelope Visual */}
-        <div className="relative h-[600px] flex items-center justify-center mt-12 lg:mt-0">
-          {/* Dotted Delivery Path */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none z-0"
-            overflow="visible"
-          >
-            <path
-              d="M50,450 Q250,400 400,100"
-              fill="none"
-              stroke="#E5D9C8"
-              strokeDasharray="8,8"
-              strokeWidth="2"
-            />
-          </svg>
+        {/* Layered UI Visualization */}
+        <div className="relative h-[550px] md:h-[600px] w-full flex items-center justify-center [perspective:1200px]">
+          {/* Base Ledger Background */}
+          <div className="absolute inset-0 bg-[#FFF8EE] rounded-2xl shadow-[0_8px_32px_rgba(78,52,46,0.08)] transform [rotateX(12deg)] [rotateY(-10deg)] scale-95 opacity-50 overflow-hidden">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E5D9C8_1px,transparent_1px)] [background-size:16px_16px]" />
+          </div>
 
-          {/* Deep Burgundy Envelope */}
-          <div className="bg-gradient-to-br from-[#7a1f1f] to-[#5b060c] w-80 h-[450px] relative rounded-lg shadow-2xl flex items-end justify-center p-4 transform rotate-6 hover:rotate-2 transition-transform duration-500">
-            {/* Resume Paper sliding out */}
-            <div
-              ref={paperRef}
-              onMouseEnter={handleEnter}
-              onMouseLeave={handleLeave}
-              className="landing-paper-sheet w-72 h-[500px] absolute -top-40 left-4 transform -rotate-3 z-10 p-8 flex flex-col gap-4"
-            >
-              <div className="w-12 h-12 bg-[#ffe9e4] rounded-full mb-2" />
-              <div className="h-6 w-3/4 bg-[#564240]/10 rounded" />
-              <div className="h-4 w-full bg-[#564240]/5 rounded" />
-              <div className="h-4 w-5/6 bg-[#564240]/5 rounded" />
-              <div className="h-px w-full bg-[#ddc0bd]/30 my-2" />
-              <div className="h-4 w-full bg-[#564240]/5 rounded" />
-              <div className="h-4 w-2/3 bg-[#564240]/5 rounded" />
-
-              {/* AI Suggestion Note (Yellow Sticky) */}
-              <div className="absolute -right-10 top-1/2 bg-[#FFF9C4] p-3 shadow-md w-32 transform rotate-12 landing-float-anim border-l-2 border-[#FBC02D]">
-                <div className="flex items-center gap-1 mb-1">
-                  <span className="material-symbols-outlined text-[14px] text-[#5b060c]">edit</span>
-                  <span className="text-[10px] font-bold uppercase text-[#5b060c]">AI Nib</span>
+          {/* Main Document (Resume Card Mockup) */}
+          <div className="absolute z-20 w-[320px] sm:w-[380px] h-[480px] sm:h-[520px] bg-[#FFF8F6] rounded-xl shadow-2xl overflow-hidden transform -rotate-2 hover:rotate-0 transition-transform duration-500 origin-bottom-left flex flex-col bg-opacity-95 backdrop-blur-md border border-[#E5D9C8]">
+            <div className="h-2 w-full bg-[#370003] shrink-0" />
+            <div className="p-6 flex flex-col gap-4">
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-2 w-2/3">
+                  <div className="h-6 w-3/4 bg-[#ffe9e5] rounded animate-pulse" />
+                  <div className="h-4 w-1/2 bg-[#ffe9e5] rounded animate-pulse opacity-70" />
                 </div>
-                <p className="text-[11px] leading-tight text-[#5D4037]">
-                  &ldquo;Stronger action verb here improves ATS score by 22%.&rdquo;
-                </p>
+                <div className="w-12 h-12 rounded-full bg-[#fed174] flex items-center justify-center shadow-inner">
+                  <span className="font-['Playfair_Display'] text-[24px] font-semibold text-[#785800]">
+                    JP
+                  </span>
+                </div>
               </div>
-            </div>
-
-            {/* Wax Seal */}
-            <div className="landing-wax-seal w-20 h-20 absolute bottom-10 right-[-10px] z-20 transform -rotate-12">
-              <div className="flex flex-col items-center justify-center text-center px-2">
-                <span className="text-[8px] font-extrabold text-[#261a00] leading-none uppercase">
-                  ATS
+              <div className="h-px w-full bg-[#E5D9C8] my-2" />
+              <div className="flex flex-col gap-3">
+                <div className="h-4 w-full bg-[#ffe2dc] rounded" />
+                <div className="h-4 w-11/12 bg-[#ffe2dc] rounded" />
+                <div className="h-4 w-4/5 bg-[#ffe2dc] rounded" />
+              </div>
+              <div className="mt-4 flex gap-2 flex-wrap">
+                <span className="px-3 py-1 bg-[#5b060c]/10 text-[#370003] rounded text-[10px] font-['Hanken_Grotesk'] font-semibold uppercase tracking-wider">
+                  Product Management
                 </span>
-                <span className="text-[10px] font-bold text-[#261a00] leading-tight">APPROVED</span>
+                <span className="px-3 py-1 bg-[#fed174]/20 text-[#795900] rounded text-[10px] font-['Hanken_Grotesk'] font-semibold uppercase tracking-wider">
+                  Agile
+                </span>
+                <span className="px-3 py-1 bg-[#ffe9e5] text-[#564240] rounded text-[10px] font-['Hanken_Grotesk'] font-semibold uppercase tracking-wider">
+                  Data Strategy
+                </span>
+              </div>
+
+              {/* AI Magic Interaction Overlay */}
+              <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 z-30">
+                <div className="w-16 h-16 rounded-full bg-[#370003] shadow-xl flex items-center justify-center animate-[spin_10s_linear_infinite] opacity-90">
+                  <svg
+                    className="w-8 h-8 text-[#f6be39]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M12 2L15 8L21 9L16 14L18 20L12 17L6 20L8 14L3 9L9 8L12 2Z"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div className="absolute inset-0 bg-[#f6be39]/20 rounded-full blur-xl animate-pulse" />
               </div>
             </div>
           </div>
 
-          {/* Abstract Decorative Elements */}
-          <div className="absolute top-20 right-10 w-24 h-24 border border-[#ddc0bd] opacity-20 transform rotate-45" />
-          <div className="absolute bottom-20 left-10 w-16 h-16 rounded-full border-2 border-[#5b060c]/10" />
+          {/* Floating Sticky Note (AI Suggestion) */}
+          <div className="absolute z-30 top-12 -right-4 sm:-right-8 w-44 sm:w-48 bg-[#FFF9C4] rounded shadow-lg transform rotate-6 p-4 flex flex-col gap-2 shadow-[2px_4px_12px_rgba(0,0,0,0.1)]">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#FBC02D] rounded-l" />
+            <div className="flex items-center gap-2 mb-1">
+              <span className="material-symbols-outlined text-[#795900] text-sm">
+                edit_note
+              </span>
+              <span className="font-['Hanken_Grotesk'] text-[12px] font-semibold text-[#795900] uppercase">
+                AI Suggestion
+              </span>
+            </div>
+            <p className="font-['Hanken_Grotesk'] text-sm text-[#2b1611] leading-tight">
+              Quantify this achievement: &ldquo;Increased conversion by 24% over Q3.&rdquo;
+            </p>
+          </div>
+
+          {/* Job Description Match Card */}
+          <div className="absolute z-10 bottom-6 -left-6 sm:-left-12 w-56 sm:w-64 bg-white rounded-lg shadow-xl p-5 transform -rotate-6 flex flex-col gap-3 border border-[#E5D9C8]">
+            <div className="flex justify-between items-center border-b border-[#E5D9C8] pb-2 mb-2">
+              <span className="font-['Hanken_Grotesk'] text-[12px] font-semibold text-[#2b1611] uppercase tracking-widest">
+                ATS Analysis
+              </span>
+              <span className="font-['Playfair_Display'] text-[24px] font-semibold text-[#370003]">
+                94%
+              </span>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Keywords</span>
+                <span
+                  className="material-symbols-outlined text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Formatting</span>
+                <span
+                  className="material-symbols-outlined text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Impact verbs</span>
+                <span className="material-symbols-outlined text-[#370003] text-sm">
+                  hourglass_empty
+                </span>
+              </div>
+            </div>
+            <div className="w-full bg-[#ffdad3] h-1.5 rounded-full mt-2 overflow-hidden">
+              <div className="bg-[#370003] h-full rounded-full w-[94%]" />
+            </div>
+          </div>
         </div>
       </div>
-    </header>
+    </section>
   );
 }
