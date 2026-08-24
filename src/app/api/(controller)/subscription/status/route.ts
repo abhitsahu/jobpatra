@@ -2,6 +2,7 @@ import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { prisma } from '@/app/_lib/prisma';
 import { NextResponse } from 'next/server';
 import { getOrSeedUsage } from '@/app/service/subscription/usage.service';
+import { expireSubscriptionIfDue } from '@/app/service/subscription/subscription.service';
 
 export async function GET() {
   try {
@@ -24,6 +25,9 @@ export async function GET() {
         },
       });
     }
+
+    // Enforce expiry: auto-downgrade to FREE if currentPeriodEnd has passed
+    subscription = await expireSubscriptionIfDue(userId, subscription);
 
     const [resumeUsage, atsUsage, aiUsage, pdfUsage] = await Promise.all([
       getOrSeedUsage(prisma, userId, 'RESUME_CREATE'),

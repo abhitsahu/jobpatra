@@ -322,7 +322,7 @@ export default function NewResumeClient() {
                   lineHeight: '32px',
                   fontWeight: 600,
                 }}
-                placeholder="e.g. Senior Product Designer - 2024"
+                placeholder="e.g. Senior Product Designer"
               />
             </div>
             <p

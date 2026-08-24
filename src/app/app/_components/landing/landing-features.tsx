@@ -443,14 +443,6 @@ export function LandingFeatures() {
                 your professional history into a compelling narrative artifact.
               </p>
             </div>
-            <div className="shrink-0 flex gap-4">
-              <div className="w-24 h-24 rounded-full border border-[#8a716f] border-dashed flex items-center justify-center relative opacity-50 [writing-mode:vertical-rl] transform -rotate-12 select-none">
-                <span className="font-['Hanken_Grotesk'] text-[10px] text-[#2b1611] tracking-[0.2em] uppercase font-bold">
-                  Est. 2026 • JP
-                </span>
-                <div className="absolute inset-2 rounded-full border border-[#8a716f] border-solid" />
-              </div>
-            </div>
           </div>
 
           {/* Bento Grid */}

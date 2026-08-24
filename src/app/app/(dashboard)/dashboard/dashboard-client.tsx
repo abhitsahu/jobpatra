@@ -117,13 +117,18 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     Current account limits and consumption
                   </p>
                 </div>
-                <div className={`font-['Hanken_Grotesk'] text-[11px] font-bold uppercase tracking-wider px-3 py-1 border ${
-                  (subData?.subscription?.plan ?? 'FREE') === 'FREE' 
-                    ? 'bg-[#fff8c4] border-[#d8be75] text-[#745a1c]' 
-                    : 'bg-[#fff0ed] border-[#ddc0bd]/40 text-[#5b060c]'
-                }`}>
-                  {subData?.subscription?.planName || 'Free Plan'}
-                </div>
+                {isSubLoading ? (
+                  <Skeleton className="h-6 w-24 rounded-none" />
+                ) : (
+                  <div className={`font-['Hanken_Grotesk'] text-[11px] font-bold uppercase tracking-wider px-3 py-1 border ${
+                    (subData?.subscription?.plan ?? 'FREE') === 'FREE' 
+                      ? 'bg-[#fff8c4] border-[#d8be75] text-[#745a1c]' 
+                      : 'bg-[#fff0ed] border-[#ddc0bd]/40 text-[#5b060c]'
+                  }`}>
+                    {subData?.subscription?.planName || 'Free Plan'}
+                  </div>
+                )}
+
               </div>
 
               {isSubLoading ? (

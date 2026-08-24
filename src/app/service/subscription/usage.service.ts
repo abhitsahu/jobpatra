@@ -16,19 +16,42 @@ export async function checkAndIncrementUsage(
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
-  const planSlug = subscription?.plan?.toUpperCase() || 'FREE';
-  // Use the supplied transaction client. Using the global Prisma client here
-  // would require a second connection while this transaction holds the first.
-  const limits = await getPlanLimits(planSlug, tx);
+
+  // Safety gate: treat as FREE if the paid period has already ended.
+  // This is the second line of defence — the primary enforcement is in
+  // GET /api/subscription/status which calls expireSubscriptionIfDue().
+  const isExpired =
+    subscription?.plan !== 'FREE' &&
+    subscription?.currentPeriodEnd != null &&
+    subscription.currentPeriodEnd < new Date();
+
+  // ── Use snapshot limits when available (production-grade snapshotting) ──
+  // Snapshot limits are frozen at purchase time, so pricing_plans changes
+  // never retroactively affect subscribers mid-period.
+  let limits: { limitResumeCreate: number; limitAtsAnalysis: number; limitAiSuggestion: number; limitDownloadPdf: number };
+
+  if (!isExpired && subscription?.snapshotLimitResumes != null) {
+    limits = {
+      limitResumeCreate: subscription.snapshotLimitResumes,
+      limitAtsAnalysis:  subscription.snapshotLimitAts!,
+      limitAiSuggestion: subscription.snapshotLimitAi!,
+      limitDownloadPdf:  subscription.snapshotLimitPdf!,
+    };
+  } else {
+    // FREE tier, expired, or legacy row without snapshot → live plan lookup
+    const planSlug = isExpired ? 'FREE' : (subscription?.plan?.toUpperCase() || 'FREE');
+    limits = await getPlanLimits(planSlug, tx);
+  }
 
   const featureLimitMap: Record<string, keyof typeof limits> = {
     RESUME_CREATE: 'limitResumeCreate',
-    ATS_ANALYSIS: 'limitAtsAnalysis',
+    ATS_ANALYSIS:  'limitAtsAnalysis',
     AI_SUGGESTION: 'limitAiSuggestion',
-    DOWNLOAD_PDF: 'limitDownloadPdf',
+    DOWNLOAD_PDF:  'limitDownloadPdf',
   };
   const limitKey = featureLimitMap[feature];
   const limit = limits[limitKey];
+
 
   const now = new Date();
 

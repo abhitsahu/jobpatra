@@ -31,6 +31,7 @@ model User {
   subscription  Subscription?
   usageTracking UsageTracking[]
   payments      Payment[]
+  invoices      Invoice[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -306,7 +307,7 @@ model Subscription {
   id                     String    @id @default(cuid())
   userId                 String    @unique
   plan                   String    @default("FREE") // Plan enum in TypeScript
-  status                 String    @default("ACTIVE") // SubStatus enum in TypeScript
+  status                 String    @default("ACTIVE") // SubStatus enum: ACTIVE | EXPIRED
   paymentProvider        String? // "razorpay" | "stripe"
   paymentId              String? // External subscription ID
   razorpaySubscriptionId String?   @unique
@@ -315,11 +316,26 @@ model Subscription {
   currentPeriodEnd       DateTime?
   cancelAtPeriodEnd      Boolean   @default(false)
 
+  // ── PLAN SNAPSHOT (frozen at purchase time) ──────────────────────────────
+  // Copied from pricing_plans at the moment of subscription creation.
+  // This ensures pricing changes never retroactively affect existing subscribers.
+  snapshotPlanName      String?  // e.g. "Pro"
+  snapshotMonthlyPrice  Float?   // price paid in local currency
+  snapshotCurrency      String?  // "INR" | "USD"
+  snapshotBillingPeriod String?  // "MONTHLY" | "QUARTERLY"
+  snapshotLimitResumes  Int?     // resume create limit at purchase time
+  snapshotLimitAts      Int?     // ATS analysis limit at purchase time
+  snapshotLimitAi       Int?     // AI suggestion limit at purchase time
+  snapshotLimitPdf      Int?     // PDF download limit at purchase time
+  // ─────────────────────────────────────────────────────────────────────────
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId, status])
+  @@index([currentPeriodEnd, status])
   @@map("subscriptions")
 }
 
@@ -424,7 +440,72 @@ model Payment {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice Invoice?
 
+  @@index([userId])
+  @@index([status])
   @@map("payments")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BILLING MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Invoice {
+  id                String  @id @default(cuid())
+  userId            String
+  paymentId         String  @unique // FK → Payment.id
+  razorpayOrderId   String
+  razorpayPaymentId String
+
+  invoiceNumber String @unique // e.g. "JP-2026-000001"
+
+  // Immutable financial columns — set ONCE at creation, never updated.
+  // Enforced in application layer via Prisma middleware.
+  subtotal  Float
+  taxAmount Float  @default(0)
+  total     Float
+  currency  String
+  status    String @default("paid") // "paid" | "void"
+  lineItems Json   // [{ description, quantity, unitPrice, amount }]
+
+  // PDF stored as raw bytes in Postgres (~50–150 KB per invoice).
+  // pdfUrl is set asynchronously by the cron job after generation.
+  pdfData Bytes?  // raw PDF buffer
+  pdfUrl  String? // e.g. "/api/invoice/{id}/download"
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  createdAt DateTime @default(now())
+  // No updatedAt — invoices are immutable
+
+  @@index([userId])
+  @@map("invoices")
+}
+
+model BackgroundJob {
+  id      String  @id @default(cuid())
+  type    String  // e.g. "GENERATE_INVOICE_PDF"
+  payload Json    // { invoiceId, userId, userEmail, userName }
+  status  String  @default("pending") // "pending" | "processing" | "completed" | "failed"
+  attempts Int    @default(0)
+  error   String? // last error message on failure
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@map("background_jobs")
+}
+
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique // x-razorpay-event-id header value
+  eventType   String            // e.g. "payment.captured"
+  processedAt DateTime @default(now())
+  payload     Json              // full parsed event body for audit
+
+  @@map("webhook_events")
 }
