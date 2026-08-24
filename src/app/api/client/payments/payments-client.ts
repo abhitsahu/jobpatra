@@ -19,3 +19,8 @@ export async function verifyPaymentClient(request: VerifyPaymentRequest): Promis
 export async function getSubscriptionStatusClient(): Promise<any> {
   return apiFetch<any>('/api/subscription/status');
 }
+
+export async function getInvoicesClient(): Promise<any> {
+  return apiFetch<any>('/api/invoices');
+}
+

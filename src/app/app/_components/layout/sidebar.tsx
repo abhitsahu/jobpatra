@@ -104,7 +104,7 @@ export function Sidebar() {
           </Link>
         ) : (
           <Link
-            href="/app/settings#subscription"
+            href="/app/settings?section=subscription"
             className="block p-3 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform">

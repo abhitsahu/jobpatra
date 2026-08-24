@@ -7,6 +7,7 @@ import { BillingToggle } from '../../_components/pricing/billing-toggle';
 import { PricingGrid } from '../../_components/pricing/pricing-grid';
 import { ComparisonTable } from '../../_components/pricing/comparison-table';
 import { TestimonialSection } from '../../_components/pricing/testimonial-section';
+import { PaymentProcessingOverlay } from '../../_components/pricing/payment-processing-overlay';
 import { BillingPeriod } from '@/app/api/model/enums/subscription';
 import { createOrderClient, verifyPaymentClient } from '@/app/api/client/payments/payments-client';
 import { getSessionClient } from '@/app/api/client/auth/auth-client';
@@ -25,6 +26,8 @@ export function PricingClient() {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingPlanName, setProcessingPlanName] = useState<string | undefined>(undefined);
   const { data, isLoading, isError } = usePricing();
 
   const handleSelectPlan = async (slug: string) => {
@@ -56,8 +59,7 @@ export function PricingClient() {
 
       // 2. Handle immediate activation for free plan
       if (orderRes.isFree) {
-        alert('Free plan activated successfully!');
-        router.push('/app/settings#subscription');
+        router.push('/app/settings?section=subscription&payment=success');
         router.refresh();
         setLoadingPlan(null);
         return;
@@ -83,7 +85,12 @@ export function PricingClient() {
         order_id: orderRes.orderId,
         handler: async function (response: any) {
           try {
+            // Show full-screen processing overlay immediately — do not let user navigate away
+            const selectedPlan = data?.plans?.find((p) => p.slug === slug);
+            setProcessingPlanName(selectedPlan?.name);
+            setIsProcessing(true);
             setLoadingPlan(slug);
+
             const verifyRes = await verifyPaymentClient({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -93,13 +100,15 @@ export function PricingClient() {
             });
 
             if (verifyRes.success) {
-              alert('Payment verified and subscription activated successfully!');
-              router.push('/app/settings#subscription');
+              // Redirect to subscription settings with success flag
+              router.push('/app/settings?section=subscription&payment=success');
               router.refresh();
             } else {
-              alert(verifyRes.message || 'Signature verification failed.');
+              setIsProcessing(false);
+              alert(verifyRes.message || 'Signature verification failed. Please contact support.');
             }
           } catch (err: any) {
+            setIsProcessing(false);
             console.error('Payment verification failed:', err);
             alert(err.message || 'An error occurred during payment verification.');
           } finally {
@@ -180,6 +189,9 @@ export function PricingClient() {
   }
 
   return (
+    <>
+      {/* Full-screen overlay during payment verification — prevents user from navigating away */}
+      {isProcessing && <PaymentProcessingOverlay planName={processingPlanName} />}
     <main className="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
       {/* Hero Header */}
       <header className="text-center mb-16">
@@ -207,5 +219,6 @@ export function PricingClient() {
       {/* Testimonial / Trust Section */}
       <TestimonialSection testimonials={data.testimonials} />
     </main>
+    </>
   );
 }

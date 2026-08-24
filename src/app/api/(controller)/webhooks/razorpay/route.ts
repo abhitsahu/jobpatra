@@ -106,7 +106,23 @@ export async function POST(request: Request) {
           amount,
           currency,
         });
+
+        // ── Fire-and-forget: trigger cron to generate invoice PDF immediately ──
+        // This runs async in the background so the webhook returns 200 OK instantly.
+        // The VPS system cron (every minute) acts as the reliable retry safety net.
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const cronSecret = process.env.CRON_SECRET;
+        if (cronSecret) {
+          fetch(`${appUrl}/api/cron/process-invoice-jobs`, {
+            method: 'GET',
+            headers: { 'x-cron-secret': cronSecret },
+          }).catch((err) => {
+            // Non-fatal: VPS cron will pick it up on next tick
+            console.warn('[Razorpay Webhook] Fire-and-forget cron trigger failed:', err?.message);
+          });
+        }
       } catch (err: any) {
+
         if (err.message === 'PAYMENT_ALREADY_COMPLETED') {
           return NextResponse.json({ received: true });
         }

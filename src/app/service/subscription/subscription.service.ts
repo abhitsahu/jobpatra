@@ -150,8 +150,24 @@ export async function activateUserSubscription({
   // Invalidate cached plan limits so the fresh snapshot takes effect immediately
   invalidatePlanLimitsCache();
 
+  // ── Fire-and-forget: trigger cron to generate invoice PDF automatically ──
+  triggerInvoiceCronAsync();
+
   return result;
 }
+
+function triggerInvoiceCronAsync() {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) return;
+  fetch(`${appUrl}/api/cron/process-invoice-jobs`, {
+    method: 'GET',
+    headers: { 'x-cron-secret': cronSecret },
+  }).catch((err) => {
+    console.warn('[AutoCron] Fire-and-forget cron trigger failed:', err?.message);
+  });
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FAIL PAYMENT
