@@ -1,11 +1,18 @@
 import { cn } from '@/app/app/_util/cn';
 
-interface SkeletonProps {
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export function Skeleton({ className }: SkeletonProps) {
+export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
-    <div className={cn('animate-pulse rounded bg-white/5 border border-glass-border', className)} />
+    <div
+      className={cn(
+        'animate-pulse rounded-lg bg-[#ddc0bd]/25 border border-[#ddc0bd]/30',
+        className,
+      )}
+      {...props}
+    />
   );
 }
+
