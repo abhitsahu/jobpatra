@@ -1,6 +1,5 @@
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { activateUserSubscription, failUserPayment } from '@/app/service/subscription/subscription.service';
-import { BillingPeriod } from '@/app/api/model/enums/subscription';
 import { VerifyPaymentRequest } from '@/app/api/model/request/payments/order';
 import { VerifyPaymentResponse } from '@/app/api/model/response/payments/order';
 import { prisma } from '@/app/_lib/prisma';

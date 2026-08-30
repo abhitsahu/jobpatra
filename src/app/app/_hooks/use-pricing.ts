@@ -27,34 +27,3 @@ export function usePricing() {
     gcTime: 30 * 60 * 1000, // keep in cache for 30 min after component unmounts
   });
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Derived selectors — components use these instead of raw data
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Returns only the plan list. Components that only need plans use this. */
-export function usePricingPlans() {
-  const query = usePricing();
-  return {
-    ...query,
-    data: query.data?.plans,
-  };
-}
-
-/** Returns only the comparison table rows. */
-export function usePricingComparison() {
-  const query = usePricing();
-  return {
-    ...query,
-    data: query.data?.comparison,
-  };
-}
-
-/** Returns only testimonials. */
-export function useTestimonials() {
-  const query = usePricing();
-  return {
-    ...query,
-    data: query.data?.testimonials,
-  };
-}

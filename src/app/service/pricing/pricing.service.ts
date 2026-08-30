@@ -231,7 +231,14 @@ export async function seedPricingData(): Promise<void> {
       },
       create: {
         ...planData,
-        features: { create: features.map(({ id: _id, ...f }) => f) },
+        features: {
+          create: features.map((feature) => ({
+            feature: feature.feature,
+            available: feature.available,
+            highlight: feature.highlight,
+            order: feature.order,
+          })),
+        },
       },
     });
   }

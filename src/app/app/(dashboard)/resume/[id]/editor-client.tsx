@@ -217,7 +217,6 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           const lastStr = JSON.stringify(lastSavedValues.current?.[key]);
 
           if (currentStr !== lastStr) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             patchPayload[key] = values[key] as any;
             hasChanges = true;
           }

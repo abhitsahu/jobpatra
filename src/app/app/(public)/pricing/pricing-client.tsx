@@ -25,14 +25,12 @@ const loadRazorpayScript = () => {
 export function PricingClient() {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingPlanName, setProcessingPlanName] = useState<string | undefined>(undefined);
   const { data, isLoading, isError } = usePricing();
 
   const handleSelectPlan = async (slug: string) => {
     try {
-      setLoadingPlan(slug);
       const session = await getSessionClient();
 
       if (!session) {
@@ -53,7 +51,6 @@ export function PricingClient() {
 
       if (!orderRes.success) {
         alert(orderRes.message || 'Failed to initiate payment.');
-        setLoadingPlan(null);
         return;
       }
 
@@ -61,7 +58,6 @@ export function PricingClient() {
       if (orderRes.isFree) {
         router.push('/app/settings?section=subscription&payment=success');
         router.refresh();
-        setLoadingPlan(null);
         return;
       }
 
@@ -70,7 +66,6 @@ export function PricingClient() {
         const loaded = await loadRazorpayScript();
         if (!loaded) {
           alert('Failed to load payment gateway script. Please check your internet connection.');
-          setLoadingPlan(null);
           return;
         }
       }
@@ -89,7 +84,6 @@ export function PricingClient() {
             const selectedPlan = data?.plans?.find((p) => p.slug === slug);
             setProcessingPlanName(selectedPlan?.name);
             setIsProcessing(true);
-            setLoadingPlan(slug);
 
             const verifyRes = await verifyPaymentClient({
               razorpay_order_id: response.razorpay_order_id,
@@ -112,7 +106,6 @@ export function PricingClient() {
             console.error('Payment verification failed:', err);
             alert(err.message || 'An error occurred during payment verification.');
           } finally {
-            setLoadingPlan(null);
           }
         },
         prefill: {
@@ -124,7 +117,6 @@ export function PricingClient() {
         },
         modal: {
           ondismiss: function () {
-            setLoadingPlan(null);
           },
         },
       };
@@ -134,7 +126,6 @@ export function PricingClient() {
     } catch (err: any) {
       console.error('Checkout failed:', err);
       alert(err.message || 'An error occurred during checkout initialization.');
-      setLoadingPlan(null);
     }
   };
 

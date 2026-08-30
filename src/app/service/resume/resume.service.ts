@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from '@/app/_lib/prisma';
 import path from 'path';
 import fs from 'fs';

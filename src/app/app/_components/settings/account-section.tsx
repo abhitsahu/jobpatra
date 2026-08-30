@@ -1,6 +1,6 @@
 'use client';
 
-import { SheetCard, SectionHeading, SettingsRow, Toggle } from './settings-primitives';
+import { SheetCard, SectionHeading, SettingsRow } from './settings-primitives';
 
 export function AccountSection() {
   return (
@@ -17,26 +17,6 @@ export function AccountSection() {
             Update Password
           </button>
         </SettingsRow>
-{/* 
-        <SettingsRow
-          label="Two-Factor Authentication"
-          description="Secure your account with SMS or Authenticator App"
-        >
-          <div className="flex items-center gap-3">
-            <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-              style={{
-                background: '#ffc641',
-                color: '#261a00',
-                fontFamily: 'Hanken Grotesk, sans-serif',
-              }}
-            >
-              ENABLED
-            </span>
-            <Toggle on={true} />
-          </div>
-        </SettingsRow> */}
-
         <SettingsRow
           label="Verified Email Identity"
           description="Your primary email has been formally verified"
