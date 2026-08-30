@@ -22,6 +22,7 @@ import { CertificationsForm } from '@/app/app/_components/features/resume-editor
 import { AchievementsForm } from '@/app/app/_components/features/resume-editor/achievements-form';
 import { LanguagesForm } from '@/app/app/_components/features/resume-editor/languages-form';
 import { ReferencesForm } from '@/app/app/_components/features/resume-editor/references-form';
+import { PreviewSelectionToolbar } from '@/app/app/_components/features/resume-editor/preview-selection-toolbar';
 
 import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume';
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
@@ -45,6 +46,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [zoom, setZoom] = useState(100);
   const [showAiWorkspace, setShowAiWorkspace] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Fetch resume data and live preview html via TanStack Query
   const { data: resume, isLoading, isError } = useResume(resumeId);
@@ -497,6 +499,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               {previewHtml ? (
                 <iframe
                   id="resume-preview-iframe"
+                  ref={iframeRef}
                   srcDoc={previewHtml}
                   className="w-full h-full border-none bg-white"
                   title="Resume Preview"
@@ -511,6 +514,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               )}
             </div>
           </div>
+
+          {/* Floating AI improve toolbar on text selection in live preview */}
+          <PreviewSelectionToolbar iframeRef={iframeRef} zoom={zoom} form={form} />
 
           {/* Mini Toggle for Collapsed State */}
           {!showAiWorkspace && (

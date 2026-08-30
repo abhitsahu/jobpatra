@@ -4,6 +4,7 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
 import { FormArraySection } from './form-array-section';
 import { FormInput, FormTextarea } from './form-field';
+import { AIImproveButton } from './ai-improve-button';
 
 interface ExperienceFormProps {
   form: UseFormReturn<UpdateResumeDTO>;
@@ -119,6 +120,13 @@ export function ExperienceForm({ form }: ExperienceFormProps) {
               label="Description"
               registration={register(`experiences.${index}.description`)}
               placeholder="Spearheaded the redesign of the core platform, increasing user retention by 24%..."
+            />
+            <AIImproveButton
+              sectionType="experience"
+              currentText={watch(`experiences.${index}.description`) ?? ''}
+              onAccept={(newText) =>
+                form.setValue(`experiences.${index}.description`, newText, { shouldDirty: true })
+              }
             />
           </>
         );

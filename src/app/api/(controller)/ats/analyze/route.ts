@@ -14,23 +14,11 @@
  */
 
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
+import { atsAnalyzeSchema } from '@/app/api/model/request/ats/analyze';
 import { analyzeATS, analyzeATSStream } from '@/app/service/ai/ats.service';
 import { AIServiceError } from '@/app/service/ai/client';
-
-// ---------------------------------------------------------------------------
-// Request validation schema
-// ---------------------------------------------------------------------------
-
-const atsAnalyzeSchema = z.object({
-  resumeText: z.string().optional(),
-  resumeFileName: z.string().optional(),
-  resumeFileBytes: z.string().optional(),
-  jobDescriptionText: z.string().min(1, 'Job description text is required'),
-  stream: z.boolean().optional(),
-});
 
 // ---------------------------------------------------------------------------
 // Route handler

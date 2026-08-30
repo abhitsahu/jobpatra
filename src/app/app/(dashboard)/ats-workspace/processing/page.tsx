@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { analyzeResume, analyzeResumeStream } from '@/app/app/services/ats.service';
 import type { ATSAnalyzeResponse } from '@/app/app/services/ats.service';
+import { saveAtsAnalysisClient } from '@/app/api/client/ats/history-client';
 
 interface ChecklistStep {
   id: string;
@@ -32,39 +33,33 @@ export default function ProcessingPage() {
   };
 
   const handleSaveAndRedirect = useCallback(
-    (result: ATSAnalyzeResponse, resumeName: string, jdText: string) => {
-      // Generate a unique ID for this analysis
-      const analysisId = 'analysis_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
-      // Create SavedAnalysis structure for history list
-      // Extract a short title from JD text (first line or first few words)
-      const firstJdLine = jdText
-        .split('\n')[0]
-        .replace(/[#*_-]/g, '')
-        .trim();
+    async (result: ATSAnalyzeResponse, resumeName: string, jdText: string) => {
+      // Extract a short job title from the first line of the JD
+      const firstJdLine = jdText.split('\n')[0].replace(/[#*_-]/g, '').trim();
       const jobTitle =
-        firstJdLine.length > 40
-          ? firstJdLine.substring(0, 40) + '...'
-          : firstJdLine || 'Target Position';
+        firstJdLine.length > 40 ? firstJdLine.substring(0, 40) + '...' : firstJdLine || 'Target Position';
 
-      const savedItem = {
-        id: analysisId,
-        resumeTitle: resumeName,
-        jobTitle,
-        overallScore: Math.round(result.overall_score),
-        timestamp: new Date().toISOString(),
-      };
+      // ── Save to database ──────────────────────────────────────────────────
+      try {
+        const dbId = await saveAtsAnalysisClient({
+          resumeName,
+          jobDescription: jdText,
+          jobTitle,
+          result,
+        });
+        router.replace(`/app/ats-workspace/result/${dbId}`);
+        return;
+      } catch (saveErr) {
+        console.warn('DB save failed, falling back to localStorage', saveErr);
+      }
 
-      // Save full result
+      // ── localStorage fallback (offline / auth edge case) ──────────────────
+      const analysisId = 'analysis_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem(`jobpatra_ats_result_${analysisId}`, JSON.stringify(result));
-
-      // Append to history list
       const existingHistory = localStorage.getItem('jobpatra_ats_analyses');
       const historyList = existingHistory ? JSON.parse(existingHistory) : [];
-      historyList.push(savedItem);
+      historyList.push({ id: analysisId, resumeTitle: resumeName, jobTitle, overallScore: Math.round(result.overall_score), timestamp: new Date().toISOString() });
       localStorage.setItem('jobpatra_ats_analyses', JSON.stringify(historyList));
-
-      // Redirect to results page
       router.replace(`/app/ats-workspace/result/${analysisId}`);
     },
     [router],

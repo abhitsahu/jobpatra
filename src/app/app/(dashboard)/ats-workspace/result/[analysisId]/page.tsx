@@ -4,11 +4,17 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type { ATSAnalyzeResponse } from '@/app/app/services/ats.service';
 import { HistoryPanel } from '../../components/HistoryPanel';
+import { useAtsResult } from '@/app/app/_hooks/use-ats-history';
 
 export default function ResultPage() {
   const params = useParams();
   const router = useRouter();
   const analysisId = params.analysisId as string;
+
+  // Legacy localStorage IDs always start with 'analysis_'
+  const isLegacyId = analysisId?.startsWith('analysis_');
+
+  const { data: dbRecord, isLoading: dbLoading } = useAtsResult(isLegacyId ? '' : analysisId);
 
   const [result, setResult] = useState<ATSAnalyzeResponse | null>(null);
   const [resumeName, setResumeName] = useState('');
@@ -19,9 +25,48 @@ export default function ResultPage() {
   const [expandedRecs, setExpandedRecs] = useState<Record<number, boolean>>({});
   const [copiedRecId, setCopiedRecId] = useState<number | null>(null);
 
-  // Load from local storage
+  // ── DB result: map ATSAnalysisDetail back to ATSAnalyzeResponse shape ────
   useEffect(() => {
-    if (!analysisId) return;
+    if (!dbRecord) return;
+    // Reconstruct the display shape from stored sub-fields
+    const r = {
+      overall_score: dbRecord.overallScore,
+      keyword_score: dbRecord.keywordScore,
+      experience_score: dbRecord.experienceScore,
+      skills_score: dbRecord.skillsScore,
+      education_score: dbRecord.educationScore,
+      summary_score: dbRecord.summaryScore,
+      formatting_score: dbRecord.formattingScore,
+      matched_keywords: dbRecord.matchedKeywords.map((k) => ({ keyword: k, matchType: 'EXACT', similarity: null, matched_jd_keyword: null, is_related_concept: false })),
+      missing_keywords: dbRecord.missingKeywords,
+      related_keywords: [],
+      matched_skills: dbRecord.matchedSkills,
+      missing_skills: dbRecord.missingSkills,
+      required_skill_count: 0,
+      culture_signals: [],
+      extraction_mode: 'hybrid_ai' as const,
+      required_experience_years: 0,
+      candidate_experience_years: 0,
+      required_education_level: '',
+      candidate_education_level: '',
+      experience_summary: { total_entries: 0, total_years: 0, has_metrics: false },
+      education_summary: { highest_degree: null, certifications: [] },
+      processing_time_ms: dbRecord.processingTimeMs ?? 0,
+      version: dbRecord.version ?? '',
+      ai_status: 'ok' as const,
+      ai_explanation: dbRecord.aiExplanation as ATSAnalyzeResponse['ai_explanation'],
+    } satisfies ATSAnalyzeResponse;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResult(r);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResumeName(dbRecord.resumeName);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setJdText(dbRecord.jobDescription);
+  }, [dbRecord]);
+
+  // ── Legacy localStorage fallback ─────────────────────────────────────────
+  useEffect(() => {
+    if (!isLegacyId || !analysisId) return;
 
     const savedResult = localStorage.getItem(`jobpatra_ats_result_${analysisId}`);
     if (savedResult) {
@@ -33,24 +78,34 @@ export default function ResultPage() {
       }
     }
 
-    // Find in history for metadata
     const savedHistory = localStorage.getItem('jobpatra_ats_analyses');
     if (savedHistory) {
       try {
         const historyList = JSON.parse(savedHistory) as { id: string; resumeTitle: string }[];
         const item = historyList.find((h) => h.id === analysisId);
-        if (item) {
-          setResumeName(item.resumeTitle);
-        }
+        if (item) setResumeName(item.resumeTitle);
       } catch (err) {
         console.error('Failed to parse history list', err);
       }
     }
 
-    // Retrieve pending texts if matching current analysis
     const pendingJdText = sessionStorage.getItem('jobpatra_ats_pending_jd_text') || '';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setJdText(pendingJdText);
-  }, [analysisId]);
+  }, [analysisId, isLegacyId]);
+
+  if (dbLoading && !isLegacyId) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-[#F8F2E8] p-12 flex flex-col items-center justify-center min-h-[500px]">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 rounded-full border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] animate-spin mx-auto"></div>
+          <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#2b1611]">
+            Retrieving Analysis Audit...
+          </h3>
+        </div>
+      </div>
+    );
+  }
 
   if (!result) {
     return (
@@ -64,6 +119,7 @@ export default function ResultPage() {
       </div>
     );
   }
+
 
   const scoreColour = (score: number) => {
     if (score >= 80) return 'text-[#1B5E20]';

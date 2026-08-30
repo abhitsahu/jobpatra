@@ -12,17 +12,13 @@
  */
 
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
+import { extractJdSchema } from '@/app/api/model/request/ats/analyze';
 import { extractJdFromUrl } from '@/app/service/ai/ats.service';
 import { AIServiceError } from '@/app/service/ai/client';
 import { prisma } from '@/app/_lib/prisma';
 import { getOrSeedUsage } from '@/app/service/subscription/usage.service';
-
-const extractJdSchema = z.object({
-  url: z.string().url('Please enter a valid job posting URL (e.g. https://...)'),
-});
 
 export async function POST(req: Request) {
   try {

@@ -32,6 +32,7 @@ model User {
   usageTracking UsageTracking[]
   payments      Payment[]
   invoices      Invoice[]
+  atsAnalyses   ATSAnalysis[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -266,20 +267,45 @@ model Reference {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model ATSAnalysis {
-  id             String @id @default(cuid())
-  resumeId       String
-  jobDescription String @db.Text
-  overallScore   Int // 0–100
-  keywordMatches Json // { matched: string[], missing: string[] }
-  suggestions    Json // [{ section, issue, fix }]
-  formatScore    Int // 0–100
-  contentScore   Int // 0–100
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  // Optional link to a saved resume in the builder (may be null for uploaded files)
+  resumeId String?
+  resume   Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  resumeName     String  @default("Uploaded Resume")
+  jobDescription String  @db.Text
+  jobTitle       String?
+
+  // Scores (0–100)
+  overallScore    Int
+  keywordScore    Int @default(0)
+  experienceScore Int @default(0)
+  skillsScore     Int @default(0)
+  educationScore  Int @default(0)
+  summaryScore    Int @default(0)
+  formattingScore Int @default(0)
+
+  // Keyword & skill arrays
+  matchedKeywords String[] @default([])
+  missingKeywords String[] @default([])
+  matchedSkills   String[] @default([])
+  missingSkills   String[] @default([])
+
+  // AI explanation (ATSExplanation shape from the AI service)
+  aiExplanation Json?
+
+  processingTimeMs Int?
+  version          String?
+  analysisDate     DateTime @default(now())
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([resumeId])
+  @@index([userId])
+  @@index([userId, analysisDate])
   @@map("ats_analyses")
 }
 
