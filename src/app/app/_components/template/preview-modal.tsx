@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 import type { TemplateData } from './template-card';
@@ -28,7 +29,7 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
           onClick={onClose}
           className="absolute top-4 right-4 z-30 p-2 rounded-full bg-white/90 hover:bg-[#5b060c] hover:text-white border border-[#E5D9C8] text-[#564240] transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
+          <IconMapper name="close" className="text-[20px]" />
         </button>
 
         {/* Left: Template Preview Image */}
@@ -45,7 +46,7 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
         <div className="w-full md:w-80 p-8 flex flex-col justify-between bg-[#FFF8EE] relative">
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-[#795900] font-['Hanken_Grotesk'] text-[12px] uppercase tracking-wider font-semibold">
-              <span className="material-symbols-outlined text-[16px]">bookmark</span>
+              <IconMapper name="bookmark" className="text-[16px]" />
               {template.category}
             </div>
 

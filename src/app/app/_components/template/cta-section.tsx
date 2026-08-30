@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 
@@ -22,7 +23,7 @@ export function CtaSection({ onStartBuilding, onBrowsePlans }: CtaSectionProps) 
       <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
         {/* Icon Badge */}
         <div className="w-16 h-16 bg-[#ffe9e5] rounded-full flex items-center justify-center mb-6 shadow-sm text-[#5b060c]">
-          <span className="material-symbols-outlined text-3xl">history_edu</span>
+          <IconMapper name="history_edu" className="text-3xl" />
         </div>
 
         <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold text-[#2b1611] mb-6 tracking-tight">
@@ -40,7 +41,7 @@ export function CtaSection({ onStartBuilding, onBrowsePlans }: CtaSectionProps) 
             className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.15em] font-semibold uppercase px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#7a1f1f] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer w-full sm:w-auto"
           >
             Start Writing
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            <IconMapper name="arrow_forward" className="text-sm" />
           </button>
 
           <button

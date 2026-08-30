@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 
@@ -19,7 +20,7 @@ export function WhyChoose() {
         {/* Card 1 */}
         <div className="bg-white p-8 flex flex-col items-center text-center space-y-4 rounded-xl border border-[#E5D9C8] shadow-sm hover:shadow-md transition-shadow">
           <div className="w-16 h-16 rounded-full bg-[#ffe9e5] flex items-center justify-center text-[#5b060c]">
-            <span className="material-symbols-outlined text-[32px]">verified</span>
+            <IconMapper name="verified" className="text-[32px]" />
           </div>
           <h3 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#2b1611]">
             ATS Optimized
@@ -33,7 +34,7 @@ export function WhyChoose() {
         {/* Card 2 */}
         <div className="bg-white p-8 flex flex-col items-center text-center space-y-4 rounded-xl border border-[#E5D9C8] shadow-sm hover:shadow-md transition-shadow">
           <div className="w-16 h-16 rounded-full bg-[#ffe9e5] flex items-center justify-center text-[#5b060c]">
-            <span className="material-symbols-outlined text-[32px]">edit_note</span>
+            <IconMapper name="edit_note" className="text-[32px]" />
           </div>
           <h3 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#2b1611]">
             AI Ready
@@ -47,7 +48,7 @@ export function WhyChoose() {
         {/* Card 3 */}
         <div className="bg-white p-8 flex flex-col items-center text-center space-y-4 rounded-xl border border-[#E5D9C8] shadow-sm hover:shadow-md transition-shadow">
           <div className="w-16 h-16 rounded-full bg-[#ffe9e5] flex items-center justify-center text-[#5b060c]">
-            <span className="material-symbols-outlined text-[32px]">picture_as_pdf</span>
+            <IconMapper name="picture_as_pdf" className="text-[32px]" />
           </div>
           <h3 className="font-['Playfair_Display'] text-[22px] font-semibold text-[#2b1611]">
             Instant Export

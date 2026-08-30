@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -102,7 +103,7 @@ export function LandingFeatures() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="flex flex-col gap-6 order-2 lg:order-1">
                 <div className="w-12 h-12 bg-[#5b060c] rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#e46e69]">edit_document</span>
+                  <IconMapper name="edit_document" className="text-[#e46e69]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
                   AI Resume Builder
@@ -141,9 +142,7 @@ export function LandingFeatures() {
                     <div className="h-5 w-32 bg-[#ffe9e5] rounded mb-4" />
                     <div className="space-y-3 mb-8">
                       <div className="h-16 w-full bg-white border border-[#370003]/20 rounded-lg p-3 flex gap-3 items-center relative shadow-sm">
-                        <span className="material-symbols-outlined text-[#370003] text-sm">
-                          auto_awesome
-                        </span>
+                        <IconMapper name="auto_awesome" className="text-[#370003] text-sm" />
                         <div className="flex-1 space-y-2">
                           <div className="h-2 w-full bg-[#ffe9e5] rounded" />
                           <div className="h-2 w-5/6 bg-[#ffe9e5] rounded" />
@@ -219,9 +218,7 @@ export function LandingFeatures() {
                       <span className="text-sm font-medium text-[#2b1611]">
                         Formatting looks perfect.
                       </span>
-                      <span className="material-symbols-outlined text-[#795900] text-sm">
-                        check_circle
-                      </span>
+                      <IconMapper name="check_circle" className="text-[#795900] text-sm" />
                     </div>
                   </div>
                 </div>
@@ -229,7 +226,7 @@ export function LandingFeatures() {
 
               <div className="flex flex-col gap-6">
                 <div className="w-12 h-12 bg-[#fed174] rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#785800]">fact_check</span>
+                  <IconMapper name="fact_check" className="text-[#785800]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
                   ATS Score &amp; Analysis
@@ -246,7 +243,7 @@ export function LandingFeatures() {
             {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="flex flex-col gap-6 order-2 lg:order-1">
                 <div className="w-12 h-12 bg-[#5e0001] rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#eb6a59]">radar</span>
+                  <IconMapper name="radar" className="text-[#eb6a59]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
                   AI Job Matching
@@ -307,13 +304,11 @@ export function LandingFeatures() {
                     </div>
                   </div>
                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#370003] rounded-full flex items-center justify-center z-20 shadow-lg">
-                    <span className="material-symbols-outlined text-white text-sm">
-                      arrow_downward
-                    </span>
+                    <IconMapper name="arrow_downward" className="text-white text-sm" />
                   </div>
                   <div className="flex flex-col gap-2 relative z-10">
                     <span className="text-xs uppercase text-[#370003] font-bold tracking-wider flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">auto_awesome</span> After
+                      <IconMapper name="auto_awesome" className="text-sm" /> After
                       AI Optimization
                     </span>
                     <div className="bg-[#5b060c]/10 border border-[#370003]/20 p-4 rounded-lg text-[#2b1611] font-['Hanken_Grotesk'] shadow-inner">
@@ -326,7 +321,7 @@ export function LandingFeatures() {
 
               <div className="flex flex-col gap-6">
                 <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#410004]">model_training</span>
+                  <IconMapper name="model_training" className="text-[#410004]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
                   AI-Powered Optimization
@@ -350,7 +345,7 @@ export function LandingFeatures() {
 
         <div className="max-w-7xl mx-auto px-4 md:px-16 flex flex-col items-center text-center mb-10 relative z-10">
           <div className="w-16 h-16 bg-[#FFF8F6] rounded-full flex items-center justify-center mb-6 shadow-md">
-            <span className="material-symbols-outlined text-[#370003] text-2xl">style</span>
+            <IconMapper name="style" className="text-[#370003] text-2xl" />
           </div>
           <h3 className="font-['Playfair_Display'] text-3xl md:text-5xl font-bold text-[#370003] mb-4">
             Professional Resume Templates
@@ -370,7 +365,7 @@ export function LandingFeatures() {
             className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
             aria-label="Scroll left"
           >
-            <span className="material-symbols-outlined text-2xl">chevron_left</span>
+            <IconMapper name="chevron_left" className="text-2xl" />
           </button>
 
           {/* Scroll Right Button */}
@@ -379,7 +374,7 @@ export function LandingFeatures() {
             className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
             aria-label="Scroll right"
           >
-            <span className="material-symbols-outlined text-2xl">chevron_right</span>
+            <IconMapper name="chevron_right" className="text-2xl" />
           </button>
 
           {/* Scrollable Container */}
@@ -452,7 +447,7 @@ export function LandingFeatures() {
               <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#ffe2dc] to-transparent opacity-30 transform translate-x-4 group-hover:translate-x-0 transition-transform duration-500" />
               <div className="relative z-10 flex flex-col gap-4 max-w-md">
                 <div className="w-12 h-12 bg-[#5b060c] rounded-full flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#e46e69]">architecture</span>
+                  <IconMapper name="architecture" className="text-[#e46e69]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[28px] leading-[36px] font-semibold text-[#2b1611]">
                   Architectural Resume Builder
@@ -481,7 +476,7 @@ export function LandingFeatures() {
             <div className="bg-[#FFF8F6] rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] hover:shadow-[0_8px_30px_rgba(78,52,46,0.06)] transition-shadow duration-300 border border-[#E5D9C8]">
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="w-12 h-12 bg-[#fed174] rounded-full flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#785800]">troubleshoot</span>
+                  <IconMapper name="troubleshoot" className="text-[#785800]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
                   The Gatekeeper
@@ -527,9 +522,7 @@ export function LandingFeatures() {
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#410004]">
-                    mark_email_unread
-                  </span>
+                  <IconMapper name="mark_email_unread" className="text-[#410004]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-white">
                   Postmarked Letters
@@ -553,7 +546,7 @@ export function LandingFeatures() {
             <div className="md:col-span-2 bg-[#FFF8F6] rounded-2xl p-0 flex flex-col sm:flex-row relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] border border-[#E5D9C8]">
               <div className="p-8 md:p-10 flex flex-col justify-center gap-4 sm:w-1/2 z-10 bg-[#FFF8F6]">
                 <div className="w-12 h-12 bg-[#5e0001] rounded-full flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#eb6a59]">draw</span>
+                  <IconMapper name="draw" className="text-[#eb6a59]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[28px] leading-[36px] font-semibold text-[#2b1611]">
                   The Digital Nib

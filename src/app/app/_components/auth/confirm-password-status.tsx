@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 interface ConfirmPasswordStatusProps {
   password: string;
   confirmPassword: string;
@@ -19,16 +20,11 @@ export function ConfirmPasswordStatus({ password, confirmPassword }: ConfirmPass
       aria-live="polite"
       aria-atomic="true"
     >
-      <span
-        className="material-symbols-outlined"
-        style={{
+      <IconMapper name={match ? 'check_circle' : 'cancel'} style={{
           fontSize: '15px',
           fontVariationSettings: match ? "'FILL' 1" : "'FILL' 0",
         }}
-        aria-hidden="true"
-      >
-        {match ? 'check_circle' : 'cancel'}
-      </span>
+        aria-hidden="true" />
       {match ? 'Passwords match' : 'Passwords do not match'}
     </p>
   );

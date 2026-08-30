@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useRouter } from 'next/navigation';
 import { useAtsHistory, useDeleteAtsAnalysis, useClearAtsHistory } from '@/app/app/_hooks/use-ats-history';
@@ -27,7 +28,7 @@ export function HistoryPanel() {
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-[#E5D9C8] mb-4 shrink-0">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#7a1f1f] text-[22px]">history</span>
+          <IconMapper name="history" className="text-[#7a1f1f] text-[22px]" />
           <h3 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611]">
             Analysis History
           </h3>
@@ -53,9 +54,7 @@ export function HistoryPanel() {
           </div>
         ) : analyses.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center py-12 text-center text-[#564240]/60 font-['Hanken_Grotesk'] text-[13px] space-y-2">
-            <span className="material-symbols-outlined text-[32px] text-[#7a1f1f]/50">
-              analytics
-            </span>
+            <IconMapper name="analytics" className="text-[32px] text-[#7a1f1f]/50" />
             <p>No previous analyses found.</p>
             <p className="text-[11px] text-[#564240]/40 max-w-[200px]">
               Complete an ATS analysis to build your history log.
@@ -103,7 +102,7 @@ export function HistoryPanel() {
                   className="opacity-0 group-hover:opacity-100 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#ffe4e4] text-[#ba1a1a] transition-all disabled:opacity-50"
                   title="Delete"
                 >
-                  <span className="material-symbols-outlined text-[16px]">delete</span>
+                  <IconMapper name="delete" className="text-[16px]" />
                 </button>
               </div>
             </div>

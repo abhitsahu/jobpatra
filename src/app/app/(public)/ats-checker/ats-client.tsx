@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
@@ -67,19 +68,15 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
           <div className="bg-[#fff8f6] border border-[#ddc0bd] shadow-sm relative overflow-hidden max-w-[800px] mx-auto p-8 md:p-12">
             {/* Watermark / Wax Seal Background */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none">
-              <span className="material-symbols-outlined text-[400px]">verified</span>
+              <IconMapper name="verified" className="text-[400px]" />
             </div>
 
             {/* Report Header */}
             <div className="flex justify-between items-start border-b-2 border-[#5b060c] pb-8 mb-10">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className="material-symbols-outlined text-[#5b060c]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    description
-                  </span>
+                  <IconMapper name="description" className="text-[#5b060c]"
+                    style={{ fontVariationSettings: "'FILL' 1" }} />
                   <span className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#5b060c] uppercase">
                     Official Dossier
                   </span>
@@ -132,7 +129,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="p-6 bg-[#fff0ed] border border-[#ddc0bd] rounded">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="material-symbols-outlined text-[#5b060c]">history_edu</span>
+                    <IconMapper name="history_edu" className="text-[#5b060c]" />
                     <span className="font-['Hanken_Grotesk'] text-[14px] font-semibold text-[#5b060c] uppercase tracking-wider">
                       Content Quality & Readability
                     </span>
@@ -145,7 +142,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <div className="p-6 bg-[#fff0ed] border border-[#ddc0bd] rounded">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="material-symbols-outlined text-[#5b060c]">architecture</span>
+                    <IconMapper name="architecture" className="text-[#5b060c]" />
                     <span className="font-['Hanken_Grotesk'] text-[14px] font-semibold text-[#5b060c] uppercase tracking-wider">
                       Parsing Logic & Structure
                     </span>
@@ -166,12 +163,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
               <div className="space-y-4">
                 <div className="flex justify-between items-end pb-2 border-b border-[#ddc0bd]">
                   <div className="flex items-center gap-3">
-                    <span
-                      className="material-symbols-outlined text-[#795900]"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
+                    <IconMapper name="check_circle" className="text-[#795900]"
+                      style={{ fontVariationSettings: "'FILL' 1" }} />
                     <span className="font-['Hanken_Grotesk'] text-[16px] text-[#2b1611]">
                       Strategic Leadership & Action Verbs
                     </span>
@@ -182,12 +175,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <div className="flex justify-between items-end pb-2 border-b border-[#ddc0bd]">
                   <div className="flex items-center gap-3">
-                    <span
-                      className="material-symbols-outlined text-[#795900]"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
+                    <IconMapper name="check_circle" className="text-[#795900]"
+                      style={{ fontVariationSettings: "'FILL' 1" }} />
                     <span className="font-['Hanken_Grotesk'] text-[16px] text-[#2b1611]">
                       SaaS Architecture & Grammar Integrity
                     </span>
@@ -198,7 +187,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <div className="flex justify-between items-end pb-2 border-b border-[#ddc0bd]">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#ba1a1a]">error</span>
+                    <IconMapper name="error" className="text-[#ba1a1a]" />
                     <span className="font-['Hanken_Grotesk'] text-[16px] text-[#564240]">
                       Product Lifecycle Management
                     </span>
@@ -209,12 +198,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <div className="flex justify-between items-end pb-2 border-b border-[#ddc0bd]">
                   <div className="flex items-center gap-3">
-                    <span
-                      className="material-symbols-outlined text-[#795900]"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
+                    <IconMapper name="check_circle" className="text-[#795900]"
+                      style={{ fontVariationSettings: "'FILL' 1" }} />
                     <span className="font-['Hanken_Grotesk'] text-[16px] text-[#2b1611]">
                       Agile Methodology & Team Metrics
                     </span>
@@ -238,7 +223,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                     onClick={handleCTA}
                     className="bg-[#795900] text-white px-4 py-2 font-['Hanken_Grotesk'] text-[14px] font-semibold flex items-center gap-2 shadow-sm hover:translate-y-[-1px] transition-transform"
                   >
-                    <span className="material-symbols-outlined text-sm">download</span> Export PDF
+                    <IconMapper name="download" className="text-sm" /> Export PDF
                   </button>
                   <button
                     onClick={handleCTA}
@@ -270,7 +255,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* AI Signature Nib Icon */}
             <div className="absolute -top-4 -left-4 w-12 h-12 bg-[#5b060c] text-white rounded-full flex items-center justify-center shadow-lg border-4 border-[#fff8f6] z-30">
-              <span className="material-symbols-outlined">edit_note</span>
+              <IconMapper name="edit_note" />
             </div>
 
             <div className="space-y-6 opacity-80 pointer-events-none">
@@ -288,7 +273,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
               {/* AI Highlighted Section */}
               <div className="relative p-4 bg-[#ffdad5] rounded border-l-4 border-[#ba1a1a]">
                 <div className="absolute -top-2 -right-2 bg-[#5b060c] text-white p-1 rounded-sm">
-                  <span className="material-symbols-outlined text-xs">ink_pen</span>
+                  <IconMapper name="ink_pen" className="text-xs" />
                 </div>
                 <div className="w-full h-3 bg-[#ffb4a9]/30 rounded mb-2"></div>
                 <div className="w-[80%] h-3 bg-[#ffb4a9]/30 rounded"></div>
@@ -326,9 +311,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
           {/* Contextual Tip (Small Post-it style) */}
           <div className="mt-8 bg-[#ffdfa0] p-6 shadow-md border-b-4 border-[#795900]/20 relative -rotate-1">
-            <span className="material-symbols-outlined text-[#795900] absolute top-4 right-4 text-2xl">
-              lightbulb
-            </span>
+            <IconMapper name="lightbulb" className="text-[#795900] absolute top-4 right-4 text-2xl" />
             <h4 className="font-['Hanken_Grotesk'] text-[14px] font-bold text-[#795900] uppercase mb-2">
               Pro Tip
             </h4>
@@ -356,9 +339,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Feature 1 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#5b060c] mb-4">
-                analytics
-              </span>
+              <IconMapper name="analytics" className="text-[36px] text-[#5b060c] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 ATS Score
               </h3>
@@ -370,7 +351,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* Feature 2 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#795900] mb-4">key</span>
+              <IconMapper name="key" className="text-[36px] text-[#795900] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 Keyword Matching
               </h3>
@@ -382,9 +363,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* Feature 3 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#ba1a1a] mb-4">
-                architecture
-              </span>
+              <IconMapper name="architecture" className="text-[36px] text-[#ba1a1a] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 Formatting Analysis
               </h3>
@@ -396,9 +375,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* Feature 4 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#5b060c] mb-4">
-                edit_note
-              </span>
+              <IconMapper name="edit_note" className="text-[36px] text-[#5b060c] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 AI Suggestions
               </h3>
@@ -410,9 +387,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* Feature 5 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#795900] mb-4">
-                search
-              </span>
+              <IconMapper name="search" className="text-[36px] text-[#795900] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 Resume Parsing
               </h3>
@@ -424,9 +399,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
             {/* Feature 6 */}
             <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] hover:shadow-md transition-shadow">
-              <span className="material-symbols-outlined text-[36px] text-[#ba1a1a] mb-4">
-                workspace_premium
-              </span>
+              <IconMapper name="workspace_premium" className="text-[36px] text-[#ba1a1a] mb-4" />
               <h3 className="font-['Playfair_Display'] text-[22px] font-bold text-[#2b1611] mb-3">
                 Industry Benchmark
               </h3>
@@ -549,21 +522,15 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#ba1a1a] text-[18px]">
-                      close
-                    </span>
+                    <IconMapper name="close" className="text-[#ba1a1a] text-[18px]" />
                     Unreadable multi-column formatting and visual tables.
                   </li>
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#ba1a1a] text-[18px]">
-                      close
-                    </span>
+                    <IconMapper name="close" className="text-[#ba1a1a] text-[18px]" />
                     Missing key terminologies matching SaaS & leadership roles.
                   </li>
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#ba1a1a] text-[18px]">
-                      close
-                    </span>
+                    <IconMapper name="close" className="text-[#ba1a1a] text-[18px]" />
                     Vague work summaries devoid of metrics.
                   </li>
                 </ul>
@@ -579,12 +546,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
             {/* After */}
             <div className="bg-[#FFF8EE] border border-[#5b060c] p-8 shadow-md flex flex-col justify-between relative">
               <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-[#5b060c] text-white flex items-center justify-center shadow-md">
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  verified
-                </span>
+                <IconMapper name="verified" className="text-[18px]"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
               </div>
               <div>
                 <span className="font-['Hanken_Grotesk'] text-[12px] font-bold text-[#1B5E20] uppercase tracking-wider block mb-4">
@@ -600,21 +563,15 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 </div>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#1B5E20] text-[18px]">
-                      check
-                    </span>
+                    <IconMapper name="check" className="text-[#1B5E20] text-[18px]" />
                     Clean parsing logic with robust linear readability.
                   </li>
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#1B5E20] text-[18px]">
-                      check
-                    </span>
+                    <IconMapper name="check" className="text-[#1B5E20] text-[18px]" />
                     Laced with target key action terms.
                   </li>
                   <li className="flex items-start gap-2 text-[#564240] text-[14px]">
-                    <span className="material-symbols-outlined text-[#1B5E20] text-[18px]">
-                      check
-                    </span>
+                    <IconMapper name="check" className="text-[#1B5E20] text-[18px]" />
                     Refined metrics showcasing verified impact.
                   </li>
                 </ul>
@@ -644,9 +601,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] relative">
-            <span className="material-symbols-outlined text-4xl text-[#5b060c] mb-4">
-              format_quote
-            </span>
+            <IconMapper name="format_quote" className="text-4xl text-[#5b060c] mb-4" />
             <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240] mb-6">
               &ldquo;My original resume was scoring 48% on ATS checkers due to complex column
               tables. JobPatra helped me redesign it to a clean single-column structure, instantly
@@ -661,9 +616,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
           </div>
 
           <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] relative">
-            <span className="material-symbols-outlined text-4xl text-[#795900] mb-4">
-              format_quote
-            </span>
+            <IconMapper name="format_quote" className="text-4xl text-[#795900] mb-4" />
             <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240] mb-6">
               &ldquo;The keyword lexicon matching is incredibly accurate. It highlighted three major
               missing technologies that I actually knew but forgot to detail. Re-scanned and got
@@ -680,9 +633,7 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
           </div>
 
           <div className="p-8 bg-[#fff8f6] border border-[#ddc0bd] relative">
-            <span className="material-symbols-outlined text-4xl text-[#ba1a1a] mb-4">
-              format_quote
-            </span>
+            <IconMapper name="format_quote" className="text-4xl text-[#ba1a1a] mb-4" />
             <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240] mb-6">
               &ldquo;I thought my graphic resume looked stunning, but recruiters&apos; software was
               reading it as gibberish. JobPatra&apos;s audit forced me to focus on text priority.

@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -280,7 +281,7 @@ export function ProfileSection() {
                 }`}
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{s.icon}</span>
+                <IconMapper name={s.icon} style={{ fontSize: 14 }} />
                 {s.label}
               </button>
             );
@@ -313,13 +314,13 @@ export function ProfileSection() {
             )}
             {saveStatus === 'saved' && (
               <>
-                <span className="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
+                <IconMapper name="check_circle" className="text-emerald-600 text-base" />
                 <span className="text-emerald-600 font-semibold">Profile saved!</span>
               </>
             )}
             {saveStatus === 'error' && (
               <>
-                <span className="material-symbols-outlined text-[#ba1a1a] text-base">error</span>
+                <IconMapper name="error" className="text-[#ba1a1a] text-base" />
                 <span className="text-[#ba1a1a]">Save failed — try again</span>
               </>
             )}

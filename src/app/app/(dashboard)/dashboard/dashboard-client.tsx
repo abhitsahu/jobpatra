@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,7 +33,7 @@ function QuickPreviewDialog({ resumeId, onClose }: { resumeId: string; onClose: 
             className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] transition-colors"
             aria-label="Close"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <IconMapper name="close" className="text-[20px]" />
           </button>
         </header>
         <div className="flex-1 bg-white border border-[#ddc0bd]/50 rounded-sm overflow-hidden relative">
@@ -81,7 +82,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
         {/* Top bar with Navigation Controls */}
         <div className="flex justify-end items-center gap-4 py-4 px-8 border-b border-[#ddc0bd]/30 bg-[#F8F2E8]/80 backdrop-blur-md sticky top-0 z-30">
           <button className="w-10 h-10 bg-white/40 border border-[#ddc0bd] flex items-center justify-center text-[#564240] hover:text-[#5b060c] transition-colors relative">
-            <span className="material-symbols-outlined">notifications</span>
+            <IconMapper name="notifications" />
             <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#5b060c] rounded-full" />
           </button>
           <LogoutButton />
@@ -91,7 +92,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
         <div className="p-8 md:p-16 relative z-10 max-w-7xl mx-auto w-full">
           {/* Floating Nib Ornament */}
           <div className="absolute top-8 right-12 opacity-5 pointer-events-none hidden lg:block">
-            <span className="material-symbols-outlined text-[120px]">ink_pen</span>
+            <IconMapper name="ink_pen" className="text-[120px]" />
           </div>
 
           {/* Header */}
@@ -264,9 +265,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                 <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
                   {/* Search */}
                   <div className="relative flex-1 sm:flex-initial">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-[#8a716f]">
-                      search
-                    </span>
+                    <IconMapper name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f]" />
                     <input
                       id="dashboard-search"
                       type="text"
@@ -291,9 +290,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                       <option value="title-asc">Title (A-Z)</option>
                       <option value="title-desc">Title (Z-A)</option>
                     </select>
-                    <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f] pointer-events-none">
-                      keyboard_arrow_down
-                    </span>
+                    <IconMapper name="keyboard_arrow_down" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f] pointer-events-none" />
                   </div>
 
                   {/* Create */}
@@ -302,7 +299,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     href="/app/resume/new"
                     className="flex items-center justify-center gap-2 px-6 py-2 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold tracking-wider uppercase hover:bg-[#7a1f1f] transition-all"
                   >
-                    <span className="material-symbols-outlined text-[18px]">add</span>
+                    <IconMapper name="add" className="text-[18px]" />
                     New Document
                   </Link>
                 </div>
@@ -323,9 +320,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
               {/* Error state */}
               {isError && (
                 <div className="text-center py-16 px-4">
-                  <span className="material-symbols-outlined text-4xl text-red-700 block mb-3">
-                    error_outline
-                  </span>
+                  <IconMapper name="error_outline" className="text-4xl text-red-700 block mb-3" />
                   <p className="font-['Hanken_Grotesk'] text-[#564240] text-[15px] font-medium">
                     Failed to load document repository. Please refresh.
                   </p>
@@ -339,9 +334,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                   animate={{ opacity: 1, y: 0 }}
                   className="text-center py-16 px-4"
                 >
-                  <span className="material-symbols-outlined text-5xl text-[#8a716f]/40 block mb-4">
-                    description
-                  </span>
+                  <IconMapper name="description" className="text-5xl text-[#8a716f]/40 block mb-4" />
                   <p className="font-['Hanken_Grotesk'] text-[#564240] text-[15px] mb-6 font-medium">
                     {search
                       ? 'No documents match your filter query.'
@@ -352,7 +345,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                       href="/app/resume/new"
                       className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-wider hover:bg-[#7a1f1f] transition-all"
                     >
-                      <span className="material-symbols-outlined text-[18px]">add</span>
+                      <IconMapper name="add" className="text-[18px]" />
                       Create First Document
                     </Link>
                   )}

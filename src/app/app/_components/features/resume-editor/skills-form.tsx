@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
@@ -92,7 +93,7 @@ export function SkillsForm({ form }: SkillsFormProps) {
           className="w-full py-12 border-2 border-dashed border-[#ddc0bd] rounded-xl flex flex-col items-center justify-center text-[#564240] hover:border-[#7a1f1f]/50 hover:bg-[#fff8f6] transition-all cursor-pointer group"
         >
           <div className="w-12 h-12 rounded-full bg-[#fff0ed] flex items-center justify-center mb-3 group-hover:bg-[#ffe2db] transition-colors">
-            <span className="material-symbols-outlined text-2xl text-[#7a1f1f]">psychology</span>
+            <IconMapper name="psychology" className="text-2xl text-[#7a1f1f]" />
           </div>
           <h4 className="font-['Playfair_Display'] text-[18px] leading-[24px] font-bold text-[#7a1f1f] mb-1">
             + Add Your Skills
@@ -126,7 +127,7 @@ export function SkillsForm({ form }: SkillsFormProps) {
                         onClick={() => remove(field.index)}
                         className="w-5 h-5 rounded-full hover:bg-[#7a1f1f]/10 text-[#564240] hover:text-[#7a1f1f] flex items-center justify-center transition-all cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[14px]">close</span>
+                        <IconMapper name="close" className="text-[14px]" />
                       </button>
                     </div>
                   ))}

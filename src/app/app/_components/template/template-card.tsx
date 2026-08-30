@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 
@@ -71,21 +72,13 @@ export function TemplateCard({ template, onUseTemplate, onPreview }: TemplateCar
         {/* Badge Seal */}
         {isPremium ? (
           <div className="absolute -right-3 -top-3 w-12 h-12 bg-[#f6be39] rounded-full flex items-center justify-center shadow-md rotate-12 group-hover:rotate-0 transition-transform duration-500 z-30">
-            <span
-              className="material-symbols-outlined text-[#2b1611] text-sm"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              workspace_premium
-            </span>
+            <IconMapper name="workspace_premium" className="text-[#2b1611] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
           </div>
         ) : atsFriendly ? (
           <div className="absolute -right-3 -top-3 w-12 h-12 bg-[#2a7040] text-white rounded-full flex items-center justify-center shadow-md -rotate-6 group-hover:rotate-0 transition-transform duration-500 z-30">
-            <span
-              className="material-symbols-outlined text-sm"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              verified
-            </span>
+            <IconMapper name="verified" className="text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
           </div>
         ) : null}
       </div>

@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getSubscriptionStatusClient } from '@/app/api/client/payments/payments-client';
@@ -102,12 +103,8 @@ export function SubscriptionSection() {
             border: '1px solid #c3e6cb',
           }}
         >
-          <span
-            className="material-symbols-outlined text-[#155724] shrink-0 mt-0.5"
-            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
-          >
-            check_circle
-          </span>
+          <IconMapper name="check_circle" className="text-[#155724] shrink-0 mt-0.5"
+            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
           <div className="flex-1">
             <p
               className="text-[14px] font-bold text-[#155724]"
@@ -126,7 +123,7 @@ export function SubscriptionSection() {
             onClick={() => setShowSuccess(false)}
             className="text-[#155724] hover:opacity-70 transition-opacity cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">close</span>
+            <IconMapper name="close" className="text-[18px]" />
           </button>
         </div>
       )}

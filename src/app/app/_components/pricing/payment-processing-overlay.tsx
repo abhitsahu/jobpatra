@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 interface PaymentProcessingOverlayProps {
   planName?: string;
@@ -40,12 +41,8 @@ export function PaymentProcessingOverlay({ planName }: PaymentProcessingOverlayP
               boxShadow: 'inset -1px -1px 3px rgba(0,0,0,0.3)',
             }}
           >
-            <span
-              className="material-symbols-outlined text-white"
-              style={{ fontSize: 28, fontVariationSettings: "'FILL' 1" }}
-            >
-              workspace_premium
-            </span>
+            <IconMapper name="workspace_premium" className="text-white"
+              style={{ fontSize: 28, fontVariationSettings: "'FILL' 1" }} />
           </div>
         </div>
 
@@ -76,12 +73,8 @@ export function PaymentProcessingOverlay({ planName }: PaymentProcessingOverlayP
           className="w-full flex items-start gap-3 rounded-lg px-4 py-3"
           style={{ background: '#fff3cd', border: '1px solid #f6be39' }}
         >
-          <span
-            className="material-symbols-outlined text-[#795900] shrink-0 mt-0.5"
-            style={{ fontSize: 18 }}
-          >
-            warning
-          </span>
+          <IconMapper name="warning" className="text-[#795900] shrink-0 mt-0.5"
+            style={{ fontSize: 18 }} />
           <p
             className="text-[13px] text-[#5c4300] text-left leading-snug"
             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}

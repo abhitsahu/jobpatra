@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 
@@ -138,9 +139,7 @@ export function AuthCardLayout({
             {benefits.map((item) => (
               <div key={item.title} className="flex items-start gap-4">
                 <div className="mt-1 flex-shrink-0 w-6 h-6 flex items-center justify-center border border-[#ddc0bd] rounded-full">
-                  <span className="material-symbols-outlined text-[16px] text-[#795900]">
-                    {item.icon}
-                  </span>
+                  <IconMapper name={item.icon} className="text-[16px] text-[#795900]" />
                 </div>
                 <div>
                   <p className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-bold text-[#2b1611]">
@@ -179,7 +178,7 @@ export function AuthCardLayout({
             {/* Nib Icon Detail */}
             <div className="absolute -bottom-6 -right-6 hidden md:block">
               <div className="w-12 h-12 auth-wax-seal rounded-full flex items-center justify-center bg-gradient-to-br from-[#795900] to-[#a23c39] shadow-lg">
-                <span className="material-symbols-outlined text-white text-xl">edit_note</span>
+                <IconMapper name="edit_note" className="text-white text-xl" />
               </div>
             </div>
           </div>

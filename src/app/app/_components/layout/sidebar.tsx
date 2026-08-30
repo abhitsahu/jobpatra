@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -74,12 +75,8 @@ export function Sidebar() {
                   : 'text-[#564240] hover:bg-[#fff0ed] hover:text-[#7a1f1f] hover:translate-x-0.5',
               )}
             >
-              <span
-                className="material-symbols-outlined text-[18px]"
-                style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
-              >
-                {item.icon}
-              </span>
+              <IconMapper name={item.icon} className="text-[18px]"
+                style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined} />
               <span>{item.label}</span>
             </Link>
           );
@@ -95,9 +92,7 @@ export function Sidebar() {
             href="/app/subscription"
             className="block p-3 bg-[#f6be39] hover:bg-[#e0ab2b] border border-[#ddc0bd]/40 rounded-xl text-center transition-all group shadow-sm cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[#261a00] mb-1 text-xl group-hover:scale-110 transition-transform">
-              workspace_premium
-            </span>
+            <IconMapper name="workspace_premium" className="text-[#261a00] mb-1 text-xl group-hover:scale-110 transition-transform" />
             <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#261a00] uppercase tracking-widest">
               Upgrade to Pro
             </p>
@@ -107,9 +102,7 @@ export function Sidebar() {
             href="/app/settings?section=subscription"
             className="block p-3 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform">
-              verified
-            </span>
+            <IconMapper name="verified" className="text-[#7a1f1f] mb-1 text-xl group-hover:rotate-12 transition-transform" />
             <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
               Pro Active
             </p>

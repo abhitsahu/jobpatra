@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import Link from 'next/link';
 import { Logo } from '@/app/app/_components/common/logo';
@@ -74,12 +75,8 @@ export function LandingFooter() {
               Connect
             </h4>
             <div className="flex gap-4">
-              <span className="material-symbols-outlined text-[#370003] cursor-pointer hover:scale-110 transition-transform">
-                share
-              </span>
-              <span className="material-symbols-outlined text-[#370003] cursor-pointer hover:scale-110 transition-transform">
-                mail
-              </span>
+              <IconMapper name="share" className="text-[#370003] cursor-pointer hover:scale-110 transition-transform" />
+              <IconMapper name="mail" className="text-[#370003] cursor-pointer hover:scale-110 transition-transform" />
             </div>
           </div>
         </div>

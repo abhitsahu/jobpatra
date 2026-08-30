@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useEffect, useRef } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -80,7 +81,7 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
         className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none"
         aria-label="Scroll tabs left"
       >
-        <span className="material-symbols-outlined text-xl">chevron_left</span>
+        <IconMapper name="chevron_left" className="text-xl" />
       </button>
 
       {/* Tab list */}
@@ -110,12 +111,8 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
               )}
             >
               {isCompleted && (
-                <span
-                  className="material-symbols-outlined text-sm text-[#7a1f1f]"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  check_circle
-                </span>
+                <IconMapper name="check_circle" className="text-sm text-[#7a1f1f]"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
               )}
               <span>{s.label}</span>
             </button>
@@ -130,7 +127,7 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
         className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none"
         aria-label="Scroll tabs right"
       >
-        <span className="material-symbols-outlined text-xl">chevron_right</span>
+        <IconMapper name="chevron_right" className="text-xl" />
       </button>
     </nav>
   );

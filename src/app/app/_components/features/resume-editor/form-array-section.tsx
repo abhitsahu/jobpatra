@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,7 +65,7 @@ export function FormArraySection<T extends FieldItem>({
             onClick={handleAdd}
             className="flex items-center gap-1 text-[#7a1f1f] text-[14px] font-bold hover:underline cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">add</span> {addLabel}
+            <IconMapper name="add" className="text-[18px]" /> {addLabel}
           </button>
         )}
       </div>
@@ -76,7 +77,7 @@ export function FormArraySection<T extends FieldItem>({
           className="w-full py-12 border-2 border-dashed border-[#ddc0bd] rounded-xl flex flex-col items-center justify-center text-[#564240] hover:border-[#7a1f1f]/50 hover:bg-[#fff8f6] transition-all cursor-pointer group"
         >
           <div className="w-12 h-12 rounded-full bg-[#fff0ed] flex items-center justify-center mb-3 group-hover:bg-[#ffe2db] transition-colors">
-            <span className="material-symbols-outlined text-2xl text-[#7a1f1f]">{emptyIcon}</span>
+            <IconMapper name={emptyIcon} className="text-2xl text-[#7a1f1f]" />
           </div>
           <h4 className="font-['Playfair_Display'] text-[18px] leading-[24px] font-bold text-[#7a1f1f] mb-1">
             {emptyTitle}
@@ -113,9 +114,7 @@ export function FormArraySection<T extends FieldItem>({
                         }}
                         className="text-[#564240] hover:text-[#7a1f1f] disabled:opacity-30 cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[16px] leading-none">
-                          expand_less
-                        </span>
+                        <IconMapper name="expand_less" className="text-[16px] leading-none" />
                       </button>
                       <button
                         type="button"
@@ -126,9 +125,7 @@ export function FormArraySection<T extends FieldItem>({
                         }}
                         className="text-[#564240] hover:text-[#7a1f1f] disabled:opacity-30 cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[16px] leading-none">
-                          expand_more
-                        </span>
+                        <IconMapper name="expand_more" className="text-[16px] leading-none" />
                       </button>
                     </div>
 
@@ -150,16 +147,14 @@ export function FormArraySection<T extends FieldItem>({
                       onClick={() => onRemove(index)}
                       className="w-8 h-8 rounded-full hover:bg-red-500/10 text-[#564240] hover:text-[#7a1f1f] flex items-center justify-center transition-all cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                      <IconMapper name="delete" className="text-[18px]" />
                     </button>
                     <button
                       type="button"
                       onClick={() => setExpandedIndex(isExpanded ? null : index)}
                       className="w-8 h-8 rounded-full hover:bg-[#fff0ed] text-[#564240] hover:text-[#7a1f1f] flex items-center justify-center transition-all cursor-pointer"
                     >
-                      <span className="material-symbols-outlined">
-                        {isExpanded ? 'expand_less' : 'expand_more'}
-                      </span>
+                      <IconMapper name={isExpanded ? 'expand_less' : 'expand_more'} />
                     </button>
                   </div>
                 </div>

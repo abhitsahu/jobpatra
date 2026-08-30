@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -221,23 +222,17 @@ export default function ProcessingPage() {
             <div key={step.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {step.status === 'completed' && (
-                  <span
-                    className="material-symbols-outlined text-green-600 text-[18px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
+                  <IconMapper name="check_circle" className="text-green-600 text-[18px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }} />
                 )}
                 {step.status === 'running' && (
                   <div className="w-[18px] h-[18px] rounded-full border-2 border-[#7a1f1f]/25 border-t-[#7a1f1f] animate-spin shrink-0"></div>
                 )}
                 {step.status === 'idle' && (
-                  <span className="material-symbols-outlined text-[#564240]/20 text-[18px]">
-                    radio_button_unchecked
-                  </span>
+                  <IconMapper name="radio_button_unchecked" className="text-[#564240]/20 text-[18px]" />
                 )}
                 {step.status === 'failed' && (
-                  <span className="material-symbols-outlined text-red-600 text-[18px]">cancel</span>
+                  <IconMapper name="cancel" className="text-red-600 text-[18px]" />
                 )}
                 <span
                   className={`text-[13px] ${

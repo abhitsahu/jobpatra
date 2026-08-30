@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -44,7 +45,7 @@ export function CreateResumeDialog({ onClose }: { onClose: () => void }) {
             className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-on-surface-variant transition-colors"
             aria-label="Close"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <IconMapper name="close" className="text-[20px]" />
           </button>
 
           <h2 className="text-[24px] font-bold text-on-surface mb-6 font-[Space_Grotesk]">
@@ -92,7 +93,7 @@ export function CreateResumeDialog({ onClose }: { onClose: () => void }) {
                       }`}
                     >
                       <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center mb-3">
-                        <span className="material-symbols-outlined text-[18px]">description</span>
+                        <IconMapper name="description" className="text-[18px]" />
                       </div>
                       <p className="text-[13px] font-semibold">{t.name}</p>
                       <p className="text-[11px] text-on-surface-variant mt-0.5">{t.id}</p>
@@ -100,9 +101,7 @@ export function CreateResumeDialog({ onClose }: { onClose: () => void }) {
                   ))
                 ) : (
                   <div className="col-span-2 text-center py-8 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-3xl block mb-2">
-                      description
-                    </span>
+                    <IconMapper name="description" className="text-3xl block mb-2" />
                     No templates found
                   </div>
                 )}

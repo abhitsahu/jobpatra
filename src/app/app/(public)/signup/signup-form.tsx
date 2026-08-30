@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -206,7 +207,7 @@ export function SignupForm() {
             disabled={isSubmitting || !passwordReady}
           >
             {isSubmitting ? 'Registering...' : 'Start Building'}
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            <IconMapper name="arrow_forward" className="text-sm" />
           </button>
         </div>
       </form>
@@ -222,7 +223,7 @@ export function SignupForm() {
               disabled={googleLoading}
               className="p-3 border border-[#ddc0bd] hover:bg-[#fff0ed] transition-colors flex items-center justify-center disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[#2b1611]">google</span>
+              <IconMapper name="google" className="text-[#2b1611]" />
             </button>
           </div>
           <p className="mt-6 text-[#564240] font-['Hanken_Grotesk'] text-[16px] leading-[24px]">

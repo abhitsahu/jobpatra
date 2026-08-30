@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -106,9 +107,7 @@ export default function SettingsClient({ session }: { session: Session }) {
               >
                 Settings
               </h1>
-              <span className="material-symbols-outlined text-[#8a716f] rotate-45 text-xl">
-                attach_file
-              </span>
+              <IconMapper name="attach_file" className="text-[#8a716f] rotate-45 text-xl" />
             </div>
             <p
               className="text-[14px] lg:text-[16px] text-[#564240]"
@@ -153,9 +152,7 @@ export default function SettingsClient({ session }: { session: Session }) {
                 </option>
               ))}
             </select>
-            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none">
-              expand_more
-            </span>
+            <IconMapper name="expand_more" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none" />
           </div>
 
           {/* Horizontal scroll pill tabs for quick touch access on mobile */}
@@ -181,7 +178,7 @@ export default function SettingsClient({ session }: { session: Session }) {
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >
-                  <span className="material-symbols-outlined text-[16px]">{item.icon}</span>
+                  <IconMapper name={item.icon} className="text-[16px]" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -214,7 +211,7 @@ export default function SettingsClient({ session }: { session: Session }) {
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >
-                  <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                  <IconMapper name={item.icon} className="text-[20px]" />
                   <span>{item.label}</span>
                 </button>
               );

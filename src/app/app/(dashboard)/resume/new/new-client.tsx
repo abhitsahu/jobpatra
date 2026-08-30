@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -274,13 +275,9 @@ export default function NewResumeClient() {
         <section className="mb-16">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 mb-3">
-              <span
-                ref={nibRef}
-                className="material-symbols-outlined text-[#5b060c] transition-all duration-300"
-                style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
-              >
-                edit_note
-              </span>
+              <IconMapper name="edit_note" ref={nibRef}
+                className="text-[#5b060c] transition-all duration-300"
+                style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
               <h2
                 className="text-[14px] leading-[20px] uppercase tracking-widest font-semibold text-[#564240]"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -355,9 +352,7 @@ export default function NewResumeClient() {
 
             {/* Search bar */}
             <div className="relative w-full md:w-80 shrink-0">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]">
-                search
-              </span>
+              <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]" />
               <input
                 type="text"
                 value={search}
@@ -409,9 +404,7 @@ export default function NewResumeClient() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="col-span-full text-center py-20 border border-dashed border-[#ddc0bd] rounded-xl">
-              <span className="material-symbols-outlined text-4xl text-[#564240]/40 block mb-2">
-                search_off
-              </span>
+              <IconMapper name="search_off" className="text-4xl text-[#564240]/40 block mb-2" />
               <p
                 className="text-[#564240] text-sm"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -459,9 +452,7 @@ export default function NewResumeClient() {
                       {/* Fallback pattern if no image */}
                       {!t.previewImage && (
                         <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE] to-[#ffe2db] flex flex-col items-center justify-center p-4 text-center">
-                          <span className="material-symbols-outlined text-4xl text-[#564240]/40 mb-2">
-                            description
-                          </span>
+                          <IconMapper name="description" className="text-4xl text-[#564240]/40 mb-2" />
                           <span
                             className="text-[10px] font-semibold text-[#564240]/60 uppercase tracking-widest"
                             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -478,12 +469,8 @@ export default function NewResumeClient() {
                           isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-75',
                         )}
                       >
-                        <span
-                          className="material-symbols-outlined text-white text-sm"
-                          style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }}
-                        >
-                          check
-                        </span>
+                        <IconMapper name="check" className="text-white text-sm"
+                          style={{ fontSize: 16, fontVariationSettings: "'FILL' 1" }} />
                       </div>
 
                       {/* ATS badge */}
@@ -551,12 +538,8 @@ export default function NewResumeClient() {
       >
         {/* Hint */}
         <div className="flex items-center gap-3">
-          <span
-            className="material-symbols-outlined text-[#795900] text-xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            auto_fix
-          </span>
+          <IconMapper name="auto_fix" className="text-[#795900] text-xl"
+            style={{ fontVariationSettings: "'FILL' 1" }} />
           <p
             className="text-[12px] text-[#564240]"
             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -599,7 +582,7 @@ export default function NewResumeClient() {
             ) : (
               <>
                 <span>Create Resume</span>
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <IconMapper name="arrow_forward" className="text-[18px]" />
               </>
             )}
           </button>
@@ -621,12 +604,8 @@ export default function NewResumeClient() {
 
             {/* Icon */}
             <div className="w-14 h-14 rounded-full bg-[#fff0ed] border-2 border-[#ddc0bd] flex items-center justify-center mb-5">
-              <span
-                className="material-symbols-outlined text-[#5b060c] text-[28px]"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                download_for_offline
-              </span>
+              <IconMapper name="download_for_offline" className="text-[#5b060c] text-[28px]"
+                style={{ fontVariationSettings: "'FILL' 1" }} />
             </div>
 
             <h2
@@ -654,9 +633,7 @@ export default function NewResumeClient() {
                 className="flex-1 flex items-center justify-center gap-2 bg-[#5b060c] text-white px-5 py-3 rounded-lg font-semibold text-[14px] hover:opacity-90 transition-all shadow-sm cursor-pointer disabled:opacity-50"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
-                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  download_for_offline
-                </span>
+                <IconMapper name="download_for_offline" className="text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }} />
                 Yes, Auto-fill
               </button>
               <button
@@ -677,7 +654,7 @@ export default function NewResumeClient() {
               className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#ffe2db] transition-colors text-[#564240] cursor-pointer"
               aria-label="Close"
             >
-              <span className="material-symbols-outlined text-base">close</span>
+              <IconMapper name="close" className="text-base" />
             </button>
           </div>
         </div>
@@ -685,12 +662,8 @@ export default function NewResumeClient() {
 
       {/* Decorative paper clip */}
       <div className="fixed top-24 right-12 z-[3] pointer-events-none opacity-40">
-        <span
-          className="material-symbols-outlined text-[#8a716f]"
-          style={{ fontSize: 48, transform: 'rotate(45deg)', display: 'block' }}
-        >
-          attach_file
-        </span>
+        <IconMapper name="attach_file" className="text-[#8a716f]"
+          style={{ fontSize: 48, transform: 'rotate(45deg)', display: 'block' }} />
       </div>
     </div>
   );

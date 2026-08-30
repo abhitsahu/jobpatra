@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 import { TemplateCard } from './template-card';
@@ -15,9 +16,7 @@ export function TemplateGrid({ templates, onUseTemplate, onPreview }: TemplateGr
     return (
       <section className="max-w-7xl mx-auto px-4 md:px-16 py-16 text-center">
         <div className="bg-white p-12 max-w-xl mx-auto rounded-xl border border-[#E5D9C8] shadow-sm">
-          <span className="material-symbols-outlined text-[64px] text-[#5b060c] opacity-40 mb-4">
-            find_in_page
-          </span>
+          <IconMapper name="find_in_page" className="text-[64px] text-[#5b060c] opacity-40 mb-4" />
           <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611] mb-2">
             No templates found
           </h3>

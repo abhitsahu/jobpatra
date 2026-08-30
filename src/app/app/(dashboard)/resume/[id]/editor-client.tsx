@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
@@ -270,7 +271,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   if (isError || !resume) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-[#fff8f6]">
-        <span className="material-symbols-outlined text-5xl text-[#7a1f1f] mb-4">error</span>
+        <IconMapper name="error" className="text-5xl text-[#7a1f1f] mb-4" />
         <h3 className="text-xl font-bold text-[#2b1611] mb-2">Resume Not Found</h3>
         <p className="text-[#564240] mb-6">This resume may have been deleted.</p>
         <button
@@ -293,7 +294,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       <header className="h-16 border-b border-[#ddc0bd] bg-white flex items-center justify-between px-6 z-20 shrink-0">
         <div className="flex items-center gap-4 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#7a1f1f]">description</span>
+            <IconMapper name="description" className="text-[#7a1f1f]" />
             <input
               id="editor-resume-title"
               type="text"
@@ -307,7 +308,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           <div className="h-4 w-px bg-[#ddc0bd] hidden sm:block"></div>
 
           <div className="hidden sm:flex items-center gap-2 text-[#564240]">
-            <span className="material-symbols-outlined text-sm">auto_stories</span>
+            <IconMapper name="auto_stories" className="text-sm" />
             <span className="text-[12px] font-semibold">
               Template:{' '}
               <span className="font-bold text-[#2b1611]">{resume.templateId || 'Default'}</span>
@@ -322,23 +323,17 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               </>
             ) : saveStatus === 'failed' ? (
               <>
-                <span className="material-symbols-outlined text-[16px] text-[#7a1f1f] shrink-0">
-                  cloud_off
-                </span>
+                <IconMapper name="cloud_off" className="text-[16px] text-[#7a1f1f] shrink-0" />
                 <span className="text-[#7a1f1f]">Save failed</span>
               </>
             ) : isDirty ? (
               <>
-                <span className="material-symbols-outlined text-[16px] text-[#795900] shrink-0">
-                  pending
-                </span>
+                <IconMapper name="pending" className="text-[16px] text-[#795900] shrink-0" />
                 <span className="text-[#795900]">Unsaved changes</span>
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">
-                  cloud_done
-                </span>
+                <IconMapper name="cloud_done" className="text-[16px] text-emerald-600 shrink-0" />
                 <span className="text-emerald-600">Saved</span>
               </>
             )}
@@ -352,9 +347,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             className="md:hidden p-2 rounded-full hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240]"
             aria-label="Toggle preview"
           >
-            <span className="material-symbols-outlined">
-              {showMobilePreview ? 'edit' : 'visibility'}
-            </span>
+            <IconMapper name={showMobilePreview ? 'edit' : 'visibility'} />
           </button>
 
           <button
@@ -422,7 +415,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                     onClick={() => setActiveSection(prevSection)}
                     className="text-[#564240] font-semibold text-[13px] tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#fff0ed] transition-all cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-base">west</span>
+                    <IconMapper name="west" className="text-base" />
                     Previous
                   </button>
                 ) : (
@@ -435,7 +428,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                     className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[13px] tracking-wider uppercase shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
                   >
                     Next Section
-                    <span className="material-symbols-outlined text-base">east</span>
+                    <IconMapper name="east" className="text-base" />
                   </button>
                 )}
               </div>
@@ -460,7 +453,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
                 title="Zoom Out"
               >
-                <span className="material-symbols-outlined text-base">remove</span>
+                <IconMapper name="remove" className="text-base" />
               </button>
               <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
                 {zoom}%
@@ -470,7 +463,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
                 title="Zoom In"
               >
-                <span className="material-symbols-outlined text-base">add</span>
+                <IconMapper name="add" className="text-base" />
               </button>
               <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
               <button
@@ -478,7 +471,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
                 title="Download PDF"
               >
-                <span className="material-symbols-outlined text-base">download</span>
+                <IconMapper name="download" className="text-base" />
               </button>
             </div>
           </div>
@@ -506,9 +499,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 />
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
-                  <span className="material-symbols-outlined text-4xl block mb-2">
-                    find_in_page
-                  </span>
+                  <IconMapper name="find_in_page" className="text-4xl block mb-2" />
                   <p className="text-[14px]">Loading live preview...</p>
                 </div>
               )}
@@ -525,7 +516,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
               title="Open AI Suggestions"
             >
-              <span className="material-symbols-outlined text-lg">sparkles</span>
+              <IconMapper name="sparkles" className="text-lg" />
             </button>
           )}
         </section>

@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useResumes } from '@/app/app/_hooks/use-resumes';
@@ -130,9 +131,7 @@ export function ResumeSourceSelector({
           />
           <div className="flex flex-col items-start gap-2 p-5 bg-white/60 border border-[#ddc0bd] rounded-lg hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#7a1f1f] text-[22px]">
-                folder_open
-              </span>
+              <IconMapper name="folder_open" className="text-[#7a1f1f] text-[22px]" />
               <span className="font-['Hanken_Grotesk'] text-[14px] font-bold text-[#2b1611]">
                 Use JobPatra Resume
               </span>
@@ -157,9 +156,7 @@ export function ResumeSourceSelector({
           />
           <div className="flex flex-col items-start gap-2 p-5 bg-white/60 border border-[#ddc0bd] rounded-lg hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#7a1f1f] text-[22px]">
-                upload_file
-              </span>
+              <IconMapper name="upload_file" className="text-[#7a1f1f] text-[22px]" />
               <span className="font-['Hanken_Grotesk'] text-[14px] font-bold text-[#2b1611]">
                 Upload New Resume
               </span>
@@ -175,9 +172,7 @@ export function ResumeSourceSelector({
       {sourceType === 'library' && (
         <div className="border border-[#ddc0bd] bg-white/60 rounded-xl p-5 space-y-4">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#564240]/60 text-[18px]">
-              search
-            </span>
+            <IconMapper name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[#564240]/60 text-[18px]" />
             <input
               type="text"
               value={searchQuery}
@@ -215,9 +210,7 @@ export function ResumeSourceSelector({
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="material-symbols-outlined text-[20px] text-[#564240]">
-                        description
-                      </span>
+                      <IconMapper name="description" className="text-[20px] text-[#564240]" />
                       <div className="min-w-0">
                         <p className="font-['Hanken_Grotesk'] text-[13px] font-semibold truncate">
                           {r.title}
@@ -228,12 +221,8 @@ export function ResumeSourceSelector({
                       </div>
                     </div>
                     {isSelected && (
-                      <span
-                        className="material-symbols-outlined text-[#7a1f1f] text-[18px]"
-                        style={{ fontVariationSettings: "'FILL' 1" }}
-                      >
-                        check_circle
-                      </span>
+                      <IconMapper name="check_circle" className="text-[#7a1f1f] text-[18px]"
+                        style={{ fontVariationSettings: "'FILL' 1" }} />
                     )}
                   </button>
                 );
@@ -281,12 +270,8 @@ export function ResumeSourceSelector({
               </>
             ) : resumeFileName ? (
               <>
-                <span
-                  className="material-symbols-outlined text-[#7a1f1f] text-[36px] mb-2"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  task
-                </span>
+                <IconMapper name="task" className="text-[#7a1f1f] text-[36px] mb-2"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
                 <p className="font-['Hanken_Grotesk'] text-[13px] font-bold text-[#7a1f1f]">
                   {resumeFileName}
                 </p>
@@ -296,9 +281,7 @@ export function ResumeSourceSelector({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[#7a1f1f] text-[36px] mb-3">
-                  upload_file
-                </span>
+                <IconMapper name="upload_file" className="text-[#7a1f1f] text-[36px] mb-3" />
                 <p className="font-['Hanken_Grotesk'] text-[13px] font-bold text-[#2b1611]">
                   Drop your resume document here
                 </p>

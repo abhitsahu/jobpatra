@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -36,12 +37,8 @@ export function ForgotPasswordForm() {
       {submitted ? (
         <div className="space-y-6 text-center py-4">
           <header className="space-y-3">
-            <span
-              className="material-symbols-outlined text-[#5b060c] text-5xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              mark_email_read
-            </span>
+            <IconMapper name="mark_email_read" className="text-[#5b060c] text-5xl"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
               Check your email
             </h3>
@@ -55,7 +52,7 @@ export function ForgotPasswordForm() {
               className="font-['Hanken_Grotesk'] text-[14px] text-[#5b060c] font-bold border-b border-[#5b060c]/30 hover:border-[#5b060c] transition-all inline-flex items-center gap-1"
               href="/app/login"
             >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
+              <IconMapper name="arrow_back" className="text-base" />
               Back to login
             </Link>
           </div>
@@ -99,7 +96,7 @@ export function ForgotPasswordForm() {
                 disabled={isSubmitting}
               >
                 <span>{isSubmitting ? 'Sending...' : 'Send Reset Link'}</span>
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                <IconMapper name="arrow_forward" className="text-sm" />
               </button>
             </div>
           </form>
@@ -109,7 +106,7 @@ export function ForgotPasswordForm() {
               className="font-['Hanken_Grotesk'] text-[14px] text-[#5b060c] font-bold border-b border-[#5b060c]/30 hover:border-[#5b060c] transition-all inline-flex items-center gap-1"
               href="/app/login"
             >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
+              <IconMapper name="arrow_back" className="text-base" />
               Back to login
             </Link>
           </div>

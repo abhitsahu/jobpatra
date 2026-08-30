@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 /**
  * Reusable primitives for the Settings page.
  * These follow the JobPatra paper/Burgundy design language.
@@ -34,7 +35,7 @@ export function SheetCard({
 export function SectionHeading({ children, icon }: { children: React.ReactNode; icon?: string }) {
   return (
     <div className="flex items-center gap-3 mb-8">
-      {icon && <span className="material-symbols-outlined text-[#5b060c]">{icon}</span>}
+      {icon && <IconMapper name={icon} className="text-[#5b060c]" />}
       <h3
         className="text-[24px] leading-[32px] font-semibold text-[#5b060c]"
         style={{ fontFamily: 'Playfair Display, serif' }}
@@ -143,12 +144,8 @@ export function WaxSeal() {
         border: '2px solid #5c4300',
       }}
     >
-      <span
-        className="material-symbols-outlined text-white"
-        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }}
-      >
-        workspace_premium
-      </span>
+      <IconMapper name="workspace_premium" className="text-white"
+        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }} />
     </div>
   );
 }

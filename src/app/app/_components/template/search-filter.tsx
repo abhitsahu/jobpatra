@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import React from 'react';
 
@@ -42,9 +43,7 @@ export function SearchFilter({
 
         {/* Search Input */}
         <div className="relative w-full md:w-72">
-          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#564240] text-lg pointer-events-none">
-            search
-          </span>
+          <IconMapper name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#564240] text-lg pointer-events-none" />
           <input
             className="w-full bg-white font-['Hanken_Grotesk'] text-[15px] text-[#2b1611] py-2 pl-10 pr-4 rounded-full border border-[#E5D9C8] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c] transition-colors placeholder:text-[#564240]/50 shadow-sm"
             placeholder="Search collection..."
@@ -57,7 +56,7 @@ export function SearchFilter({
               onClick={() => onSearchChange('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] hover:text-[#5b060c]"
             >
-              <span className="material-symbols-outlined text-sm">close</span>
+              <IconMapper name="close" className="text-sm" />
             </button>
           )}
         </div>

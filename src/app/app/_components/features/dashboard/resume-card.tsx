@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -60,7 +61,7 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
 
       <div className="flex-1 flex items-center min-w-0">
         <div className="w-14 h-16 bg-white border border-[#ddc0bd]/60 rounded-sm shadow-sm flex items-center justify-center mr-5 flex-shrink-0">
-          <span className="material-symbols-outlined text-[#5b060c]/40 text-2xl">description</span>
+          <IconMapper name="description" className="text-[#5b060c]/40 text-2xl" />
         </div>
         <div className="min-w-0">
           <h4 className="font-['Playfair_Display'] text-[18px] font-semibold text-[#5b060c] truncate group-hover:underline">
@@ -83,35 +84,35 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
           className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
           title="Edit Resume"
         >
-          <span className="material-symbols-outlined text-[20px]">edit</span>
+          <IconMapper name="edit" className="text-[20px]" />
         </button>
         <button
           onClick={handlePreview}
           className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
           title="Quick Preview"
         >
-          <span className="material-symbols-outlined text-[20px]">visibility</span>
+          <IconMapper name="visibility" className="text-[20px]" />
         </button>
         <button
           onClick={handleDuplicate}
           className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
           title="Duplicate"
         >
-          <span className="material-symbols-outlined text-[20px]">content_copy</span>
+          <IconMapper name="content_copy" className="text-[20px]" />
         </button>
         <button
           onClick={handleDownload}
           className="p-2 hover:bg-[#ffe2db] text-[#564240] hover:text-[#5b060c] rounded transition-colors"
           title="Download PDF"
         >
-          <span className="material-symbols-outlined text-[20px]">download</span>
+          <IconMapper name="download" className="text-[20px]" />
         </button>
         <button
           onClick={handleDelete}
           className="p-2 hover:bg-red-50 text-[#564240] hover:text-red-600 rounded transition-colors"
           title="Delete"
         >
-          <span className="material-symbols-outlined text-[20px]">delete</span>
+          <IconMapper name="delete" className="text-[20px]" />
         </button>
       </div>
     </motion.div>

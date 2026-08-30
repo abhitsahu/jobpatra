@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -76,7 +77,7 @@ export function ResetPasswordForm() {
     if (!token) {
       return (
         <div className="space-y-6 text-center py-4">
-          <span className="material-symbols-outlined text-[#ba1a1a] text-5xl">link_off</span>
+          <IconMapper name="link_off" className="text-[#ba1a1a] text-5xl" />
           <header className="space-y-2">
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
               Invalid reset link
@@ -100,12 +101,8 @@ export function ResetPasswordForm() {
     if (success) {
       return (
         <div className="space-y-6 text-center py-4">
-          <span
-            className="material-symbols-outlined text-[#2a7040] text-5xl"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            check_circle
-          </span>
+          <IconMapper name="check_circle" className="text-[#2a7040] text-5xl"
+            style={{ fontVariationSettings: "'FILL' 1" }} />
           <header className="space-y-2">
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
               Password updated
@@ -196,7 +193,7 @@ export function ResetPasswordForm() {
               disabled={isSubmitting || !passwordReady}
             >
               <span>{isSubmitting ? 'Updating...' : 'Reset Password'}</span>
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              <IconMapper name="arrow_forward" className="text-sm" />
             </button>
           </div>
         </form>
@@ -206,7 +203,7 @@ export function ResetPasswordForm() {
             className="font-['Hanken_Grotesk'] text-[14px] text-[#5b060c] font-bold border-b border-[#5b060c]/30 hover:border-[#5b060c] transition-all inline-flex items-center gap-1"
             href="/app/login"
           >
-            <span className="material-symbols-outlined text-base">arrow_back</span>
+            <IconMapper name="arrow_back" className="text-base" />
             Back to login
           </Link>
         </div>

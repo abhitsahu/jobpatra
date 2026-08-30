@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 /**
  * PreviewSelectionToolbar — AI improve for text selected inside the live preview iframe.
@@ -273,12 +274,8 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             }}
             title="Improve selected text with AI"
           >
-            <span
-              className="material-symbols-outlined text-[16px]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              auto_fix
-            </span>
+            <IconMapper name="auto_fix" className="text-[16px]"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
             <span>AI Improve Selection</span>
             {matchedField && (
               <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-medium tracking-normal normal-case opacity-90">
@@ -292,7 +289,7 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             className="w-8 h-8 rounded-full bg-white/95 hover:bg-white text-[#564240] hover:text-[#7a1f1f] shadow-lg flex items-center justify-center border border-[#ddc0bd]/60 transition-all cursor-pointer hover:scale-105 active:scale-95"
             title="Cancel"
           >
-            <span className="material-symbols-outlined text-[16px]">close</span>
+            <IconMapper name="close" className="text-[16px]" />
           </button>
         </div>
       )}
@@ -325,12 +322,8 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             className="flex items-center gap-2 px-4 py-3 border-b border-[#ddc0bd]/40"
             style={{ background: '#fff0ed' }}
           >
-            <span
-              className="material-symbols-outlined text-[#7a1f1f] text-[18px]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              auto_fix
-            </span>
+            <IconMapper name="auto_fix" className="text-[#7a1f1f] text-[18px]"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
             <span className="text-[12px] font-bold text-[#7a1f1f] uppercase tracking-wider font-['Hanken_Grotesk']">
               AI Improvement
             </span>
@@ -344,7 +337,7 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
               onClick={handleDismiss}
               className="ml-auto text-[#7a1f1f]/60 hover:text-[#7a1f1f] hover:bg-[#7a1f1f]/10 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-colors"
             >
-              <span className="material-symbols-outlined text-[16px]">close</span>
+              <IconMapper name="close" className="text-[16px]" />
             </button>
           </div>
 
@@ -358,12 +351,8 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
           {uiState === 'error' ? (
             <div className="p-4">
               <div className="flex items-start gap-2.5">
-                <span
-                  className="material-symbols-outlined text-[#7a1f1f] text-[20px] shrink-0 mt-0.5"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  error
-                </span>
+                <IconMapper name="error" className="text-[#7a1f1f] text-[20px] shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[12px] font-semibold text-[#2b1611] font-['Hanken_Grotesk'] leading-snug">
                     {errorMsg}
@@ -413,7 +402,7 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
                   className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-bold font-['Hanken_Grotesk'] text-white shadow-sm hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   style={{ background: '#7a1f1f' }}
                 >
-                  <span className="material-symbols-outlined text-[15px]">check</span>
+                  <IconMapper name="check" className="text-[15px]" />
                   {accepted ? 'Applied!' : (matchedField ? 'Apply to resume' : 'Copy to clipboard')}
                 </button>
                 <button
@@ -439,9 +428,7 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             boxShadow: '0 8px 24px rgba(26,122,63,0.35)',
           }}
         >
-          <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-            check_circle
-          </span>
+          <IconMapper name="check_circle" className="text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }} />
           <span>Applied to resume!</span>
         </div>
       )}

@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -116,7 +117,7 @@ export function BillingClient() {
               className="text-[#564240] hover:text-[#5b060c] transition-colors mr-1"
               aria-label="Go back"
             >
-              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+              <IconMapper name="arrow_back" className="text-[20px]" />
             </button>
             <h1
               className="text-[28px] lg:text-[32px] font-semibold text-[#5b060c]"
@@ -124,7 +125,7 @@ export function BillingClient() {
             >
               Billing & Invoices
             </h1>
-            <span className="material-symbols-outlined text-[#8a716f] text-xl">receipt_long</span>
+            <IconMapper name="receipt_long" className="text-[#8a716f] text-xl" />
           </div>
           <p className="text-[14px] lg:text-[16px] text-[#564240]">
             View and download your payment receipts.
@@ -135,7 +136,7 @@ export function BillingClient() {
           onClick={() => router.push('/app/settings?section=subscription')}
           className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold border border-[#ddc0bd] text-[#564240] hover:bg-[#ffe9e4] transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[16px]">workspace_premium</span>
+          <IconMapper name="workspace_premium" className="text-[16px]" />
           Manage Subscription
         </button>
       </header>
@@ -162,12 +163,8 @@ export function BillingClient() {
             className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
             style={{ background: '#fff0ed', border: '1px solid #ddc0bd' }}
           >
-            <span
-              className="material-symbols-outlined text-[#5b060c]"
-              style={{ fontSize: 28 }}
-            >
-              receipt_long
-            </span>
+            <IconMapper name="receipt_long" className="text-[#5b060c]"
+              style={{ fontSize: 28 }} />
           </div>
           <h2
             className="text-[20px] font-semibold text-[#5b060c] mb-2"
@@ -249,14 +246,12 @@ export function BillingClient() {
                     >
                       {downloadingId === invoice.id ? (
                         <>
-                          <span className="material-symbols-outlined text-[14px] animate-spin">
-                            progress_activity
-                          </span>
+                          <IconMapper name="progress_activity" className="text-[14px] animate-spin" />
                           Downloading...
                         </>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-[14px]">download</span>
+                          <IconMapper name="download" className="text-[14px]" />
                           PDF
                         </>
                       )}
@@ -266,7 +261,7 @@ export function BillingClient() {
                       className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-[#8a716f] border border-[#ddc0bd]"
                       title="PDF is being generated…"
                     >
-                      <span className="material-symbols-outlined text-[14px]">hourglass_empty</span>
+                      <IconMapper name="hourglass_empty" className="text-[14px]" />
                       Pending
                     </span>
                   )}

@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -172,14 +173,12 @@ export function AtsAnalyzerClient() {
     <div className="flex-1 overflow-y-auto bg-[#F8F2E8] p-6 md:p-10 relative">
       {/* Decorative Watermark / Archive stamp */}
       <div className="absolute top-10 right-16 opacity-[0.03] pointer-events-none hidden lg:block">
-        <span className="material-symbols-outlined text-[140px]">history_edu</span>
+        <IconMapper name="history_edu" className="text-[140px]" />
       </div>
 
       <header className="mb-8 max-w-5xl">
         <div className="flex items-center gap-2 mb-2">
-          <span className="material-symbols-outlined text-[#7a1f1f] text-[18px]">
-            verified_user
-          </span>
+          <IconMapper name="verified_user" className="text-[#7a1f1f] text-[18px]" />
           <span className="font-['Hanken_Grotesk'] text-[11px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
             JobPatra Audit Department
           </span>
@@ -259,7 +258,7 @@ export function AtsAnalyzerClient() {
                   : 'bg-[#ddc0bd] border border-[#ddc0bd]/60 text-[#564240]/40 cursor-not-allowed'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">analytics</span>
+              <IconMapper name="analytics" className="text-[18px]" />
               Initiate Compatibility Scan
             </button>
           </div>

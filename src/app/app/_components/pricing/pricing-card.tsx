@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 import React from 'react';
 import type { PricingPlanResponse } from '@/app/api/model/response/pricing';
 
@@ -62,19 +63,13 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
       {/* Premium / Wax Seal Badge */}
       {isPopular ? (
         <div className="absolute -top-3 -right-3 w-20 h-20 wax-seal rounded-full flex items-center justify-center transform rotate-12 shadow-xl border-4 border-[#5b060c] z-20 select-none pointer-events-none">
-          <span
-            className="material-symbols-outlined text-white text-2xl font-filled"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            workspace_premium
-          </span>
+          <IconMapper name="workspace_premium" className="text-white text-2xl font-filled"
+            style={{ fontVariationSettings: "'FILL' 1" }} />
         </div>
       ) : (
         slug in PLAN_ICONS && (
           <div className="absolute top-0 right-0 p-4 select-none pointer-events-none">
-            <span className="material-symbols-outlined text-[#ddc0bd] text-2xl">
-              {PLAN_ICONS[slug]}
-            </span>
+            <IconMapper name={PLAN_ICONS[slug]} className="text-[#ddc0bd] text-2xl" />
           </div>
         )
       )}
@@ -108,9 +103,7 @@ export function PricingCard({ plan, isYearly, onSelect }: PricingCardProps) {
       <ul className="space-y-4 mb-10 flex-grow">
         {features.map((feat) => (
           <li key={feat.id} className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#5b060c] text-lg select-none">
-              {feat.available ? 'check' : 'close'}
-            </span>
+            <IconMapper name={feat.available ? 'check' : 'close'} className="text-[#5b060c] text-lg select-none" />
             <span
               className={`font-['Hanken_Grotesk'] text-[16px] leading-[24px] ${
                 feat.highlight ? 'font-semibold text-[#2b1611]' : 'text-[#564240]'

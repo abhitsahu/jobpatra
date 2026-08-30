@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import Link from 'next/link';
 
@@ -83,9 +84,7 @@ export function LandingFaq() {
               >
                 <summary className="flex justify-between items-center font-['Playfair_Display'] text-lg font-semibold text-[#370003] cursor-pointer p-6 bg-[#FFF8F6] hover:bg-[#fff0ee] transition-colors outline-none list-none select-none">
                   <span>{faq.q}</span>
-                  <span className="material-symbols-outlined text-[#370003] transition-transform duration-300 group-open:rotate-180">
-                    expand_more
-                  </span>
+                  <IconMapper name="expand_more" className="text-[#370003] transition-transform duration-300 group-open:rotate-180" />
                 </summary>
                 <div className="p-6 pt-0 font-['Hanken_Grotesk'] text-sm text-[#564240] bg-[#FFF8F6]">
                   {faq.a}

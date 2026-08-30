@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { SheetCard, SectionHeading, SettingsRow } from './settings-primitives';
 
@@ -23,12 +24,8 @@ export function AccountSection() {
           bordered={false}
         >
           <div className="flex items-center gap-2">
-            <span
-              className="material-symbols-outlined text-green-600"
-              style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
-            >
-              verified
-            </span>
+            <IconMapper name="verified" className="text-green-600"
+              style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
             <span
               className="text-[13px] text-[#564240]"
               style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}

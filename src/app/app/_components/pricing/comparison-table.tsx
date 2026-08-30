@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 import React from 'react';
 import type {
   ComparisonFeatureResponse,
@@ -48,12 +49,8 @@ export function ComparisonTable({ plans, comparison }: ComparisonTableProps) {
                     className="text-center text-[#564240] text-sm flex justify-center items-center"
                   >
                     {val === 'check' ? (
-                      <span
-                        className="material-symbols-outlined text-[#5b060c] text-xl"
-                        style={{ fontVariationSettings: "'FILL' 1" }}
-                      >
-                        check_circle
-                      </span>
+                      <IconMapper name="check_circle" className="text-[#5b060c] text-xl"
+                        style={{ fontVariationSettings: "'FILL' 1" }} />
                     ) : (
                       val
                     )}

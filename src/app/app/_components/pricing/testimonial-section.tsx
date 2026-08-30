@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 import React from 'react';
 import type { TestimonialResponse } from '@/app/api/model/response/pricing';
 
@@ -12,9 +13,7 @@ export function TestimonialSection({ testimonials }: TestimonialSectionProps) {
     <section className="mt-32 flex flex-col gap-20">
       {testimonials.map((t) => (
         <div key={t.id} className="text-center max-w-3xl mx-auto">
-          <span className="material-symbols-outlined text-[#5b060c] text-4xl mb-6 select-none">
-            format_quote
-          </span>
+          <IconMapper name="format_quote" className="text-[#5b060c] text-4xl mb-6 select-none" />
           <p className="font-['Playfair_Display'] text-[32px] leading-[40px] italic text-[#2b1611] leading-relaxed mb-8">
             &ldquo;{t.review}&rdquo;
           </p>

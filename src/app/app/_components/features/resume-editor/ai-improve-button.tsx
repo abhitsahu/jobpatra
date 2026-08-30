@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 /**
  * AIImproveButton — reusable "AI Improve" trigger for resume section editors.
@@ -188,9 +189,7 @@ export function AIImproveButton({
           title={!currentText.trim() ? 'Add some text first' : 'Improve this section with AI'}
           id={`ai-improve-btn-${sectionType}`}
         >
-          <span className="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">
-            auto_fix
-          </span>
+          <IconMapper name="auto_fix" className="text-[16px] group-hover:rotate-12 transition-transform" />
           <span>{label}</span>
         </button>
       </div>
@@ -217,12 +216,8 @@ export function AIImproveButton({
   if (uiState === 'error') {
     return (
       <div className="mt-3 flex items-start gap-2 rounded-lg px-4 py-3 bg-[#fff0ed] border border-[#ddc0bd]/60">
-        <span
-          className="material-symbols-outlined text-[#7a1f1f] text-[18px] shrink-0 mt-0.5"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          error
-        </span>
+        <IconMapper name="error" className="text-[#7a1f1f] text-[18px] shrink-0 mt-0.5"
+          style={{ fontVariationSettings: "'FILL' 1" }} />
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-semibold text-[#2b1611] font-['Hanken_Grotesk']">
             {errorMessage}
@@ -240,7 +235,7 @@ export function AIImproveButton({
           onClick={() => { setUiState('idle'); setErrorMessage(''); }}
           className="text-[#7a1f1f] hover:opacity-70 cursor-pointer shrink-0"
         >
-          <span className="material-symbols-outlined text-[18px]">close</span>
+          <IconMapper name="close" className="text-[18px]" />
         </button>
       </div>
     );
@@ -282,7 +277,7 @@ export function AIImproveButton({
           id={`ai-improve-accept-${sectionType}`}
           className="flex items-center gap-1.5 px-4 py-1.5 bg-[#7a1f1f] text-white rounded-lg text-[12px] font-bold font-['Hanken_Grotesk'] shadow-sm hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[15px]">check</span>
+          <IconMapper name="check" className="text-[15px]" />
           Accept
         </button>
         <button
@@ -291,7 +286,7 @@ export function AIImproveButton({
           id={`ai-improve-dismiss-${sectionType}`}
           className="flex items-center gap-1.5 px-4 py-1.5 text-[#564240] border border-[#ddc0bd] rounded-lg text-[12px] font-semibold font-['Hanken_Grotesk'] hover:bg-[#fff0ed] transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[15px]">close</span>
+          <IconMapper name="close" className="text-[15px]" />
           Dismiss
         </button>
       </div>

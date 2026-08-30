@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import Link from 'next/link';
 
@@ -13,12 +14,8 @@ export function LandingHero() {
         {/* Typography & CTA */}
         <div className="flex flex-col items-start gap-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ffe9e5] rounded-full shadow-sm">
-            <span
-              className="material-symbols-outlined text-[#370003] text-sm"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              auto_awesome
-            </span>
+            <IconMapper name="auto_awesome" className="text-[#370003] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
             <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-widest">
               Introducing The Digital Nib
             </span>
@@ -40,9 +37,7 @@ export function LandingHero() {
               className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-8 py-4 rounded-full shadow-xl hover:scale-105 transition-transform duration-300 flex items-center gap-2 group"
             >
               Start Architecting
-              <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
+              <IconMapper name="arrow_forward" className="text-sm transition-transform group-hover:translate-x-1" />
             </Link>
 
             <div className="flex flex-col gap-1">
@@ -139,9 +134,7 @@ export function LandingHero() {
           <div className="absolute z-30 top-12 -right-4 sm:-right-8 w-44 sm:w-48 bg-[#FFF9C4] rounded shadow-lg transform rotate-6 p-4 flex flex-col gap-2 shadow-[2px_4px_12px_rgba(0,0,0,0.1)]">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#FBC02D] rounded-l" />
             <div className="flex items-center gap-2 mb-1">
-              <span className="material-symbols-outlined text-[#795900] text-sm">
-                edit_note
-              </span>
+              <IconMapper name="edit_note" className="text-[#795900] text-sm" />
               <span className="font-['Hanken_Grotesk'] text-[12px] font-semibold text-[#795900] uppercase">
                 AI Suggestion
               </span>
@@ -164,27 +157,17 @@ export function LandingHero() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Keywords</span>
-                <span
-                  className="material-symbols-outlined text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  check_circle
-                </span>
+                <IconMapper name="check_circle" className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Formatting</span>
-                <span
-                  className="material-symbols-outlined text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  check_circle
-                </span>
+                <IconMapper name="check_circle" className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }} />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Impact verbs</span>
-                <span className="material-symbols-outlined text-[#370003] text-sm">
-                  hourglass_empty
-                </span>
+                <IconMapper name="hourglass_empty" className="text-[#370003] text-sm" />
               </div>
             </div>
             <div className="w-full bg-[#ffdad3] h-1.5 rounded-full mt-2 overflow-hidden">
