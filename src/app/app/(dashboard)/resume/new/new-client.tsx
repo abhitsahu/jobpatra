@@ -187,18 +187,7 @@ export default function NewResumeClient() {
 
 
   return (
-    // Warm desk base — paper texture backdrop
-    <div className="flex-1 min-h-screen pb-32 overflow-y-auto" style={{ background: '#F8F2E8' }}>
-      {/* Natural paper texture overlay */}
-      <div
-        className="pointer-events-none fixed inset-0 z-[1]"
-        style={{
-          backgroundImage: "url('https://www.transparenttextures.com/patterns/natural-paper.png')",
-          opacity: 0.03,
-        }}
-      />
-
-      <div className="relative z-[2] max-w-5xl mx-auto px-12 py-10">
+    <div className="relative z-[2] w-full pb-32">
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
           <div>
@@ -529,11 +518,10 @@ export default function NewResumeClient() {
             </div>
           )}
         </section>
-      </div>
 
       {/* ── Sticky Footer Action Bar ────────────────────────────────────────── */}
       <footer
-        className="fixed bottom-0 left-56 right-0 z-50 border-t border-[#ddc0bd] px-12 py-5 flex items-center justify-between"
+        className="fixed bottom-0 left-0 md:left-56 right-0 z-50 border-t border-[#ddc0bd] px-12 py-5 flex items-center justify-between"
         style={{ background: '#ffffff' }}
       >
         {/* Hint */}

@@ -75,7 +75,7 @@ export function LoginForm() {
             className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] group-focus-within:tracking-[0.3em] uppercase tracking-wider transition-all duration-300"
             htmlFor="email"
           >
-            Professional Email
+            Email Address
           </label>
           <input
             className="w-full auth-input-underline font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#2b1611] placeholder:text-[#ddc0bd] py-2 focus:ring-0"
@@ -95,7 +95,7 @@ export function LoginForm() {
               className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] group-focus-within:text-[#5b060c] group-focus-within:tracking-[0.3em] uppercase tracking-wider transition-all duration-300"
               htmlFor="password"
             >
-              Security Code
+              Password
             </label>
             <Link
               className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#5b060c] hover:underline"
@@ -158,7 +158,7 @@ export function LoginForm() {
               className="text-[#5b060c] font-bold border-b border-[#5b060c]/30 hover:border-[#5b060c] transition-all"
               href="/app/signup"
             >
-              Request Access
+              Sign Up
             </Link>
           </p>
         </div>

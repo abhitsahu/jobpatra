@@ -4,12 +4,6 @@ export default function DashboardLoading() {
   return (
     <div className="h-full overflow-y-auto relative flex flex-col justify-between bg-[#FFF8EE]">
       <div>
-        {/* Top bar placeholder */}
-        <div className="flex justify-end items-center gap-4 py-4 px-8 border-b border-[#ddc0bd]/30 bg-[#F8F2E8]/80 backdrop-blur-md sticky top-0 z-30">
-          <Skeleton className="w-10 h-10 rounded-md" />
-          <Skeleton className="w-24 h-10 rounded-md" />
-        </div>
-
         {/* Main Content */}
         <div className="p-8 md:p-16 relative z-10 max-w-7xl mx-auto w-full space-y-12">
           {/* Header */}

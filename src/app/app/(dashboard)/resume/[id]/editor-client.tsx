@@ -29,6 +29,13 @@ import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { useRouter } from 'next/navigation';
+import { LeaveEditorDialog } from './components/LeaveEditorDialog';
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+  useDefaultLayout,
+} from '@/app/app/_components/ui/resizable';
 
 interface ResumeEditorClientProps {
   resumeId: string;
@@ -47,7 +54,14 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [zoom, setZoom] = useState(100);
   const [showAiWorkspace, setShowAiWorkspace] = useState(true);
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const [isLeaveSaving, setIsLeaveSaving] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const layoutProps = useDefaultLayout({
+    id: 'jobpatra-resume-editor-layout',
+    panelIds: ['form-panel', 'preview-panel'],
+  });
 
   // Fetch resume data and live preview html via TanStack Query
   const { data: resume, isLoading, isError } = useResume(resumeId);
@@ -244,6 +258,47 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     }
   };
 
+  const handleBackClick = () => {
+    if (isDirty) {
+      setIsLeaveDialogOpen(true);
+    } else {
+      router.push('/app/dashboard');
+    }
+  };
+
+  const handleSaveAndLeave = async () => {
+    try {
+      setIsLeaveSaving(true);
+      await onSubmit(form.getValues());
+      setIsLeaveDialogOpen(false);
+      router.push('/app/dashboard');
+    } catch (err) {
+      console.error('Save and leave failed:', err);
+    } finally {
+      setIsLeaveSaving(false);
+    }
+  };
+
+  const handleDiscardAndLeave = () => {
+    if (lastSavedValues.current) {
+      reset(lastSavedValues.current);
+    }
+    setIsLeaveDialogOpen(false);
+    router.push('/app/dashboard');
+  };
+
+  // Browser navigation / tab-close guard
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
   const handleTitleChange = (newTitle: string) => {
     form.setValue('title', newTitle, { shouldDirty: true });
   };
@@ -288,11 +343,162 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const prevSection = visibleSectionsKeys[currentIdx - 1];
   const nextSection = visibleSectionsKeys[currentIdx + 1];
 
+  const renderFormContent = () => (
+    <div className="flex-1 flex flex-col h-full overflow-hidden">
+      {/* Stepper / Horizontal Section Navigation */}
+      <SectionStepper
+        active={activeSection}
+        onChange={setActiveSection}
+        form={form}
+        templateSections={(templateData as { sections?: string[] } | null)?.sections}
+      />
+
+      {/* Form Canvas */}
+      <div
+        className="flex-1 overflow-y-auto px-6 lg:px-8 pb-12 pt-6 no-scrollbar"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
+          {activeSection === 'personalInfo' && <PersonalInfoForm form={form} />}
+          {activeSection === 'summary' && <SummaryForm form={form} />}
+          {activeSection === 'experience' && <ExperienceForm form={form} />}
+          {activeSection === 'education' && <EducationForm form={form} />}
+          {activeSection === 'projects' && <ProjectsForm form={form} />}
+          {activeSection === 'skills' && <SkillsForm form={form} />}
+          {activeSection === 'certifications' && <CertificationsForm form={form} />}
+          {activeSection === 'achievements' && <AchievementsForm form={form} />}
+          {activeSection === 'languages' && <LanguagesForm form={form} />}
+          {activeSection === 'references' && <ReferencesForm form={form} />}
+
+          {/* Navigation Controls */}
+          <div className="flex justify-between items-center pt-8 border-t border-[#ddc0bd]/30 mt-8">
+            {prevSection ? (
+              <button
+                type="button"
+                onClick={() => setActiveSection(prevSection)}
+                className="text-[#564240] font-semibold text-[13px] tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#fff0ed] transition-all cursor-pointer"
+              >
+                <IconMapper name="west" className="text-base" />
+                Previous
+              </button>
+            ) : (
+              <div />
+            )}
+            {nextSection && (
+              <button
+                type="button"
+                onClick={() => setActiveSection(nextSection)}
+                className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[13px] tracking-wider uppercase shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+              >
+                Next Section
+                <IconMapper name="east" className="text-base" />
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  const renderPreviewContent = () => (
+    <>
+      {/* Floating Preview Toolbar */}
+      <div className="w-full h-12 border-b border-[#ddc0bd]/30 px-6 flex items-center justify-between bg-white/50 backdrop-blur-sm z-20 shrink-0">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/60">
+          Live Preview
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
+            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+            title="Zoom Out"
+          >
+            <IconMapper name="remove" className="text-base" />
+          </button>
+          <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
+            {zoom}%
+          </span>
+          <button
+            onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+            title="Zoom In"
+          >
+            <IconMapper name="add" className="text-base" />
+          </button>
+          <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
+          <button
+            onClick={handleDownloadPdf}
+            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+            title="Download PDF"
+          >
+            <IconMapper name="download" className="text-base" />
+          </button>
+        </div>
+      </div>
+
+      {/* Simulated Resume Paper Box Container */}
+      <div
+        className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto no-scrollbar"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div
+          style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
+          className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
+        >
+          {isPreviewLoading && (
+            <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
+            </div>
+          )}
+
+          {/* Resume Preview Document Iframe */}
+          {previewHtml ? (
+            <iframe
+              id="resume-preview-iframe"
+              ref={iframeRef}
+              srcDoc={previewHtml}
+              className="w-full h-full border-none bg-white"
+              title="Resume Preview"
+            />
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
+              <IconMapper name="find_in_page" className="text-4xl block mb-2" />
+              <p className="text-[14px]">Loading live preview...</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Floating AI improve toolbar on text selection in live preview */}
+      <PreviewSelectionToolbar iframeRef={iframeRef} zoom={zoom} form={form} />
+
+      {/* Mini Toggle for Collapsed State */}
+      {!showAiWorkspace && (
+        <button
+          onClick={() => setShowAiWorkspace(true)}
+          className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
+          title="Open AI Suggestions"
+        >
+          <IconMapper name="sparkles" className="text-lg" />
+        </button>
+      )}
+    </>
+  );
+
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-white">
       {/* Editor Header / Top Application Bar */}
       <header className="h-16 border-b border-[#ddc0bd] bg-white flex items-center justify-between px-6 z-20 shrink-0">
-        <div className="flex items-center gap-4 min-w-0">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <button
+            type="button"
+            onClick={handleBackClick}
+            className="w-9 h-9 rounded-full bg-white border border-[#ddc0bd] shadow-xs hover:bg-[#fff0ed] hover:border-[#7a1f1f]/40 flex items-center justify-center text-[#370003] transition-all cursor-pointer shrink-0"
+            title="Back to Dashboard"
+            aria-label="Back to Dashboard"
+          >
+            <IconMapper name="arrow_back" className="text-[18px]" />
+          </button>
           <div className="flex items-center gap-2">
             <IconMapper name="description" className="text-[#7a1f1f]" />
             <input
@@ -379,148 +585,62 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
 
       {/* Editor Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Form Panel */}
-        <section
-          className={`w-full md:w-[480px] lg:w-[540px] shrink-0 flex flex-col border-r border-[#ddc0bd] bg-white relative z-10 transition-all ${
-            showMobilePreview ? 'hidden md:flex' : 'flex'
-          }`}
-        >
-          {/* Stepper / Horizontal Section Navigation */}
-          <SectionStepper
-            active={activeSection}
-            onChange={setActiveSection}
-            form={form}
-            templateSections={(templateData as { sections?: string[] } | null)?.sections}
-          />
-
-          {/* Form Canvas */}
-          <div className="flex-1 overflow-y-auto px-8 pb-12 pt-6">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
-              {activeSection === 'personalInfo' && <PersonalInfoForm form={form} />}
-              {activeSection === 'summary' && <SummaryForm form={form} />}
-              {activeSection === 'experience' && <ExperienceForm form={form} />}
-              {activeSection === 'education' && <EducationForm form={form} />}
-              {activeSection === 'projects' && <ProjectsForm form={form} />}
-              {activeSection === 'skills' && <SkillsForm form={form} />}
-              {activeSection === 'certifications' && <CertificationsForm form={form} />}
-              {activeSection === 'achievements' && <AchievementsForm form={form} />}
-              {activeSection === 'languages' && <LanguagesForm form={form} />}
-              {activeSection === 'references' && <ReferencesForm form={form} />}
-
-              {/* Navigation Controls */}
-              <div className="flex justify-between items-center pt-8 border-t border-[#ddc0bd]/30 mt-8">
-                {prevSection ? (
-                  <button
-                    type="button"
-                    onClick={() => setActiveSection(prevSection)}
-                    className="text-[#564240] font-semibold text-[13px] tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#fff0ed] transition-all cursor-pointer"
-                  >
-                    <IconMapper name="west" className="text-base" />
-                    Previous
-                  </button>
-                ) : (
-                  <div />
-                )}
-                {nextSection && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveSection(nextSection)}
-                    className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[13px] tracking-wider uppercase shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
-                  >
-                    Next Section
-                    <IconMapper name="east" className="text-base" />
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
-        </section>
-
-        {/* Right Preview Panel (Centered, simulated A4 print preview) */}
-        <section
-          className={`flex-1 bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between ${
-            showMobilePreview ? 'flex' : 'hidden md:flex'
-          }`}
-        >
-          {/* Floating Preview Toolbar */}
-          <div className="w-full h-12 border-b border-[#ddc0bd]/30 px-6 flex items-center justify-between bg-white/50 backdrop-blur-sm z-20 shrink-0">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/60">
-              Live Preview
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
-                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-                title="Zoom Out"
-              >
-                <IconMapper name="remove" className="text-base" />
-              </button>
-              <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
-                {zoom}%
-              </span>
-              <button
-                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
-                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-                title="Zoom In"
-              >
-                <IconMapper name="add" className="text-base" />
-              </button>
-              <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
-              <button
-                onClick={handleDownloadPdf}
-                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-                title="Download PDF"
-              >
-                <IconMapper name="download" className="text-base" />
-              </button>
-            </div>
-          </div>
-
-          {/* Simulated Resume Paper Box Container */}
-          <div className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto custom-scrollbar">
-            <div
-              style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
-              className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
-            >
-              {isPreviewLoading && (
-                <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
-                </div>
-              )}
-
-              {/* Resume Preview Document Iframe */}
-              {previewHtml ? (
-                <iframe
-                  id="resume-preview-iframe"
-                  ref={iframeRef}
-                  srcDoc={previewHtml}
-                  className="w-full h-full border-none bg-white"
-                  title="Resume Preview"
-                />
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
-                  <IconMapper name="find_in_page" className="text-4xl block mb-2" />
-                  <p className="text-[14px]">Loading live preview...</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Floating AI improve toolbar on text selection in live preview */}
-          <PreviewSelectionToolbar iframeRef={iframeRef} zoom={zoom} form={form} />
-
-          {/* Mini Toggle for Collapsed State */}
-          {!showAiWorkspace && (
-            <button
-              onClick={() => setShowAiWorkspace(true)}
-              className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
-              title="Open AI Suggestions"
-            >
-              <IconMapper name="sparkles" className="text-lg" />
-            </button>
+        {/* Mobile View (stacked toggle between Form & Preview) */}
+        <div className="md:hidden flex-1 flex flex-col overflow-hidden">
+          {showMobilePreview ? (
+            <section className="flex-1 bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between">
+              {renderPreviewContent()}
+            </section>
+          ) : (
+            <section className="flex-1 flex flex-col bg-white overflow-hidden">
+              {renderFormContent()}
+            </section>
           )}
-        </section>
+        </div>
+
+        {/* Desktop View (Draggable Resizable Split-Pane with localStorage persistence) */}
+        <div className="hidden md:flex flex-1 overflow-hidden">
+          <ResizablePanelGroup
+            orientation="horizontal"
+            {...layoutProps}
+            className="h-full w-full"
+          >
+            {/* Left Form Panel */}
+            <ResizablePanel
+              id="form-panel"
+              defaultSize="45%"
+              minSize="30%"
+              maxSize="70%"
+              className="flex flex-col bg-white relative z-10 overflow-hidden"
+            >
+              {renderFormContent()}
+            </ResizablePanel>
+
+            {/* Draggable Divider Handle */}
+            <ResizableHandle withHandle />
+
+            {/* Right Preview Panel */}
+            <ResizablePanel
+              id="preview-panel"
+              defaultSize="55%"
+              minSize="30%"
+              maxSize="70%"
+              className="bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between"
+            >
+              {renderPreviewContent()}
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
       </div>
+
+      {/* Unsaved Changes Confirmation Dialog */}
+      <LeaveEditorDialog
+        isOpen={isLeaveDialogOpen}
+        isSaving={isLeaveSaving}
+        onSaveAndLeave={handleSaveAndLeave}
+        onDiscardAndLeave={handleDiscardAndLeave}
+        onClose={() => setIsLeaveDialogOpen(false)}
+      />
     </div>
   );
 }

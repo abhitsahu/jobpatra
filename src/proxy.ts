@@ -25,6 +25,10 @@ import type { NextRequest } from 'next/server';
 // Routes that DON'T require authentication
 const publicPaths = [
   '/',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/terms',
   '/app/login',
   '/app/signup',
   '/app/ats-checker',
@@ -34,6 +38,8 @@ const publicPaths = [
   '/app/resources',
   '/app/about',
   '/app/contact',
+  '/app/privacy',
+  '/app/terms',
   '/verify-email',
   '/app/forgot-password',
   '/app/reset-password',
@@ -78,6 +84,18 @@ export async function proxy(request: NextRequest) {
   });
 
   const isAuthenticated = !!token;
+
+  // Direct friendly shortcuts (/about -> /app/about, /contact -> /app/contact, /privacy -> /app/privacy, /terms -> /app/terms)
+  if (
+    pathname === '/about' ||
+    pathname === '/contact' ||
+    pathname === '/privacy' ||
+    pathname === '/terms'
+  ) {
+    const directUrl = request.nextUrl.clone();
+    directUrl.pathname = `/app${pathname}`;
+    return NextResponse.redirect(directUrl);
+  }
 
   // Legacy paths from older reset emails
   if (pathname === '/reset-password' || pathname === '/forgot-password') {

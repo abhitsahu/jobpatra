@@ -105,7 +105,7 @@ export function BillingClient() {
 
   return (
     <div
-      className="max-w-5xl w-full mx-auto px-6 lg:px-10 py-8"
+      className="w-full"
       style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
     >
       {/* Header */}

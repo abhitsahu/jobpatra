@@ -81,8 +81,7 @@ export function FeedbackClient({ user }: FeedbackClientProps) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-10 font-['Hanken_Grotesk']">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto font-['Hanken_Grotesk']">
         {/* Header */}
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#fff0ee] text-[#370003] border border-[#E5D9C8] mb-3 shadow-sm">
@@ -238,6 +237,5 @@ export function FeedbackClient({ user }: FeedbackClientProps) {
           </div>
         </form>
       </div>
-    </div>
   );
 }

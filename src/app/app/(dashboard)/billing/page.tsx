@@ -13,9 +13,5 @@ export default async function BillingPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect('/app/login');
 
-  return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto no-scrollbar" style={{ background: '#F8F2E8' }}>
-      <BillingClient />
-    </div>
-  );
+  return <BillingClient />;
 }

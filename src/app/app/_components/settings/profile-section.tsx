@@ -213,7 +213,6 @@ export function ProfileSection() {
 
   // ── Loading state ─────────────────────────────────────────────────────────
   const isLoading = isProfileLoading || (!!profileResumeId && isResumeLoading);
-  const userInitial = (userProfile?.name ?? userProfile?.email ?? 'U')[0].toUpperCase();
 
   if (isLoading) {
     return (
@@ -236,31 +235,6 @@ export function ProfileSection() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#5b060c]/5 rounded-bl-full pointer-events-none" />
 
         <SectionHeading icon="account_circle">Career Profile</SectionHeading>
-
-        <div className="flex items-center gap-6 mb-6 pb-6 border-b border-[#E5D9C8]">
-          {/* Avatar */}
-          <div className="w-20 h-20 rounded-full bg-[#fff0ed] border-4 border-white shadow-md flex items-center justify-center shrink-0">
-            {userProfile?.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={userProfile.image} alt="avatar" className="w-full h-full rounded-full object-cover" />
-            ) : (
-              <span className="text-[32px] font-bold text-[#5b060c]" style={{ fontFamily: 'Playfair Display, serif' }}>
-                {userInitial}
-              </span>
-            )}
-          </div>
-          <div>
-            <p className="text-[20px] font-bold text-[#2b1611]" style={{ fontFamily: 'Playfair Display, serif' }}>
-              {userProfile?.name ?? 'Your Name'}
-            </p>
-            <p className="text-[14px] text-[#564240]" style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>
-              {userProfile?.jobTitle ?? 'Add your professional title →'}
-            </p>
-            <p className="text-[12px] text-[#8a716f] mt-1" style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>
-              {userProfile?.email}
-            </p>
-          </div>
-        </div>
 
         {/* ── Section Tab Bar ─────────────────────────────────────────────── */}
         <div className="flex gap-1 flex-wrap mb-6">

@@ -170,7 +170,7 @@ export function AtsAnalyzerClient() {
   const isFormValid = isResumeValid && isJdValid;
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F8F2E8] p-6 md:p-10 relative">
+    <div className="relative w-full">
       {/* Decorative Watermark / Archive stamp */}
       <div className="absolute top-10 right-16 opacity-[0.03] pointer-events-none hidden lg:block">
         <IconMapper name="history_edu" className="text-[140px]" />

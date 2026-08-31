@@ -87,7 +87,7 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
       {/* Tab list */}
       <div
         ref={scrollRef}
-        className="flex-1 flex items-center px-4 gap-8 h-full overflow-x-auto"
+        className="flex-1 flex items-center px-4 gap-8 h-full overflow-x-auto no-scrollbar"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {visibleSections.map((s) => {

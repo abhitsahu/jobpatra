@@ -8,8 +8,7 @@ import { useSubscriptionStatus } from '@/app/app/_hooks/use-subscription';
 import { ResumeCard } from '@/app/app/_components/features/dashboard/resume-card';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import Link from 'next/link';
-import { LandingFooter } from '@/app/app/_components/landing/landing-footer';
-import { LogoutButton } from './logout-button';
+
 
 // Quick Preview Modal Component
 function QuickPreviewDialog({ resumeId, onClose }: { resumeId: string; onClose: () => void }) {
@@ -78,19 +77,9 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
 
   return (
     <div className="h-full overflow-y-auto relative flex flex-col justify-between">
-      <div>
-        {/* Top bar with Navigation Controls */}
-        <div className="flex justify-end items-center gap-4 py-4 px-8 border-b border-[#ddc0bd]/30 bg-[#F8F2E8]/80 backdrop-blur-md sticky top-0 z-30">
-          <button className="w-10 h-10 bg-white/40 border border-[#ddc0bd] flex items-center justify-center text-[#564240] hover:text-[#5b060c] transition-colors relative">
-            <IconMapper name="notifications" />
-            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#5b060c] rounded-full" />
-          </button>
-          <LogoutButton />
-        </div>
-
         {/* Main Content Canvas */}
         <div className="p-8 md:p-16 relative z-10 max-w-7xl mx-auto w-full">
-          {/* Floating Nib Ornament */}
+      {/* Floating Nib Ornament */}
           <div className="absolute top-8 right-12 opacity-5 pointer-events-none hidden lg:block">
             <IconMapper name="ink_pen" className="text-[120px]" />
           </div>
@@ -365,10 +354,6 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Reusable Footer Component */}
-      <LandingFooter />
 
       {/* Quick Preview dialog */}
       {previewResumeId && (
