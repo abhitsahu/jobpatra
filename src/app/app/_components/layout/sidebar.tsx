@@ -16,6 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/app/dashboard', icon: 'dashboard' },
   { label: 'Build Resume', href: '/app/resume/new', icon: 'edit_note' },
   { label: 'ATS Analyzer', href: '/app/ats-workspace', icon: 'analytics' },
+  { label: 'Feedback', href: '/app/feedback', icon: 'feedback' },
   { label: 'Settings', href: '/app/settings', icon: 'settings' },
 ];
 

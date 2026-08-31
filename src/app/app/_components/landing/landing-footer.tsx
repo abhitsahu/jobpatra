@@ -51,15 +51,15 @@ export function LandingFooter() {
             </h4>
             <Link
               className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
-              href="/#features"
+              href="/app/contact"
             >
-              About Us
+              Contact &amp; Feedback
             </Link>
             <Link
               className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"
               href="/#features"
             >
-              Careers
+              About Us
             </Link>
             <Link
               className="text-[#564240] font-['Hanken_Grotesk'] text-sm hover:text-[#370003] transition-colors"

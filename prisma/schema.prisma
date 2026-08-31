@@ -33,6 +33,7 @@ model User {
   payments      Payment[]
   invoices      Invoice[]
   atsAnalyses   ATSAnalysis[]
+  feedbacks     Feedback[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -535,3 +536,30 @@ model WebhookEvent {
 
   @@map("webhook_events")
 }
+
+model Feedback {
+  id        String  @id @default(cuid())
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  type      String  // "BUG" | "FEATURE" | "GENERAL" | "COMPLIMENT"
+  rating    Int?    // 1-5, optional
+  subject   String?
+  message   String  @db.Text
+  pageUrl   String?
+  userAgent String?
+  status    String  @default("NEW") // "NEW" | "IN_PROGRESS" | "RESOLVED" | "CLOSED"
+
+  // For unauthenticated users
+  name      String?
+  email     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("feedbacks")
+}
+

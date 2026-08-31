@@ -22,6 +22,8 @@ const loadRazorpayScript = () => {
   });
 };
 
+import { IconMapper } from '@/app/_components/icons/IconMapper';
+
 export function PricingClient() {
   const router = useRouter();
   const [isYearly, setIsYearly] = useState(false);
@@ -131,85 +133,92 @@ export function PricingClient() {
 
   if (isLoading) {
     return (
-      <main className="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto animate-pulse">
-        {/* Hero Header Skeleton */}
-        <header className="text-center mb-16">
-          <div className="h-12 w-80 bg-[#ddc0bd]/20 rounded mx-auto mb-4"></div>
-          <div className="h-6 w-96 bg-[#ddc0bd]/20 rounded mx-auto"></div>
-          <div className="h-10 w-48 bg-[#ddc0bd]/20 rounded-full mx-auto mt-12"></div>
-        </header>
+      <div className="min-h-screen bg-[#FFF8EE] text-[#2b1611] font-['Hanken_Grotesk']">
+        <main className="pt-32 pb-20 px-4 md:px-16 max-w-7xl mx-auto animate-pulse">
+          {/* Hero Header Skeleton */}
+          <header className="text-center mb-16">
+            <div className="h-12 w-80 bg-[#ddc0bd]/20 rounded mx-auto mb-4"></div>
+            <div className="h-6 w-96 bg-[#ddc0bd]/20 rounded mx-auto"></div>
+            <div className="h-10 w-48 bg-[#ddc0bd]/20 rounded-full mx-auto mt-12"></div>
+          </header>
 
-        {/* Pricing Cards Grid Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="sheet-bg border border-[#ddc0bd]/30 p-8 rounded-lg h-96 flex flex-col justify-between"
-            >
-              <div>
-                <div className="h-6 w-24 bg-[#ddc0bd]/20 rounded mb-4"></div>
-                <div className="h-10 w-32 bg-[#ddc0bd]/20 rounded mb-6"></div>
-                <div className="h-4 w-full bg-[#ddc0bd]/20 rounded mb-2"></div>
-                <div className="h-4 w-2/3 bg-[#ddc0bd]/20 rounded"></div>
+          {/* Pricing Cards Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-[#FFF8F6] border border-[#E5D9C8] p-8 rounded-2xl h-96 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="h-6 w-24 bg-[#ddc0bd]/20 rounded mb-4"></div>
+                  <div className="h-10 w-32 bg-[#ddc0bd]/20 rounded mb-6"></div>
+                  <div className="h-4 w-full bg-[#ddc0bd]/20 rounded mb-2"></div>
+                  <div className="h-4 w-2/3 bg-[#ddc0bd]/20 rounded"></div>
+                </div>
+                <div className="h-10 w-full bg-[#ddc0bd]/20 rounded"></div>
               </div>
-              <div className="h-10 w-full bg-[#ddc0bd]/20 rounded"></div>
-            </div>
-          ))}
-        </div>
-      </main>
+            ))}
+          </div>
+        </main>
+      </div>
     );
   }
 
   if (isError || !data) {
     return (
-      <main className="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto text-center">
-        <h2 className="font-['Playfair_Display'] text-[32px] leading-[40px] text-[#5b060c] mb-4">
-          Oops! Something went wrong.
-        </h2>
-        <p className="text-[#564240] mb-8 font-['Hanken_Grotesk']">
-          We could not load the pricing plans right now. Please try again.
-        </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-[#5b060c] text-white font-semibold rounded-lg hover:brightness-110"
-        >
-          Retry
-        </button>
-      </main>
+      <div className="min-h-screen bg-[#FFF8EE] text-[#2b1611] font-['Hanken_Grotesk']">
+        <main className="pt-32 pb-20 px-4 md:px-16 max-w-7xl mx-auto text-center">
+          <h2 className="font-['Playfair_Display'] text-[32px] leading-[40px] text-[#370003] mb-4 font-bold">
+            Oops! Something went wrong.
+          </h2>
+          <p className="text-[#564240] mb-8 font-['Hanken_Grotesk'] text-[16px]">
+            We could not load the pricing plans right now. Please try again.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2.5 bg-[#370003] text-white font-semibold rounded-full hover:scale-105 transition-transform shadow-md"
+          >
+            Retry
+          </button>
+        </main>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-[#FFF8EE] text-[#2b1611] font-['Hanken_Grotesk']">
       {/* Full-screen overlay during payment verification — prevents user from navigating away */}
       {isProcessing && <PaymentProcessingOverlay planName={processingPlanName} />}
-    <main className="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
-      {/* Hero Header */}
-      <header className="text-center mb-16">
-        <h1 className="font-['Playfair_Display'] text-[48px] leading-[56px] font-bold mb-4 text-[#5b060c]">
-          Invest in Your Future
-        </h1>
-        <p className="text-[#564240] max-w-2xl mx-auto font-['Hanken_Grotesk'] text-[18px] leading-[28px]">
-          Select the toolset that fits your career stage. From early exploration to executive
-          excellence.
-        </p>
-        {/* Billing Toggle */}
-        <BillingToggle
-          isYearly={isYearly}
-          onToggle={() => setIsYearly(!isYearly)}
-          discountPercentage={data.globalDiscount}
-        />
-      </header>
+      <main className="pt-28 pb-20 px-4 md:px-16 max-w-7xl mx-auto">
+        {/* Hero Header */}
+        <header className="text-center mb-16 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#fff0ee] text-[#370003] border border-[#E5D9C8] mb-4 shadow-sm">
+            <IconMapper name="workspace_premium" className="text-sm text-[#f6be39]" /> Transparent Pricing &amp; Plans
+          </div>
+          <h1 className="font-['Playfair_Display'] text-[36px] md:text-[52px] leading-[44px] md:leading-[60px] font-bold mb-4 text-[#370003]">
+            Invest in Your Future
+          </h1>
+          <p className="text-[#564240] max-w-2xl mx-auto font-['Hanken_Grotesk'] text-[18px] leading-[28px] mb-6">
+            Select the toolset that fits your career stage. From early exploration to executive
+            excellence.
+          </p>
+          {/* Billing Toggle */}
+          <BillingToggle
+            isYearly={isYearly}
+            onToggle={() => setIsYearly(!isYearly)}
+            discountPercentage={data.globalDiscount}
+          />
+        </header>
 
-      {/* Pricing Cards Grid */}
-      <PricingGrid plans={data.plans} isYearly={isYearly} onSelectPlan={handleSelectPlan} />
+        {/* Pricing Cards Grid */}
+        <PricingGrid plans={data.plans} isYearly={isYearly} onSelectPlan={handleSelectPlan} />
 
-      {/* Detailed Feature Ledger */}
-      <ComparisonTable plans={data.plans} comparison={data.comparison} />
+        {/* Detailed Feature Ledger */}
+        <ComparisonTable plans={data.plans} comparison={data.comparison} />
 
-      {/* Testimonial / Trust Section */}
-      <TestimonialSection testimonials={data.testimonials} />
-    </main>
-    </>
+        {/* Testimonial / Trust Section */}
+        <TestimonialSection testimonials={data.testimonials} />
+      </main>
+    </div>
   );
 }

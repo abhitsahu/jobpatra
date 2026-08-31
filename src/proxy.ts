@@ -33,13 +33,14 @@ const publicPaths = [
   '/app/features',
   '/app/resources',
   '/app/about',
+  '/app/contact',
   '/verify-email',
   '/app/forgot-password',
   '/app/reset-password',
 ];
 
 // API paths that DON'T require authentication
-const publicApiPrefixes = ['/api/auth', '/api/public', '/api/webhooks'];
+const publicApiPrefixes = ['/api/auth', '/api/public', '/api/webhooks', '/api/feedback'];
 
 // API paths that DO require authentication
 const protectedApiPrefixes = [

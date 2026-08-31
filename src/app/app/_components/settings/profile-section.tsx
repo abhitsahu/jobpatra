@@ -1,7 +1,7 @@
 'use client';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserProfile, useUpdateUserMeta, profileKeys } from '@/app/app/_hooks/use-user-profile';
@@ -77,97 +77,94 @@ export function ProfileSection() {
     },
   });
 
-  const { reset } = form;
-  const isInitialized = useRef<string | null>(null);
+  const { reset, formState: { isDirty } } = form;
 
   // The User row owns account-level identity while the hidden PROFILE resume
   // owns detailed career data. Fall back to User values for an older/empty
   // profile resume, then persist the merged values on the next explicit save.
   useEffect(() => {
-    const initializationKey = profileResumeId || 'user-meta';
-    if (
-      userProfile &&
-      (!profileResumeId || profileResume) &&
-      isInitialized.current !== initializationKey
-    ) {
-      const personalInfo = profileResume?.personalInfo;
-      reset({
-        personalInfo: {
-          fullName: personalInfo?.fullName || userProfile.name || '',
-          jobTitle: personalInfo?.jobTitle || userProfile.jobTitle || '',
-          email: personalInfo?.email || userProfile.email,
-          phone: personalInfo?.phone ?? '',
-          location: personalInfo?.location ?? '',
-          website: personalInfo?.website ?? '',
-          linkedin: personalInfo?.linkedin ?? '',
-          github: personalInfo?.github ?? '',
-          summary: personalInfo?.summary ?? '',
-        },
-        experiences: profileResume?.experiences?.map((e) => ({
-          company: e.company,
-          position: e.position,
-          location: e.location ?? '',
-          startDate: e.startDate,
-          endDate: e.endDate ?? '',
-          currentlyWorking: e.currentlyWorking ?? false,
-          description: e.description ?? '',
-          highlights: e.highlights ?? [],
-          order: e.order,
-        })) ?? [],
-        education: profileResume?.education?.map((e) => ({
-          institution: e.institution,
-          degree: e.degree,
-          fieldOfStudy: e.fieldOfStudy ?? '',
-          startDate: e.startDate,
-          endDate: e.endDate ?? '',
-          result: e.result ?? '',
-          order: e.order,
-        })) ?? [],
-        projects: profileResume?.projects?.map((p) => ({
-          title: p.title,
-          field: p.field ?? '',
-          startDate: p.startDate ?? '',
-          endDate: p.endDate ?? '',
-          description: p.description ?? '',
-          technologies: p.technologies ?? [],
-          link: p.link ?? '',
-          order: p.order,
-        })) ?? [],
-        skills: profileResume?.skills?.map((s) => ({
-          name: s.name,
-          category: s.category as SkillCategory,
-          order: s.order,
-        })) ?? [],
-        certifications: profileResume?.certifications?.map((c) => ({
-          name: c.name,
-          issuer: c.issuer ?? '',
-          date: c.date ?? '',
-          url: c.url ?? '',
-          order: c.order,
-        })) ?? [],
-        achievements: profileResume?.achievements?.map((a) => ({
-          title: a.title,
-          date: a.date ?? '',
-          description: a.description ?? '',
-          order: a.order,
-        })) ?? [],
-        languages: profileResume?.languages?.map((l) => ({
-          name: l.name,
-          proficiency: l.proficiency as LanguageProficiency,
-          order: l.order,
-        })) ?? [],
-        references: profileResume?.references?.map((r) => ({
-          name: r.name,
-          designation: r.designation ?? '',
-          company: r.company ?? '',
-          email: r.email ?? '',
-          phone: r.phone ?? '',
-          order: r.order,
-        })) ?? [],
-      });
-      isInitialized.current = initializationKey;
-    }
-  }, [profileResume, profileResumeId, reset, userProfile]);
+    // Skip reset while the user is actively editing to avoid blowing away unsaved changes.
+    // After a successful save, handleSave uses form.getValues() (no dirty state),
+    // the query cache updates, and isDirty is false again — so this runs and
+    // populates the form with the freshly-saved server data.
+    if (!userProfile || (!!profileResumeId && !profileResume) || isDirty) return;
+
+    const personalInfo = profileResume?.personalInfo;
+    reset({
+      personalInfo: {
+        fullName: personalInfo?.fullName || userProfile.name || '',
+        jobTitle: personalInfo?.jobTitle || userProfile.jobTitle || '',
+        email: personalInfo?.email || userProfile.email,
+        phone: personalInfo?.phone ?? '',
+        location: personalInfo?.location ?? '',
+        website: personalInfo?.website ?? '',
+        linkedin: personalInfo?.linkedin ?? '',
+        github: personalInfo?.github ?? '',
+        summary: personalInfo?.summary ?? '',
+      },
+      experiences: profileResume?.experiences?.map((e) => ({
+        company: e.company,
+        position: e.position,
+        location: e.location ?? '',
+        startDate: e.startDate,
+        endDate: e.endDate ?? '',
+        currentlyWorking: e.currentlyWorking ?? false,
+        description: e.description ?? '',
+        highlights: e.highlights ?? [],
+        order: e.order,
+      })) ?? [],
+      education: profileResume?.education?.map((e) => ({
+        institution: e.institution,
+        degree: e.degree,
+        fieldOfStudy: e.fieldOfStudy ?? '',
+        startDate: e.startDate,
+        endDate: e.endDate ?? '',
+        result: e.result ?? '',
+        order: e.order,
+      })) ?? [],
+      projects: profileResume?.projects?.map((p) => ({
+        title: p.title,
+        field: p.field ?? '',
+        startDate: p.startDate ?? '',
+        endDate: p.endDate ?? '',
+        description: p.description ?? '',
+        technologies: p.technologies ?? [],
+        link: p.link ?? '',
+        order: p.order,
+      })) ?? [],
+      skills: profileResume?.skills?.map((s) => ({
+        name: s.name,
+        category: s.category as SkillCategory,
+        order: s.order,
+      })) ?? [],
+      certifications: profileResume?.certifications?.map((c) => ({
+        name: c.name,
+        issuer: c.issuer ?? '',
+        date: c.date ?? '',
+        url: c.url ?? '',
+        order: c.order,
+      })) ?? [],
+      achievements: profileResume?.achievements?.map((a) => ({
+        title: a.title,
+        date: a.date ?? '',
+        description: a.description ?? '',
+        order: a.order,
+      })) ?? [],
+      languages: profileResume?.languages?.map((l) => ({
+        name: l.name,
+        proficiency: l.proficiency as LanguageProficiency,
+        order: l.order,
+      })) ?? [],
+      references: profileResume?.references?.map((r) => ({
+        name: r.name,
+        designation: r.designation ?? '',
+        company: r.company ?? '',
+        email: r.email ?? '',
+        phone: r.phone ?? '',
+        order: r.order,
+      })) ?? [],
+    });
+  }, [profileResume, profileResumeId, reset, userProfile, isDirty]);
 
   // ── Save handler ─────────────────────────────────────────────────────────
   const handleSave = async () => {

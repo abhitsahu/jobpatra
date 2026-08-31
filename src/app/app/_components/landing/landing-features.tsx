@@ -131,7 +131,7 @@ export function LandingFeatures() {
                     <div className="w-3 h-3 rounded-full bg-[#f6be39]/50" />
                     <div className="w-3 h-3 rounded-full bg-[#795900]/50" />
                   </div>
-                  <div className="p-6 flex-1 overflow-y-auto">
+                  <div className="p-6 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                     <div className="flex justify-between items-start mb-6">
                       <div>
                         <div className="h-6 w-48 bg-[#ffe9e5] rounded mb-2" />
@@ -239,60 +239,23 @@ export function LandingFeatures() {
               </div>
             </div>
 
-            {/* Feature 3: AI Job Matching */}
-            {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Feature 3: AI-Powered Resume Optimization */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="flex flex-col gap-6 order-2 lg:order-1">
-                <div className="w-12 h-12 bg-[#5e0001] rounded-full flex items-center justify-center">
-                  <IconMapper name="radar" className="text-[#eb6a59]" />
+                <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center">
+                  <IconMapper name="model_training" className="text-[#410004]" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
-                  AI Job Matching
+                  AI-Powered Optimization
                 </h3>
                 <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
-                  Discover roles perfectly suited to your unique background. Our matching
-                  algorithm analyzes your profile against thousands of live listings, delivering
-                  high-probability opportunities with clear match scores.
+                  Transform passive responsibilities into active achievements. The Digital Nib
+                  rewrites your bullet points to emphasize impact, quantify results, and incorporate
+                  the exact terminology hiring managers look for.
                 </p>
               </div>
 
-              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:-rotate-2 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
-                <div className="absolute inset-0 border border-[#E5D9C8]/50 rounded-2xl pointer-events-none" />
-                <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] overflow-hidden h-[360px] p-4 flex flex-col gap-4">
-                  <div className="bg-white p-4 rounded-xl border border-[#ffe9e5] shadow-sm flex flex-col gap-3 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 bg-[#370003] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                      94% Match
-                    </div>
-                    <div className="w-10 h-10 bg-[#ffe9e5] rounded flex items-center justify-center font-bold text-[#370003]">
-                      T
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-lg text-[#2b1611]">Senior Product Designer</h4>
-                      <p className="text-sm text-[#564240]">TechCorp Inc. • Remote</p>
-                    </div>
-                    <div className="flex gap-2 text-xs">
-                      <span className="bg-[#ffe9e5] text-[#564240] px-2 py-1 rounded">Figma</span>
-                      <span className="bg-[#ffe9e5] text-[#564240] px-2 py-1 rounded">
-                        Design Systems
-                      </span>
-                    </div>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-[#ffe9e5] shadow-sm flex flex-col gap-3 relative opacity-70">
-                    <div className="absolute top-0 right-0 bg-[#795900] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                      88% Match
-                    </div>
-                    <div className="w-10 h-10 bg-[#ffe9e5] rounded" />
-                    <div>
-                      <div className="h-5 w-3/4 bg-[#ffe9e5] rounded mb-1" />
-                      <div className="h-3 w-1/2 bg-[#ffe9e5] rounded" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-
-            {/* Feature 4: AI-Powered Resume Optimization */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:rotate-1 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
+              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:rotate-1 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
                 <div className="absolute inset-0 border border-[#E5D9C8]/50 rounded-2xl pointer-events-none" />
                 <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] h-[360px] flex flex-col justify-center p-8 relative overflow-hidden">
                   <div className="flex flex-col gap-2 mb-8 relative z-10">
@@ -317,20 +280,6 @@ export function LandingFeatures() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-6">
-                <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center">
-                  <IconMapper name="model_training" className="text-[#410004]" />
-                </div>
-                <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
-                  AI-Powered Optimization
-                </h3>
-                <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
-                  Transform passive responsibilities into active achievements. The Digital Nib
-                  rewrites your bullet points to emphasize impact, quantify results, and incorporate
-                  the exact terminology hiring managers look for.
-                </p>
               </div>
             </div>
           </div>

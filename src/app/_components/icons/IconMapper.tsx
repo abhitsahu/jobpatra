@@ -93,8 +93,24 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import SendIcon from '@mui/icons-material/Send';
 
 const iconMap: Record<string, React.ElementType> = {
+  send: SendIcon,
+  feedback: FeedbackIcon,
+  rate_review: RateReviewIcon,
+  star: StarIcon,
+  star_border: StarBorderIcon,
+  bug_report: BugReportIcon,
+  lightbulb: LightbulbIcon,
+  thumb_up: ThumbUpIcon,
   lock_reset: LockResetIcon,
   lock: LockIcon,
   lock_open: LockOpenIcon,

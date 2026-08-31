@@ -9,9 +9,7 @@ import { Logo } from '@/app/app/_components/common/logo';
 const navLinks = [
   { label: 'Templates', href: '/app/templates' },
   { label: 'ATS Checker', href: '/app/ats-checker' },
-  { label: 'Features', href: '/#features' },
   { label: 'Pricing', href: '/app/pricing' },
-  { label: 'Resources', href: '/#resources' },
 ];
 
 export function LandingNavbar() {
