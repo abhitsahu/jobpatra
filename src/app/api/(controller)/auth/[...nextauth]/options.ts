@@ -234,6 +234,21 @@ export const authOptions: NextAuthOptions = {
           token.id = user.id;
           token.role = (user as { role?: string }).role || 'USER';
         }
+
+        // Hybrid admin promotion: if email is in ADMIN_EMAILS whitelist,
+        // ensure DB role is 'ADMIN' and reflect in token.
+        const adminEmails = (process.env.ADMIN_EMAILS ?? '')
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .filter(Boolean);
+        const email = (user.email ?? '').toLowerCase();
+        if (adminEmails.includes(email) && token.id) {
+          await prisma.user.updateMany({
+            where: { id: token.id as string, NOT: { role: 'ADMIN' } },
+            data: { role: 'ADMIN' },
+          });
+          token.role = 'ADMIN';
+        }
       }
 
       // Refresh user data on session update

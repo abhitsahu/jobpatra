@@ -34,6 +34,7 @@ model User {
   invoices      Invoice[]
   atsAnalyses   ATSAnalysis[]
   feedbacks     Feedback[]
+  auditLogs     AuditLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -561,5 +562,27 @@ model Feedback {
   @@index([status])
   @@index([createdAt])
   @@map("feedbacks")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String  @id @default(cuid())
+  adminId   String
+  action    String  // e.g. "UPDATE_SUBSCRIPTION", "DELETE_USER", "UPDATE_FEEDBACK_STATUS"
+  target    String? // Target resource ID or email
+  details   Json    // Structured context (before/after values, etc.)
+  ipAddress String?
+  userAgent String?
+
+  admin User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 

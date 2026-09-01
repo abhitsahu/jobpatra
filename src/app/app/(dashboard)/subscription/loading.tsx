@@ -14,9 +14,9 @@ export default function SubscriptionLoading() {
         <Skeleton className="h-12 w-64 rounded-full" />
       </div>
 
-      {/* 3 Tier Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
-        {Array.from({ length: 3 }).map((_, i) => (
+      {/* 2 Tier Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8 pt-4 justify-center">
+        {Array.from({ length: 2 }).map((_, i) => (
           <div key={i} className="p-8 bg-white/60 border border-[#ddc0bd] rounded-2xl space-y-6 shadow-sm flex flex-col justify-between">
             <div className="space-y-4">
               <Skeleton className="h-6 w-32" />

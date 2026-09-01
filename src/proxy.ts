@@ -105,13 +105,26 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(legacyUrl);
   }
 
-  // 1. PUBLIC API routes → always allow
+  // 1. ADMIN ROUTES → require ADMIN role
+  if (pathname.startsWith('/admin')) {
+    if (!isAuthenticated) {
+      const loginUrl = new URL('/app/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    if (token?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/app/dashboard', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // 2. PUBLIC API routes → always allow
 
   if (isPublicApi(pathname)) {
     return NextResponse.next();
   }
 
-  // 2. PROTECTED API routes → require auth
+  // 3. PROTECTED API routes → require auth
 
   if (isProtectedApi(pathname)) {
     if (!isAuthenticated) {
@@ -120,7 +133,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. AUTH PAGES → redirect to dashboard if already logged in
+  // 4. AUTH PAGES → redirect away if already logged in
+  //    Admins → /admin, regular users → /app/dashboard
 
   if (
     pathname === '/app/login' ||
@@ -129,18 +143,19 @@ export async function proxy(request: NextRequest) {
     pathname === '/app/reset-password'
   ) {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/app/dashboard', request.url));
+      const dest = token?.role === 'ADMIN' ? '/admin' : '/app/dashboard';
+      return NextResponse.redirect(new URL(dest, request.url));
     }
     return NextResponse.next();
   }
 
-  // 4. PUBLIC PAGES → always allow
+  // 5. PUBLIC PAGES → always allow
 
   if (isPublicPage(pathname)) {
     return NextResponse.next();
   }
 
-  // 5. APP PAGES → require auth
+  // 6. APP PAGES → require auth
 
   if (isAppRoute(pathname)) {
     if (!isAuthenticated) {
@@ -151,7 +166,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 6. Everything else → allow (static files, etc.)
+  // 7. Everything else → allow (static files, etc.)
   return NextResponse.next();
 }
 

@@ -143,8 +143,8 @@ export function PricingClient() {
           </header>
 
           {/* Pricing Cards Grid Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8 mb-24 justify-center">
+            {[1, 2].map((i) => (
               <div
                 key={i}
                 className="bg-[#FFF8F6] border border-[#E5D9C8] p-8 rounded-2xl h-96 flex flex-col justify-between"

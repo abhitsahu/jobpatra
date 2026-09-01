@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 import { loginSchema } from '@/app/api/model/request/auth/auth';
 import type { LoginRequest } from '@/app/api/model/request/auth/auth';
-import { loginClient, googleLoginClient } from '@/app/api/client/auth/auth-client';
+import { loginClient, googleLoginClient, getSessionClient } from '@/app/api/client/auth/auth-client';
 import { AuthCardLayout, AUTH_PAGE_CONFIGS } from '../../_components/auth/auth-card-layout';
 
 export function LoginForm() {
@@ -18,11 +18,11 @@ export function LoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const redirectPath = searchParams.get('redirect');
+  const redirectPath = searchParams.get('redirect') || searchParams.get('callbackUrl');
   const template = searchParams.get('template');
-  const targetUrl = redirectPath
+  const explicitTarget = redirectPath
     ? `${redirectPath}${template ? `?template=${template}` : ''}`
-    : '/app/dashboard';
+    : null;
 
   const {
     register,
@@ -40,7 +40,11 @@ export function LoginForm() {
         setServerError(result.message);
         return;
       }
-      router.push(targetUrl);
+      const session = await getSessionClient();
+      const destination =
+        explicitTarget || (session?.user?.role === 'ADMIN' ? '/admin' : '/app/dashboard');
+
+      router.push(destination);
       router.refresh();
     } catch (err) {
       setServerError(
@@ -52,7 +56,7 @@ export function LoginForm() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      await googleLoginClient(targetUrl);
+      await googleLoginClient(explicitTarget || '/app/dashboard');
     } finally {
       setGoogleLoading(false);
     }
