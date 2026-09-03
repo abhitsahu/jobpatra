@@ -78,29 +78,29 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
   return (
     <div className="h-full overflow-y-auto relative flex flex-col justify-between">
         {/* Main Content Canvas */}
-        <div className="p-8 md:p-16 relative z-10 max-w-7xl mx-auto w-full">
-      {/* Floating Nib Ornament */}
+        <div className="p-4 sm:p-6 lg:p-8 relative z-10 max-w-7xl mx-auto w-full">
+          {/* Floating Nib Ornament */}
           <div className="absolute top-8 right-12 opacity-5 pointer-events-none hidden lg:block">
             <IconMapper name="ink_pen" className="text-[120px]" />
           </div>
 
           {/* Header */}
-          <header className="mb-12">
-            <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] font-bold text-[#5b060c] leading-tight mb-2">
+          <header className="mb-6 sm:mb-8 lg:mb-10">
+            <h2 className="font-['Playfair_Display'] text-[24px] sm:text-[32px] md:text-[40px] font-bold text-[#5b060c] leading-tight mb-1.5">
               Welcome back, {userName}
             </h2>
-            <p className="font-['Hanken_Grotesk'] text-[16px] md:text-[18px] text-[#564240]">
+            <p className="font-['Hanken_Grotesk'] text-[14px] sm:text-[16px] text-[#564240]">
               Your professional legacy is currently being refined in the workshop.
             </p>
           </header>
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-12 gap-6">
+          <div className="grid grid-cols-12 gap-4 sm:gap-6">
             {/* Widget 1: Plan & Usage Summary (col-span-12 lg:col-span-8) */}
-            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-start relative overflow-hidden">
-              <div className="flex justify-between items-center mb-6">
+            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] rounded-xl border border-[#E5D9C8] shadow-sm p-4 sm:p-6 flex flex-col justify-start relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 sm:mb-6">
                 <div>
-                  <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#5b060c]">
+                  <h3 className="font-['Playfair_Display'] text-[18px] sm:text-[20px] font-bold text-[#5b060c]">
                     Workshop Plan & Usage
                   </h3>
                   <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]">
@@ -163,7 +163,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                   </div>
 
                   {/* Template Access & Renewal Footer */}
-                  <div className="pt-3 border-t border-[#ddc0bd]/40 flex items-center justify-between text-[12px] font-['Hanken_Grotesk'] text-[#564240]">
+                  <div className="pt-3 border-t border-[#ddc0bd]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[12px] font-['Hanken_Grotesk'] text-[#564240]">
                     <div className="flex items-center gap-1.5">
                       <span className="font-semibold text-[#5b060c]">Template Access:</span>
                       <span className="font-medium text-[#2b1611]">
@@ -187,17 +187,17 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
             </div>
 
             {/* Widget 2: Quick Stats (col-span-12 lg:col-span-4) */}
-            <div className="col-span-12 lg:col-span-4 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-between relative overflow-hidden">
+            <div className="col-span-12 lg:col-span-4 rounded-xl bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-4 sm:p-6 flex flex-col justify-between relative overflow-hidden">
               <div>
-                <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#5b060c] mb-1">
+                <h3 className="font-['Playfair_Display'] text-[18px] sm:text-[20px] font-bold text-[#5b060c] mb-1">
                   Workshop Stats
                 </h3>
-                <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240] mb-4">
+                <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240] mb-3 sm:mb-4">
                   Overview of your document folder
                 </p>
               </div>
 
-              <div className="space-y-3.5 flex-1 flex flex-col justify-center">
+              <div className="space-y-3 sm:space-y-3.5 flex-1 flex flex-col justify-center">
                 <div className="flex justify-between items-center border-b border-[#ddc0bd]/30 pb-2">
                   <span className="font-['Hanken_Grotesk'] text-[13px] font-semibold text-[#564240]">Total Resumes</span>
                   <span className="font-['Playfair_Display'] text-[18px] font-bold text-[#5b060c]">{resumes.length}</span>
@@ -226,53 +226,53 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
             </div>
 
             {/* Recent Resumes (Folder Tabs) */}
-            <div className="col-span-12 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-0 overflow-hidden mt-6">
-              <div className="p-8 border-b border-[#ddc0bd]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+            <div className="col-span-12 bg-[#FFF8EE] rounded-xl border border-[#E5D9C8] shadow-sm p-0 overflow-hidden mt-2 sm:mt-6">
+              <div className="p-4 sm:p-6 lg:p-8 border-b border-[#ddc0bd]/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6">
                 <div>
-                  <h3 className="font-['Playfair_Display'] text-[24px] font-bold text-[#5b060c]">
+                  <h3 className="font-['Playfair_Display'] text-[20px] sm:text-[24px] font-bold text-[#5b060c]">
                     Resume Repository
                   </h3>
-                  <p className="font-['Hanken_Grotesk'] text-[13px] text-[#564240] mt-1">
+                  <p className="font-['Hanken_Grotesk'] text-[13px] text-[#564240] mt-0.5 sm:mt-1">
                     Manage and craft your professional documents
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-                  {/* Search */}
-                  <div className="relative flex-1 sm:flex-initial">
-                    <IconMapper name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f]" />
+                <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto">
+                  {/* Search bar — standardized to Resume Builder design */}
+                  <div className="relative w-full sm:w-80 shrink-0">
+                    <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]" />
                     <input
                       id="dashboard-search"
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search archive..."
-                      className="bg-white/60 border border-[#ddc0bd] pl-10 pr-4 py-2 font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] placeholder-[#8a716f]/60 focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c] transition-all w-full sm:w-48"
+                      className="w-full pl-12 pr-4 py-2.5 sm:py-3 border border-[#ddc0bd] rounded-full transition-all outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 bg-[#fff0ed] text-[#2b1611] font-['Hanken_Grotesk'] text-[14px] leading-[20px] placeholder:text-[#8a716f]/60 shadow-xs"
                     />
                   </div>
 
                   {/* Sort Selector */}
-                  <div className="relative">
+                  <div className="relative w-full sm:w-auto shrink-0">
                     <select
                       id="dashboard-sort"
                       value={sortBy}
                       onChange={(e) =>
                         setSortBy(e.target.value as 'updated' | 'title-asc' | 'title-desc')
                       }
-                      className="bg-white/60 border border-[#ddc0bd] pl-4 pr-10 py-2 font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c] transition-all appearance-none cursor-pointer"
+                      className="w-full sm:w-auto bg-[#fff0ed] border border-[#ddc0bd] pl-5 pr-10 py-2.5 sm:py-3 rounded-full font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#2b1611] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 transition-all appearance-none cursor-pointer shadow-xs"
                     >
                       <option value="updated">Last Updated</option>
                       <option value="title-asc">Title (A-Z)</option>
                       <option value="title-desc">Title (Z-A)</option>
                     </select>
-                    <IconMapper name="keyboard_arrow_down" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f] pointer-events-none" />
+                    <IconMapper name="keyboard_arrow_down" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[18px] text-[#8a716f] pointer-events-none" />
                   </div>
 
                   {/* Create */}
                   <Link
                     id="create-resume-btn"
                     href="/app/resume/new"
-                    className="flex items-center justify-center gap-2 px-6 py-2 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold tracking-wider uppercase hover:bg-[#7a1f1f] transition-all"
+                    className="flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold tracking-wider uppercase rounded-full hover:bg-[#7a1f1f] transition-all w-full sm:w-auto shadow-xs shrink-0"
                   >
                     <IconMapper name="add" className="text-[18px]" />
                     New Document

@@ -39,7 +39,12 @@ function getPageTitle(pathname: string): string {
   return 'Dashboard';
 }
 
-export function Header() {
+interface HeaderProps {
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
+}
+
+export function Header({ onToggleSidebar }: HeaderProps = {}) {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -80,10 +85,20 @@ export function Header() {
   };
 
   return (
-    <header className="h-16 border-b border-[#ddc0bd] bg-[#FFF8EE]/90 backdrop-blur-md px-6 lg:px-8 flex items-center justify-between z-30 shrink-0 select-none">
-      {/* Dynamic Page Title */}
-      <div className="flex items-center gap-3">
-        <h1 className="font-['Playfair_Display'] text-[20px] lg:text-[22px] font-bold text-[#370003] tracking-tight">
+    <header className="h-16 border-b border-[#ddc0bd] bg-[#FFF8EE]/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between z-30 shrink-0 select-none">
+      {/* Left side: Hamburger button (mobile only) + Dynamic Page Title */}
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {onToggleSidebar && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className="md:hidden p-2 -ml-1 rounded-lg text-[#564240] hover:text-[#370003] hover:bg-white/80 transition cursor-pointer"
+            aria-label="Toggle navigation menu"
+          >
+            <IconMapper name="menu" className="text-[22px]" />
+          </button>
+        )}
+        <h1 className="font-['Playfair_Display'] text-[18px] sm:text-[20px] lg:text-[22px] font-bold text-[#370003] tracking-tight">
           {title}
         </h1>
       </div>

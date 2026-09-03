@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "dev:host": "next dev -H 0.0.0.0",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "node prisma/seed.mjs",

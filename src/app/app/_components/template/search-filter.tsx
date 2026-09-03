@@ -42,10 +42,10 @@ export function SearchFilter({
         </div>
 
         {/* Search Input */}
-        <div className="relative w-full md:w-72">
-          <IconMapper name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#564240] text-lg pointer-events-none" />
+        <div className="relative w-full md:w-80 shrink-0">
+          <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f] text-lg pointer-events-none" />
           <input
-            className="w-full bg-white font-['Hanken_Grotesk'] text-[15px] text-[#2b1611] py-2 pl-10 pr-4 rounded-full border border-[#E5D9C8] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c] transition-colors placeholder:text-[#564240]/50 shadow-sm"
+            className="w-full bg-[#fff0ed] font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#2b1611] py-2.5 pl-12 pr-10 rounded-full border border-[#ddc0bd] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 transition-all placeholder:text-[#8a716f]/60 shadow-xs"
             placeholder="Search collection..."
             type="text"
             value={searchTerm}
@@ -54,7 +54,7 @@ export function SearchFilter({
           {searchTerm && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] hover:text-[#5b060c]"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8a716f] hover:text-[#5b060c] transition-colors"
             >
               <IconMapper name="close" className="text-sm" />
             </button>

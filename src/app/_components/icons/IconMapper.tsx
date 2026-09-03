@@ -8,6 +8,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import HistoryIcon from '@mui/icons-material/History';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MenuIcon from '@mui/icons-material/Menu';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import SearchIcon from '@mui/icons-material/Search';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -126,6 +127,7 @@ const iconMap: Record<string, React.ElementType> = {
   folder_open: FolderOpenIcon,
   history: HistoryIcon,
   delete: DeleteIcon,
+  menu: MenuIcon,
   clear_all: ClearAllIcon,
   search: SearchIcon,
   sparkles: AutoAwesomeIcon,

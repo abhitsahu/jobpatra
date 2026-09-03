@@ -172,13 +172,13 @@ export function ResumeSourceSelector({
       {sourceType === 'library' && (
         <div className="border border-[#ddc0bd] bg-white/60 rounded-xl p-5 space-y-4">
           <div className="relative">
-            <IconMapper name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[#564240]/60 text-[18px]" />
+            <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search resumes..."
-              className="w-full pl-10 pr-4 py-2 bg-white border border-[#ddc0bd] rounded-lg font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] focus:ring-1 focus:ring-[#7a1f1f] placeholder-[#564240]/40"
+              className="w-full pl-12 pr-4 py-2.5 bg-[#fff0ed] border border-[#ddc0bd] rounded-full font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#2b1611] outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 placeholder:text-[#8a716f]/60 transition-all shadow-xs"
             />
           </div>
 
