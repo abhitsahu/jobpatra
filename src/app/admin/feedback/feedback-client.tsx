@@ -4,6 +4,7 @@ import { useState, useTransition, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Pagination } from '@/app/app/_components/ui/pagination';
 
 interface Feedback {
   id: string;
@@ -165,27 +166,14 @@ export function AdminFeedbackClient({
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <p className="text-xs font-semibold text-[#564240]">Page {page} of {totalPages}</p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => navigate(initialType, initialStatus, page - 1)}
-              disabled={page <= 1}
-              className="p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => navigate(initialType, initialStatus, page + 1)}
-              disabled={page >= totalPages}
-              className="p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="pt-2">
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={(p) => navigate(initialType, initialStatus, p)}
+          variant="simple"
+        />
+      </div>
     </div>
   );
 }

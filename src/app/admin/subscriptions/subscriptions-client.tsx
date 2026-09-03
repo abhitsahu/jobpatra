@@ -4,6 +4,7 @@ import { useTransition, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Pagination } from '@/app/app/_components/ui/pagination';
 
 interface Sub {
   id: string;
@@ -119,27 +120,15 @@ export function AdminSubscriptionsClient({ initialSubs, total, page, totalPages,
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50 flex items-center justify-between">
-            <p className="text-xs font-semibold text-[#564240]">Page {page} of {totalPages}</p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => navigate(initialStatus, page - 1)}
-                disabled={page <= 1}
-                className="p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => navigate(initialStatus, page + 1)}
-                disabled={page >= totalPages}
-                className="p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Pagination */}
+        <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(p) => navigate(initialStatus, p)}
+            variant="simple"
+          />
+        </div>
       </div>
     </div>
   );

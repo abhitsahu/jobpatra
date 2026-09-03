@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Download, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Pagination } from '@/app/app/_components/ui/pagination';
 
 interface Invoice {
   id: string;
@@ -96,25 +97,15 @@ export function AdminInvoicesClient({ initialInvoices, total, page, totalPages }
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50 flex items-center justify-between">
-            <p className="text-xs font-semibold text-[#564240]">Page {page} of {totalPages}</p>
-            <div className="flex gap-2">
-              <a
-                href={`/admin/invoices?page=${page - 1}`}
-                className={`p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] transition-colors shadow-2xs ${page <= 1 ? 'pointer-events-none opacity-30' : ''}`}
-              >
-                <ChevronLeft size={16} />
-              </a>
-              <a
-                href={`/admin/invoices?page=${page + 1}`}
-                className={`p-1.5 rounded-lg bg-white hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] transition-colors shadow-2xs ${page >= totalPages ? 'pointer-events-none opacity-30' : ''}`}
-              >
-                <ChevronRight size={16} />
-              </a>
-            </div>
-          </div>
-        )}
+        {/* Pagination */}
+        <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(p) => router.push(`/admin/invoices?page=${p}`)}
+            variant="simple"
+          />
+        </div>
       </div>
     </div>
   );

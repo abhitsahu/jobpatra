@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Search, ExternalLink, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { Pagination } from '@/app/app/_components/ui/pagination';
 
 interface User {
   id: string;
@@ -154,27 +155,14 @@ export function AdminUsersClient({ initialUsers, total, page, totalPages, initia
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50 flex items-center justify-between">
-            <p className="text-xs font-semibold text-[#564240]">Page {page} of {totalPages}</p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => navigate(q, plan, page - 1)}
-                disabled={page <= 1}
-                className="p-1.5 rounded-lg hover:bg-white border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => navigate(q, plan, page + 1)}
-                disabled={page >= totalPages}
-                className="p-1.5 rounded-lg hover:bg-white border border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] disabled:opacity-30 transition-colors shadow-2xs"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="border-t border-[#ddc0bd] px-5 py-3.5 bg-[#fff8f6]/50">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(p) => navigate(q, plan, p)}
+            variant="simple"
+          />
+        </div>
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ export function FormInput({
       <input
         {...registration}
         {...props}
-        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk'] ${className}`}
+        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[16px] sm:text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk'] ${className}`}
       />
       {error && <span className="text-xs text-[#7a1f1f] mt-0.5">{error.message}</span>}
     </div>
@@ -58,7 +58,7 @@ export function FormTextarea({
         rows={rows}
         {...registration}
         {...props}
-        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-3 text-[#2b1611] text-[14px] leading-relaxed focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all resize-none font-['Hanken_Grotesk'] ${className}`}
+        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-3 text-[#2b1611] text-[16px] sm:text-[14px] leading-relaxed focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all resize-none font-['Hanken_Grotesk'] ${className}`}
       />
       {error && <span className="text-xs text-[#7a1f1f] mt-0.5">{error.message}</span>}
     </div>
@@ -90,7 +90,7 @@ export function FormSelect({
       <select
         {...registration}
         {...props}
-        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk'] cursor-pointer ${className}`}
+        className={`w-full bg-white border border-[#ddc0bd] rounded-lg px-4 py-2.5 text-[#2b1611] text-[16px] sm:text-[15px] focus:outline-none focus:border-[#7a1f1f] focus:ring-4 focus:ring-[#7a1f1f]/5 transition-all font-['Hanken_Grotesk'] cursor-pointer ${className}`}
       >
         {options.map((opt) => {
           const val = typeof opt === 'string' ? opt : opt.value;

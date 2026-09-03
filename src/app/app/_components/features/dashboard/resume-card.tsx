@@ -24,8 +24,12 @@ function formatDate(date: Date | string) {
   return `${diffDays}d ago`;
 }
 
+import { useState } from 'react';
+import { ConfirmationModal } from '@/app/app/_components/common/confirmation-modal';
+
 export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
   const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const duplicate = useDuplicateResume();
   const del = useDeleteResume();
@@ -33,10 +37,11 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
 
   const handleEdit = () => router.push(`/app/resume/${resume.id}`);
   const handleDuplicate = () => duplicate.mutate(resume.id);
-  const handleDelete = () => {
-    if (window.confirm(`Delete "${resume.title}"? This cannot be undone.`)) {
-      del.mutate(resume.id);
-    }
+  const handleDelete = () => setShowDeleteModal(true);
+  const handleConfirmDelete = () => {
+    del.mutate(resume.id, {
+      onSuccess: () => setShowDeleteModal(false),
+    });
   };
   const handleDownload = () => pdf.mutate({ id: resume.id, filename: `${resume.title}.pdf` });
   const handlePreview = () => onPreview(resume.id);
@@ -117,6 +122,17 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
           <IconMapper name="delete" className="text-[18px] sm:text-[20px]" />
         </button>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        title={`Delete "${resume.title}"?`}
+        description="This action cannot be undone. This will permanently delete the resume and all its contents."
+        confirmText="Delete Resume"
+        isLoading={del.isPending}
+      />
     </motion.div>
   );
 }

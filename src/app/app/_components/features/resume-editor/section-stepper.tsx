@@ -73,21 +73,21 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
   };
 
   return (
-    <nav className="h-12 bg-white border-b border-[#ddc0bd] flex items-center px-4 shrink-0 overflow-hidden select-none">
+    <nav className="h-11 sm:h-12 bg-white border-b border-[#ddc0bd] flex items-center px-2 sm:px-4 shrink-0 overflow-hidden select-none">
       {/* Scroll Left */}
       <button
         type="button"
         onClick={() => handleScroll('left')}
-        className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none"
+        className="p-1 hover:bg-[#fff0ed] rounded-full transition-colors text-[#564240] hover:text-[#7a1f1f] focus:outline-none shrink-0 cursor-pointer"
         aria-label="Scroll tabs left"
       >
-        <IconMapper name="chevron_left" className="text-xl" />
+        <IconMapper name="chevron_left" className="text-lg sm:text-xl" />
       </button>
 
       {/* Tab list */}
       <div
         ref={scrollRef}
-        className="flex-1 flex items-center px-4 gap-8 h-full overflow-x-auto no-scrollbar"
+        className="flex-1 flex items-center px-2 sm:px-4 gap-3.5 sm:gap-6 md:gap-8 h-full overflow-x-auto no-scrollbar"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {visibleSections.map((s) => {
@@ -104,7 +104,7 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
               ref={isActive ? activeRef : null}
               onClick={() => onChange(s.key)}
               className={cn(
-                "relative h-full flex items-center gap-1.5 font-['Hanken_Grotesk'] text-[14px] font-semibold transition-all whitespace-nowrap px-1 cursor-pointer focus:outline-none",
+                "relative h-full flex items-center gap-1.5 font-['Hanken_Grotesk'] text-[13px] sm:text-[14px] font-semibold transition-all whitespace-nowrap px-1 cursor-pointer focus:outline-none shrink-0",
                 isActive
                   ? 'text-[#7a1f1f] font-bold border-b-2 border-[#7a1f1f]'
                   : 'text-[#564240] hover:text-[#7a1f1f]',

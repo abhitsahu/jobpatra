@@ -102,6 +102,8 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import SendIcon from '@mui/icons-material/Send';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import LastPageIcon from '@mui/icons-material/LastPage';
 
 const iconMap: Record<string, React.ElementType> = {
   send: SendIcon,
@@ -156,6 +158,8 @@ const iconMap: Record<string, React.ElementType> = {
   visibility_off: VisibilityOffIcon,
   chevron_left: ChevronLeftIcon,
   chevron_right: ChevronRightIcon,
+  first_page: FirstPageIcon,
+  last_page: LastPageIcon,
   expand_more: ExpandMoreIcon,
   expand_less: ExpandLessIcon,
   add: AddIcon,

@@ -1,7 +1,7 @@
 'use client';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { SECTION_REGISTRY } from '@/app/app/_components/features/resume-editor/section-registry';
 
@@ -47,6 +47,9 @@ const TEMPLATE_KEY_TO_EDITOR = Object.fromEntries(
   SECTION_REGISTRY.map((s) => [s.templateKey, s.key]),
 );
 
+const DOC_WIDTH = 794;
+const DOC_HEIGHT = 1123;
+
 export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState('personalInfo');
@@ -57,6 +60,42 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [isLeaveSaving, setIsLeaveSaving] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const el = previewContainerRef.current;
+    if (!el) return;
+
+    const updateSize = () => {
+      if (el.clientWidth > 0) {
+        setContainerWidth(el.clientWidth);
+      }
+    };
+
+    updateSize();
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          setContainerWidth(entry.contentRect.width);
+        }
+      }
+    });
+
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [showMobilePreview]);
 
   const layoutProps = useDefaultLayout({
     id: 'jobpatra-resume-editor-layout',
@@ -310,6 +349,40 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     });
   };
 
+  // ── Compute preview HTML and mobile scale unconditionally before any early returns ──
+  const displayHtml = useMemo(() => {
+    if (!previewHtml) return '';
+    const overrideStyle = `
+      <style>
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          background: #ffffff !important;
+          width: 100% !important;
+          overflow-x: hidden !important;
+        }
+        .container {
+          margin: 0 auto !important;
+          box-shadow: none !important;
+          width: 794px !important;
+          min-height: 1123px !important;
+        }
+      </style>
+    `;
+    return previewHtml.includes('</head>')
+      ? previewHtml.replace('</head>', `${overrideStyle}</head>`)
+      : `${overrideStyle}${previewHtml}`;
+  }, [previewHtml]);
+
+  const isMobileView = containerWidth > 0 && containerWidth < 640;
+  const paddingOffset = isMobileView ? 16 : 48;
+  const availableWidth = containerWidth > 0 ? containerWidth - paddingOffset : 360;
+  const fitScale = Math.min(1, Math.max(0.2, availableWidth / DOC_WIDTH));
+  const effectiveScale = fitScale * (zoom / 100);
+
+  const scaledWidth = Math.round(DOC_WIDTH * effectiveScale);
+  const scaledHeight = Math.round(DOC_HEIGHT * effectiveScale);
+
   if (isLoading) {
     return (
       <div className="flex-1 p-8 space-y-6">
@@ -355,7 +428,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
 
       {/* Form Canvas */}
       <div
-        className="flex-1 overflow-y-auto px-6 lg:px-8 pb-12 pt-6 no-scrollbar"
+        className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 pb-12 pt-4 sm:pt-6 no-scrollbar"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
@@ -400,120 +473,216 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     </div>
   );
 
-  const renderPreviewContent = () => (
-    <>
-      {/* Floating Preview Toolbar */}
-      <div className="w-full h-12 border-b border-[#ddc0bd]/30 px-6 flex items-center justify-between bg-white/50 backdrop-blur-sm z-20 shrink-0">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/60">
-          Live Preview
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
-            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-            title="Zoom Out"
+  const renderPreviewContent = () => {
+    if (!isMobile) {
+      /* ── Original Desktop Preview (Centered 560px Paper with 1/1.414 aspect ratio) ── */
+      return (
+        <>
+          {/* Desktop Floating Preview Toolbar */}
+          <div className="w-full h-12 border-b border-[#ddc0bd]/30 px-6 flex items-center justify-between bg-white/50 backdrop-blur-sm z-20 shrink-0">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/60">
+              Live Preview
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Zoom Out"
+              >
+                <IconMapper name="remove" className="text-base" />
+              </button>
+              <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
+                {zoom}%
+              </span>
+              <button
+                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Zoom In"
+              >
+                <IconMapper name="add" className="text-base" />
+              </button>
+              <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
+              <button
+                onClick={handleDownloadPdf}
+                className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+                title="Download PDF"
+              >
+                <IconMapper name="download" className="text-base" />
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop Simulated Resume Paper Box Container */}
+          <div
+            className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto no-scrollbar"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            <IconMapper name="remove" className="text-base" />
-          </button>
-          <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
-            {zoom}%
+            <div
+              style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
+              className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
+            >
+              {isPreviewLoading && (
+                <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
+                </div>
+              )}
+
+              {/* Resume Preview Document Iframe */}
+              {previewHtml ? (
+                <iframe
+                  id="resume-preview-iframe"
+                  ref={iframeRef}
+                  srcDoc={previewHtml}
+                  className="w-full h-full border-none bg-white"
+                  title="Resume Preview"
+                />
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
+                  <IconMapper name="find_in_page" className="text-4xl block mb-2" />
+                  <p className="text-[14px]">Loading live preview...</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Floating AI improve toolbar on text selection in live preview */}
+          <PreviewSelectionToolbar iframeRef={iframeRef} zoom={zoom} form={form} />
+
+          {/* Mini Toggle for Collapsed State */}
+          {!showAiWorkspace && (
+            <button
+              onClick={() => setShowAiWorkspace(true)}
+              className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
+              title="Open AI Suggestions"
+            >
+              <IconMapper name="sparkles" className="text-lg" />
+            </button>
+          )}
+        </>
+      );
+    }
+
+    /* ── Mobile Preview (Fit-to-Width like viewing a PDF on a smartphone) ── */
+    return (
+      <>
+        {/* Mobile Floating Preview Toolbar */}
+        <div className="w-full h-11 border-b border-[#ddc0bd]/30 px-3 flex items-center justify-between bg-white/80 backdrop-blur-sm z-20 shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#564240]/70">
+            Live Preview
           </span>
-          <button
-            onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
-            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-            title="Zoom In"
-          >
-            <IconMapper name="add" className="text-base" />
-          </button>
-          <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
-          <button
-            onClick={handleDownloadPdf}
-            className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
-            title="Download PDF"
-          >
-            <IconMapper name="download" className="text-base" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setZoom((prev) => Math.max(50, prev - 10))}
+              className="p-1 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+              title="Zoom Out"
+            >
+              <IconMapper name="remove" className="text-base" />
+            </button>
+            <button
+              onClick={() => setZoom(100)}
+              className="text-[11px] font-semibold text-[#2b1611] px-1.5 py-0.5 rounded hover:bg-[#fff0ed] font-['Hanken_Grotesk'] cursor-pointer"
+              title="Reset Zoom to Fit"
+            >
+              {zoom}%
+            </button>
+            <button
+              onClick={() => setZoom((prev) => Math.min(200, prev + 10))}
+              className="p-1 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+              title="Zoom In"
+            >
+              <IconMapper name="add" className="text-base" />
+            </button>
+            <div className="w-px h-4 bg-[#ddc0bd] mx-0.5"></div>
+            <button
+              onClick={handleDownloadPdf}
+              className="p-1 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
+              title="Download PDF"
+            >
+              <IconMapper name="download" className="text-base" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Simulated Resume Paper Box Container */}
-      <div
-        className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto no-scrollbar"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
+        {/* Mobile Fit-to-Width Scaled Sheet */}
         <div
-          style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
-          className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
+          ref={previewContainerRef}
+          className="flex-1 w-full flex flex-col items-center p-2 overflow-y-auto overflow-x-auto no-scrollbar"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {isPreviewLoading && (
-            <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
-            </div>
-          )}
+          <div
+            style={{
+              width: `${scaledWidth}px`,
+              height: `${scaledHeight}px`,
+            }}
+            className="relative shrink-0 my-auto transition-all duration-200"
+          >
+            <div
+              style={{
+                width: `${DOC_WIDTH}px`,
+                height: `${DOC_HEIGHT}px`,
+                transform: `scale(${effectiveScale})`,
+                transformOrigin: 'top left',
+              }}
+              className="absolute top-0 left-0 bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 flex flex-col overflow-hidden"
+            >
+              {isPreviewLoading && (
+                <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
+                </div>
+              )}
 
-          {/* Resume Preview Document Iframe */}
-          {previewHtml ? (
-            <iframe
-              id="resume-preview-iframe"
-              ref={iframeRef}
-              srcDoc={previewHtml}
-              className="w-full h-full border-none bg-white"
-              title="Resume Preview"
-            />
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
-              <IconMapper name="find_in_page" className="text-4xl block mb-2" />
-              <p className="text-[14px]">Loading live preview...</p>
+              {displayHtml ? (
+                <iframe
+                  id="resume-preview-iframe"
+                  ref={iframeRef}
+                  srcDoc={displayHtml}
+                  className="w-full h-full border-none bg-white"
+                  title="Resume Preview"
+                />
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
+                  <IconMapper name="find_in_page" className="text-4xl block mb-2" />
+                  <p className="text-[14px]">Loading live preview...</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
 
-      {/* Floating AI improve toolbar on text selection in live preview */}
-      <PreviewSelectionToolbar iframeRef={iframeRef} zoom={zoom} form={form} />
-
-      {/* Mini Toggle for Collapsed State */}
-      {!showAiWorkspace && (
-        <button
-          onClick={() => setShowAiWorkspace(true)}
-          className="absolute right-4 top-16 bg-white shadow-md w-8 h-8 rounded-full border border-[#ddc0bd] flex items-center justify-center text-[#7a1f1f] hover:bg-[#fff0ed] transition-colors cursor-pointer z-30"
-          title="Open AI Suggestions"
-        >
-          <IconMapper name="sparkles" className="text-lg" />
-        </button>
-      )}
-    </>
-  );
+        <PreviewSelectionToolbar iframeRef={iframeRef} zoom={Math.round(effectiveScale * 100)} form={form} />
+      </>
+    );
+  };
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-white">
       {/* Editor Header / Top Application Bar */}
-      <header className="h-16 border-b border-[#ddc0bd] bg-white flex items-center justify-between px-6 z-20 shrink-0">
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+      <header className="h-14 sm:h-16 border-b border-[#ddc0bd] bg-white flex items-center justify-between px-3 sm:px-6 z-20 shrink-0 gap-1.5 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           <button
             type="button"
             onClick={handleBackClick}
-            className="w-9 h-9 rounded-full bg-white border border-[#ddc0bd] shadow-xs hover:bg-[#fff0ed] hover:border-[#7a1f1f]/40 flex items-center justify-center text-[#370003] transition-all cursor-pointer shrink-0"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-[#ddc0bd] shadow-xs hover:bg-[#fff0ed] hover:border-[#7a1f1f]/40 flex items-center justify-center text-[#370003] transition-all cursor-pointer shrink-0"
             title="Back to Dashboard"
             aria-label="Back to Dashboard"
           >
-            <IconMapper name="arrow_back" className="text-[18px]" />
+            <IconMapper name="arrow_back" className="text-[16px] sm:text-[18px]" />
           </button>
-          <div className="flex items-center gap-2">
-            <IconMapper name="description" className="text-[#7a1f1f]" />
+          <div className="flex items-center gap-1.5 min-w-0 max-w-[120px] xs:max-w-[160px] sm:max-w-[240px]">
+            <IconMapper name="description" className="text-[#7a1f1f] text-[18px] hidden xs:block shrink-0" />
             <input
               id="editor-resume-title"
               type="text"
               // eslint-disable-next-line react-hooks/incompatible-library
               value={watch('title') || ''}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="bg-transparent border-none focus:ring-1 focus:ring-[#7a1f1f]/20 text-[#2b1611] font-['Hanken_Grotesk'] text-[15px] font-bold p-1 w-[150px] sm:w-[220px] hover:bg-[#fff0ed] rounded transition-colors truncate focus:outline-none"
+              className="bg-transparent border-none focus:ring-1 focus:ring-[#7a1f1f]/20 text-[#2b1611] font-['Hanken_Grotesk'] text-[13px] sm:text-[15px] font-bold p-1 w-full hover:bg-[#fff0ed] rounded transition-colors truncate focus:outline-none"
             />
           </div>
 
-          <div className="h-4 w-px bg-[#ddc0bd] hidden sm:block"></div>
+          <div className="h-4 w-px bg-[#ddc0bd] hidden md:block"></div>
 
-          <div className="hidden sm:flex items-center gap-2 text-[#564240]">
+          <div className="hidden md:flex items-center gap-2 text-[#564240]">
             <IconMapper name="auto_stories" className="text-sm" />
             <span className="text-[12px] font-semibold">
               Template:{' '}
@@ -521,45 +690,47 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[#564240] text-[12px] font-semibold bg-[#fff0ed] px-2.5 py-1 rounded-full border border-[#ddc0bd]/60 shrink-0">
+          <div className="flex items-center gap-1 text-[#564240] text-[11px] sm:text-[12px] font-semibold bg-[#fff0ed] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-[#ddc0bd]/60 shrink-0">
             {saveStatus === 'saving' ? (
               <>
-                <span className="w-3.5 h-3.5 border-2 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin shrink-0" />
-                <span>Saving...</span>
+                <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 border-2 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin shrink-0" />
+                <span className="hidden sm:inline">Saving...</span>
               </>
             ) : saveStatus === 'failed' ? (
               <>
-                <IconMapper name="cloud_off" className="text-[16px] text-[#7a1f1f] shrink-0" />
-                <span className="text-[#7a1f1f]">Save failed</span>
+                <IconMapper name="cloud_off" className="text-[14px] sm:text-[16px] text-[#7a1f1f] shrink-0" />
+                <span className="text-[#7a1f1f] hidden sm:inline">Save failed</span>
               </>
             ) : isDirty ? (
               <>
-                <IconMapper name="pending" className="text-[16px] text-[#795900] shrink-0" />
-                <span className="text-[#795900]">Unsaved changes</span>
+                <IconMapper name="pending" className="text-[14px] sm:text-[16px] text-[#795900] shrink-0" />
+                <span className="text-[#795900] hidden sm:inline">Unsaved</span>
               </>
             ) : (
               <>
-                <IconMapper name="cloud_done" className="text-[16px] text-emerald-600 shrink-0" />
-                <span className="text-emerald-600">Saved</span>
+                <IconMapper name="cloud_done" className="text-[14px] sm:text-[16px] text-emerald-600 shrink-0" />
+                <span className="text-emerald-600 hidden sm:inline">Saved</span>
               </>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Mobile Preview toggle */}
           <button
             onClick={() => setShowMobilePreview((prev) => !prev)}
-            className="md:hidden p-2 rounded-full hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240]"
+            className="md:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:bg-[#fff0ed] border border-[#ddc0bd] text-[#564240] text-xs font-semibold shrink-0 cursor-pointer"
             aria-label="Toggle preview"
+            title={showMobilePreview ? 'Switch to Editor' : 'Switch to Live Preview'}
           >
-            <IconMapper name={showMobilePreview ? 'edit' : 'visibility'} />
+            <IconMapper name={showMobilePreview ? 'edit' : 'visibility'} className="text-[16px]" />
+            <span className="hidden xs:inline text-[11px]">{showMobilePreview ? 'Edit' : 'Preview'}</span>
           </button>
 
           <button
             onClick={form.handleSubmit(onSubmit)}
             disabled={updateMutation.isPending}
-            className="px-4 py-2 text-[#7a1f1f] font-bold text-[14px] hover:bg-[#fff0ed] rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+            className="px-2.5 sm:px-4 py-1.5 sm:py-2 text-[#7a1f1f] font-bold text-[13px] sm:text-[14px] hover:bg-[#fff0ed] rounded-lg transition-colors cursor-pointer disabled:opacity-50 shrink-0"
           >
             {updateMutation.isPending ? 'Saving...' : 'Save'}
           </button>
@@ -567,16 +738,17 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           <button
             onClick={handleDownloadPdf}
             disabled={downloadPdfMutation.isPending}
-            className="bg-[#7a1f1f] text-white px-5 py-2 rounded-lg font-bold text-[14px] shadow-sm hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+            className="bg-[#7a1f1f] text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg font-bold text-[12px] sm:text-[14px] shadow-sm hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5 shrink-0"
           >
             {downloadPdfMutation.isPending ? (
               <>
-                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span>Exporting...</span>
               </>
             ) : (
               <>
-                <span>Finish & Download</span>
+                <IconMapper name="download" className="text-[16px] sm:hidden" />
+                <span><span className="hidden sm:inline">Finish & </span>Download</span>
               </>
             )}
           </button>
@@ -585,52 +757,54 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
 
       {/* Editor Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Mobile View (stacked toggle between Form & Preview) */}
-        <div className="md:hidden flex-1 flex flex-col overflow-hidden">
-          {showMobilePreview ? (
-            <section className="flex-1 bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between">
-              {renderPreviewContent()}
-            </section>
-          ) : (
-            <section className="flex-1 flex flex-col bg-white overflow-hidden">
-              {renderFormContent()}
-            </section>
-          )}
-        </div>
-
-        {/* Desktop View (Draggable Resizable Split-Pane with localStorage persistence) */}
-        <div className="hidden md:flex flex-1 overflow-hidden">
-          <ResizablePanelGroup
-            orientation="horizontal"
-            {...layoutProps}
-            className="h-full w-full"
-          >
-            {/* Left Form Panel */}
-            <ResizablePanel
-              id="form-panel"
-              defaultSize="45%"
-              minSize="30%"
-              maxSize="70%"
-              className="flex flex-col bg-white relative z-10 overflow-hidden"
+        {isMobile ? (
+          /* Mobile View (single active view: Form OR Preview) */
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {showMobilePreview ? (
+              <section className="flex-1 bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between">
+                {renderPreviewContent()}
+              </section>
+            ) : (
+              <section className="flex-1 flex flex-col bg-white overflow-hidden">
+                {renderFormContent()}
+              </section>
+            )}
+          </div>
+        ) : (
+          /* Desktop View (Draggable Resizable Split-Pane with localStorage persistence) */
+          <div className="flex-1 flex overflow-hidden">
+            <ResizablePanelGroup
+              orientation="horizontal"
+              {...layoutProps}
+              className="h-full w-full"
             >
-              {renderFormContent()}
-            </ResizablePanel>
+              {/* Left Form Panel */}
+              <ResizablePanel
+                id="form-panel"
+                defaultSize="45%"
+                minSize="30%"
+                maxSize="70%"
+                className="flex flex-col bg-white relative z-10 overflow-hidden"
+              >
+                {renderFormContent()}
+              </ResizablePanel>
 
-            {/* Draggable Divider Handle */}
-            <ResizableHandle withHandle />
+              {/* Draggable Divider Handle */}
+              <ResizableHandle withHandle />
 
-            {/* Right Preview Panel */}
-            <ResizablePanel
-              id="preview-panel"
-              defaultSize="55%"
-              minSize="30%"
-              maxSize="70%"
-              className="bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between"
-            >
-              {renderPreviewContent()}
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
+              {/* Right Preview Panel */}
+              <ResizablePanel
+                id="preview-panel"
+                defaultSize="55%"
+                minSize="30%"
+                maxSize="70%"
+                className="bg-[#fcf9f5] relative overflow-hidden flex flex-col items-center justify-between"
+              >
+                {renderPreviewContent()}
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
+        )}
       </div>
 
       {/* Unsaved Changes Confirmation Dialog */}

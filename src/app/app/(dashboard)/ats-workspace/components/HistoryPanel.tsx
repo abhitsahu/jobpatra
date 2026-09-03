@@ -1,8 +1,10 @@
 'use client';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAtsHistory, useDeleteAtsAnalysis, useClearAtsHistory } from '@/app/app/_hooks/use-ats-history';
+import { ConfirmationModal } from '@/app/app/_components/common/confirmation-modal';
 
 export function HistoryPanel() {
   const router = useRouter();
@@ -10,17 +12,28 @@ export function HistoryPanel() {
   const deleteMutation = useDeleteAtsAnalysis();
   const clearMutation = useClearAtsHistory();
 
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+
   const analyses = data?.items ?? [];
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    deleteMutation.mutate(id);
+    setDeleteItemId(id);
   };
 
-  const handleClearAll = () => {
-    if (confirm('Are you sure you want to clear your entire analysis history?')) {
-      clearMutation.mutate();
+  const handleConfirmDeleteItem = () => {
+    if (deleteItemId) {
+      deleteMutation.mutate(deleteItemId, {
+        onSuccess: () => setDeleteItemId(null),
+      });
     }
+  };
+
+  const handleConfirmClearAll = () => {
+    clearMutation.mutate(undefined, {
+      onSuccess: () => setConfirmClearOpen(false),
+    });
   };
 
   return (
@@ -35,9 +48,10 @@ export function HistoryPanel() {
         </div>
         {analyses.length > 0 && (
           <button
-            onClick={handleClearAll}
+            type="button"
+            onClick={() => setConfirmClearOpen(true)}
             disabled={clearMutation.isPending}
-            className="font-['Hanken_Grotesk'] text-[10px] font-bold text-[#ba1a1a] uppercase tracking-wider hover:underline disabled:opacity-50"
+            className="font-['Hanken_Grotesk'] text-[10px] font-bold text-[#ba1a1a] uppercase tracking-wider hover:underline disabled:opacity-50 cursor-pointer"
           >
             Clear All
           </button>
@@ -109,6 +123,28 @@ export function HistoryPanel() {
           ))
         )}
       </div>
+
+      {/* Clear All Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmClearOpen}
+        onClose={() => setConfirmClearOpen(false)}
+        onConfirm={handleConfirmClearAll}
+        title="Clear Analysis History?"
+        description="Are you sure you want to clear your entire analysis history? This action cannot be undone."
+        confirmText="Clear History"
+        isLoading={clearMutation.isPending}
+      />
+
+      {/* Delete Item Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteItemId !== null}
+        onClose={() => setDeleteItemId(null)}
+        onConfirm={handleConfirmDeleteItem}
+        title="Delete Analysis Record?"
+        description="This will permanently delete this analysis record from your history."
+        confirmText="Delete Record"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }
