@@ -111,10 +111,9 @@ export async function POST(request: Request) {
             currentPeriodStart: subscription?.currentPeriodStart,
             currentPeriodEnd: subscription?.currentPeriodEnd,
             limits: {
-              resumes:        subscription?.snapshotLimitResumes,
               atsScans:       subscription?.snapshotLimitAts,
               aiSuggestions:  subscription?.snapshotLimitAi,
-              pdfDownloads:   subscription?.snapshotLimitPdf,
+              templateAccess: subscription?.snapshotTemplateAccess,
             },
           },
           invoice: invoice

@@ -19,12 +19,44 @@ export default async function SubscriptionDetailPage({
 
   const { id } = await params;
 
-  const sub = await prisma.subscription.findUnique({
-    where: { id },
-    include: { user: { select: { id: true, name: true, email: true } } },
-  });
+  const [sub, pricingPlans, distinctStatusRows] = await Promise.all([
+    prisma.subscription.findUnique({
+      where: { id },
+      include: { user: { select: { id: true, name: true, email: true } } },
+    }),
+    prisma.pricingPlan.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' },
+      select: { slug: true, name: true },
+    }),
+    prisma.subscription.findMany({
+      distinct: ['status'],
+      select: { status: true },
+    }),
+  ]);
 
   if (!sub) notFound();
+
+  const planMap = new Map<string, string>();
+  for (const p of pricingPlans) {
+    planMap.set(p.slug.toUpperCase(), p.name);
+  }
+  if (!planMap.has('FREE')) planMap.set('FREE', 'Free');
+  if (sub.plan && !planMap.has(sub.plan.toUpperCase())) {
+    planMap.set(sub.plan.toUpperCase(), sub.snapshotPlanName || sub.plan);
+  }
+
+  const availablePlans = Array.from(planMap.entries()).map(([value, label]) => ({
+    value,
+    label,
+  }));
+
+  const statusSet = new Set<string>(['ACTIVE', 'EXPIRED', 'CANCELLED', 'TRIALING']);
+  for (const row of distinctStatusRows) {
+    if (row.status) statusSet.add(row.status.toUpperCase());
+  }
+  if (sub.status) statusSet.add(sub.status.toUpperCase());
+  const availableStatuses = Array.from(statusSet);
 
   return (
     <div className="space-y-6 max-w-3xl font-['Hanken_Grotesk']">
@@ -43,8 +75,8 @@ export default async function SubscriptionDetailPage({
             ['Current Plan', sub.snapshotPlanName ?? sub.plan],
             ['Status', sub.status],
             ['Billing Interval', sub.snapshotBillingPeriod ?? '—'],
-            ['Amount Paid', sub.snapshotMonthlyPrice != null
-              ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: sub.snapshotCurrency ?? 'INR', maximumFractionDigits: 0 }).format(sub.snapshotMonthlyPrice)
+            ['Amount Paid', sub.snapshotPriceInr != null
+              ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: sub.snapshotCurrency ?? 'INR', maximumFractionDigits: 0 }).format(sub.snapshotPriceInr)
               : '—'],
             ['Period Started', new Date(sub.currentPeriodStart).toLocaleDateString('en-IN')],
             ['Period Ending', sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString('en-IN') : '—'],
@@ -63,6 +95,8 @@ export default async function SubscriptionDetailPage({
         currentPlan={sub.plan}
         currentStatus={sub.status}
         currentPeriodEnd={sub.currentPeriodEnd?.toISOString() ?? ''}
+        availablePlans={availablePlans}
+        availableStatuses={availableStatuses}
       />
     </div>
   );

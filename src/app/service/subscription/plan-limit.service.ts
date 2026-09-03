@@ -2,10 +2,10 @@ import { prisma } from '@/app/_lib/prisma';
 import type { Prisma } from '@prisma/client';
 
 interface PlanLimits {
-  limitResumeCreate: number;
   limitAtsAnalysis: number;
   limitAiSuggestion: number;
-  limitDownloadPdf: number;
+  durationDays: number | null;
+  templateAccess: string;
 }
 
 interface CacheEntry {
@@ -25,25 +25,19 @@ export async function getPlanLimits(
   const normalized = planSlug.toLowerCase();
   const now = Date.now();
 
-  // Check cache
   const cached = cache.get(normalized);
   if (cached && now < cached.expiresAt) {
     return cached.value;
   }
 
-  // Query Database
   let plan = await db.pricingPlan.findUnique({
     where: { slug: normalized },
   });
 
-  // Self-healing check: if the database is unpopulated or missing plans
   if (!plan) {
     console.warn(
       `[PlanLimitService] Plan '${planSlug}' not found in database. Triggering pricing seed...`,
     );
-    // Seeding performs multiple independent writes and must never run inside
-    // an interactive transaction. A missing plan is a configuration error for
-    // transactional callers, not something they can safely repair.
     if (db !== prisma) {
       throw new Error(`Plan limits configuration not found for plan slug: ${planSlug}`);
     }
@@ -51,7 +45,6 @@ export async function getPlanLimits(
     const { seedPricingData } = await import('@/app/service/pricing/pricing.service');
     await seedPricingData();
 
-    // Re-query database
     plan = await db.pricingPlan.findUnique({
       where: { slug: normalized },
     });
@@ -62,13 +55,12 @@ export async function getPlanLimits(
   }
 
   const limits: PlanLimits = {
-    limitResumeCreate: plan.limitResumeCreate,
     limitAtsAnalysis: plan.limitAtsAnalysis,
     limitAiSuggestion: plan.limitAiSuggestion,
-    limitDownloadPdf: plan.limitDownloadPdf,
+    durationDays: plan.durationDays,
+    templateAccess: plan.templateAccess,
   };
 
-  // Write to cache
   cache.set(normalized, {
     value: limits,
     expiresAt: now + CACHE_TTL_MS,

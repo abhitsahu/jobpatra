@@ -4,19 +4,25 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-const PLANS = ['FREE', 'PRO', 'ENTERPRISE'];
-const STATUSES = ['ACTIVE', 'EXPIRED', 'CANCELLED'];
-
 interface Props {
   subscriptionId: string;
   currentPlan: string;
   currentStatus: string;
   currentPeriodEnd: string;
+  availablePlans: Array<{ value: string; label: string }>;
+  availableStatuses: string[];
 }
 
-export function SubscriptionAdjustForm({ subscriptionId, currentPlan, currentStatus, currentPeriodEnd }: Props) {
+export function SubscriptionAdjustForm({
+  subscriptionId,
+  currentPlan,
+  currentStatus,
+  currentPeriodEnd,
+  availablePlans,
+  availableStatuses,
+}: Props) {
   const router = useRouter();
-  const [plan, setPlan] = useState(currentPlan);
+  const [plan, setPlan] = useState((currentPlan || 'FREE').toUpperCase());
   const [status, setStatus] = useState(currentStatus);
   const [periodEnd, setPeriodEnd] = useState(currentPeriodEnd ? currentPeriodEnd.slice(0, 10) : '');
   const [saving, setSaving] = useState(false);
@@ -28,7 +34,7 @@ export function SubscriptionAdjustForm({ subscriptionId, currentPlan, currentSta
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        plan,
+        plan: plan.toUpperCase(),
         status,
         ...(periodEnd ? { currentPeriodEnd: new Date(periodEnd).toISOString() } : {}),
       }),
@@ -52,9 +58,13 @@ export function SubscriptionAdjustForm({ subscriptionId, currentPlan, currentSta
             <select
               value={plan}
               onChange={(e) => setPlan(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
+              className="w-full px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs cursor-pointer"
             >
-              {PLANS.map((p) => <option key={p} value={p}>{p}</option>)}
+              {availablePlans.map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -62,9 +72,9 @@ export function SubscriptionAdjustForm({ subscriptionId, currentPlan, currentSta
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
+              className="w-full px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs cursor-pointer"
             >
-              {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              {availableStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
         </div>

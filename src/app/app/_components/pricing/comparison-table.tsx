@@ -42,7 +42,9 @@ export function ComparisonTable({ plans, comparison }: ComparisonTableProps) {
             >
               <div className="col-span-1 font-medium text-[#2b1611]">{row.title}</div>
               {plans.map((plan) => {
-                const val = row.values[plan.slug] || '—';
+                const val =
+                  (row.values && typeof row.values === 'object' ? row.values[plan.slug] : undefined) ||
+                  '—';
                 return (
                   <div
                     key={plan.id}

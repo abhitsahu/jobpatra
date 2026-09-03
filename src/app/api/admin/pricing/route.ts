@@ -1,32 +1,24 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/_lib/prisma';
-import { withAdminAuth } from '@/app/api/admin/_lib/with-admin-auth';
-import { logAdminAction } from '@/app/api/admin/_lib/log-admin-action';
+import { withAdminAuth } from '../_lib/with-admin-auth';
+import { invalidatePlanLimitsCache } from '@/app/service/subscription/plan-limit.service';
+import type { CreatePricingPlanRequest, UpdatePricingPlanRequest } from '@/app/api/model/request/pricing/pricing';
 
-export async function GET(request: Request) {
-  const auth = await withAdminAuth();
-  if (auth instanceof NextResponse) return auth;
-
-  const plans = await prisma.pricingPlan.findMany({
+export async function GET() {
+  const result = await withAdminAuth();
+  if (result instanceof NextResponse) return result;
+  const data = await prisma.pricingPlan.findMany({
     orderBy: { displayOrder: 'asc' },
     include: { features: { orderBy: { order: 'asc' } } },
   });
-
-  return NextResponse.json({ plans });
+  return NextResponse.json({ success: true, data });
 }
 
 export async function POST(request: Request) {
-  const auth = await withAdminAuth();
-  if (auth instanceof NextResponse) return auth;
+  const result = await withAdminAuth();
+  if (result instanceof NextResponse) return result;
 
-  const body = await request.json() as {
-    name: string; slug: string; description: string; buttonText: string;
-    monthlyPrice: number; quarterlyPrice: number; currency: string;
-    limitResumeCreate: number; limitAtsAnalysis: number;
-    limitAiSuggestion: number; limitDownloadPdf: number;
-    isPopular?: boolean; displayOrder?: number;
-    features?: Array<{ feature: string; available: boolean; order?: number }>
-  };
+  const body = (await request.json()) as CreatePricingPlanRequest;
 
   const plan = await prisma.pricingPlan.create({
     data: {
@@ -34,13 +26,13 @@ export async function POST(request: Request) {
       slug: body.slug,
       description: body.description,
       buttonText: body.buttonText ?? 'Get Started',
-      monthlyPrice: body.monthlyPrice,
-      quarterlyPrice: body.quarterlyPrice,
-      currency: body.currency,
-      limitResumeCreate: body.limitResumeCreate,
+      priceInr: body.priceInr,
+      priceUsd: body.priceUsd,
+      currency: body.currency ?? 'INR',
+      templateAccess: body.templateAccess ?? 'FREE',
+      durationDays: body.durationDays ?? null,
       limitAtsAnalysis: body.limitAtsAnalysis,
       limitAiSuggestion: body.limitAiSuggestion,
-      limitDownloadPdf: body.limitDownloadPdf,
       isPopular: body.isPopular ?? false,
       displayOrder: body.displayOrder ?? 0,
       isActive: true,
@@ -48,6 +40,7 @@ export async function POST(request: Request) {
         create: (body.features ?? []).map((f, i) => ({
           feature: f.feature,
           available: f.available,
+          highlight: f.highlight ?? false,
           order: f.order ?? i,
         })),
       },
@@ -55,62 +48,65 @@ export async function POST(request: Request) {
     include: { features: true },
   });
 
-  await logAdminAction({
-    adminId: auth.session.user.id,
-    action: 'CREATE_PRICING_PLAN',
-    target: plan.id,
-    details: { name: plan.name, slug: plan.slug },
-    request,
-  });
-
-  return NextResponse.json({ success: true, plan }, { status: 201 });
+  invalidatePlanLimitsCache();
+  return NextResponse.json({ success: true, data: plan }, { status: 201 });
 }
 
 export async function PUT(request: Request) {
-  const auth = await withAdminAuth();
-  if (auth instanceof NextResponse) return auth;
+  const result = await withAdminAuth();
+  if (result instanceof NextResponse) return result;
 
-  const body = await request.json() as {
-    id: string; name?: string; description?: string; buttonText?: string;
-    monthlyPrice?: number; quarterlyPrice?: number;
-    limitResumeCreate?: number; limitAtsAnalysis?: number;
-    limitAiSuggestion?: number; limitDownloadPdf?: number;
-    isPopular?: boolean; displayOrder?: number; isActive?: boolean;
-  };
+  const body = (await request.json()) as UpdatePricingPlanRequest;
 
-  const { id, ...data } = body;
+  if (body.features !== undefined) {
+    await prisma.$transaction([
+      prisma.planFeature.deleteMany({ where: { planId: body.id } }),
+      prisma.planFeature.createMany({
+        data: body.features.map((f, i) => ({
+          planId: body.id,
+          feature: f.feature,
+          available: f.available ?? true,
+          highlight: f.highlight ?? false,
+          order: f.order ?? i,
+        })),
+      }),
+    ]);
+  }
 
-  const updated = await prisma.pricingPlan.update({ where: { id }, data });
-
-  await logAdminAction({
-    adminId: auth.session.user.id,
-    action: 'UPDATE_PRICING_PLAN',
-    target: id,
-    details: data as Record<string, unknown>,
-    request,
+  const plan = await prisma.pricingPlan.update({
+    where: { id: body.id },
+    data: {
+      ...(body.name !== undefined && { name: body.name }),
+      ...(body.slug !== undefined && { slug: body.slug }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.buttonText !== undefined && { buttonText: body.buttonText }),
+      ...(body.priceInr !== undefined && { priceInr: body.priceInr }),
+      ...(body.priceUsd !== undefined && { priceUsd: body.priceUsd }),
+      ...(body.currency !== undefined && { currency: body.currency }),
+      ...(body.templateAccess !== undefined && { templateAccess: body.templateAccess }),
+      ...(body.durationDays !== undefined && { durationDays: body.durationDays }),
+      ...(body.limitAtsAnalysis !== undefined && { limitAtsAnalysis: body.limitAtsAnalysis }),
+      ...(body.limitAiSuggestion !== undefined && { limitAiSuggestion: body.limitAiSuggestion }),
+      ...(body.isPopular !== undefined && { isPopular: body.isPopular }),
+      ...(body.displayOrder !== undefined && { displayOrder: body.displayOrder }),
+      ...(body.isActive !== undefined && { isActive: body.isActive }),
+    },
+    include: { features: { orderBy: { order: 'asc' } } },
   });
 
-  return NextResponse.json({ success: true, plan: updated });
+  invalidatePlanLimitsCache();
+  return NextResponse.json({ success: true, data: plan });
 }
 
 export async function DELETE(request: Request) {
-  const auth = await withAdminAuth();
-  if (auth instanceof NextResponse) return auth;
+  const result = await withAdminAuth();
+  if (result instanceof NextResponse) return result;
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
-  if (!id) return NextResponse.json({ success: false, message: 'Missing plan ID' }, { status: 400 });
+  if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
 
-  const plan = await prisma.pricingPlan.findUnique({ where: { id }, select: { name: true } });
   await prisma.pricingPlan.delete({ where: { id } });
-
-  await logAdminAction({
-    adminId: auth.session.user.id,
-    action: 'DELETE_PRICING_PLAN',
-    target: id,
-    details: { name: plan?.name },
-    request,
-  });
-
+  invalidatePlanLimitsCache();
   return NextResponse.json({ success: true });
 }

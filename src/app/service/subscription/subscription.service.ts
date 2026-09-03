@@ -28,17 +28,27 @@ export async function activateUserSubscription({
 }) {
   const normalizedPlan = planSlug.toUpperCase();
   const now = new Date();
-  const periodEnd = new Date(now);
+  const isFree = normalizedPlan === 'FREE';
 
-  if (billingPeriod === BillingPeriod.QUARTERLY) {
-    periodEnd.setMonth(periodEnd.getMonth() + 3);
-  } else {
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+  // ── Block FREE downgrade when user has an active paid subscription ─────────
+  const existingSubscription = await prisma.subscription.findUnique({
+    where: { userId },
+    select: { plan: true, status: true, currentPeriodEnd: true },
+  });
+
+  const isPaidActive =
+    existingSubscription?.plan !== 'FREE' &&
+    existingSubscription?.status === 'ACTIVE' &&
+    existingSubscription?.currentPeriodEnd &&
+    existingSubscription.currentPeriodEnd > now;
+
+  if (isFree && isPaidActive) {
+    const err = new Error('Cannot downgrade to Free while on an active paid subscription');
+    (err as Error & { code?: string }).code = 'DOWNGRADE_BLOCKED';
+    throw err;
   }
 
   // ── Snapshot plan limits BEFORE the transaction ───────────────────────────
-  // Must run outside the transaction: getPricingPage may trigger a self-healing
-  // seed which cannot safely run inside an interactive transaction.
   const [pricingPage, planLimits] = await Promise.all([
     getPricingPage(currency),
     getPlanLimits(normalizedPlan),
@@ -48,20 +58,34 @@ export async function activateUserSubscription({
     (p) => p.slug.toLowerCase() === planSlug.toLowerCase(),
   );
 
+  // Stacking: extend from existing period end ONLY if user has an active PAID subscription
+  const baseDate =
+    isPaidActive && existingSubscription?.currentPeriodEnd
+      ? existingSubscription.currentPeriodEnd
+      : now;
+
+  const durationDays = planLimits.durationDays ?? (isFree ? null : 30);
+
+  let periodEnd: Date | null = null;
+  if (!isFree && durationDays) {
+    periodEnd = new Date(baseDate);
+    periodEnd.setDate(periodEnd.getDate() + durationDays);
+  }
+
   const snapshot = {
     snapshotPlanName: pricingPlan?.name ?? planSlug,
-    snapshotMonthlyPrice: amount,
+    snapshotPriceInr: pricingPlan?.priceInr ?? amount,
+    snapshotPriceUsd: pricingPlan?.priceUsd ?? 0,
     snapshotCurrency: currency,
     snapshotBillingPeriod: billingPeriod as string,
-    snapshotLimitResumes: planLimits.limitResumeCreate,
     snapshotLimitAts: planLimits.limitAtsAnalysis,
     snapshotLimitAi: planLimits.limitAiSuggestion,
-    snapshotLimitPdf: planLimits.limitDownloadPdf,
+    snapshotTemplateAccess: planLimits.templateAccess,
+    snapshotDurationDays: durationDays,
   };
-  // ──────────────────────────────────────────────────────────────────────────
 
   const result = await prisma.$transaction(async (tx) => {
-    // 1. Guard against duplicate processing (idempotency at payment level)
+    // Idempotency guard
     const existingPayment = await tx.payment.findUnique({
       where: { razorpayOrderId },
     });
@@ -69,26 +93,12 @@ export async function activateUserSubscription({
       throw new Error('PAYMENT_ALREADY_COMPLETED');
     }
 
-    // 2. Upsert payment record → get its DB id for Invoice FK
     const payment = await tx.payment.upsert({
       where: { razorpayOrderId },
-      update: {
-        razorpayPaymentId,
-        status: 'COMPLETED',
-        amount,
-        currency,
-      },
-      create: {
-        userId,
-        razorpayOrderId,
-        razorpayPaymentId,
-        amount,
-        currency,
-        status: 'COMPLETED',
-      },
+      update: { razorpayPaymentId, status: 'COMPLETED', amount, currency },
+      create: { userId, razorpayOrderId, razorpayPaymentId, amount, currency, status: 'COMPLETED' },
     });
 
-    // 3. Upsert subscription with plan snapshot columns
     const subscription = await tx.subscription.upsert({
       where: { userId },
       update: {
@@ -118,21 +128,47 @@ export async function activateUserSubscription({
       },
     });
 
-    // 4. Reset all usage counters for the new billing period
-    const RESETTABLE_FEATURES = ['RESUME_CREATE', 'ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
-    await Promise.all(
-      RESETTABLE_FEATURES.map((feature) =>
-        tx.$executeRaw`
-          INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
-          VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
-          ON CONFLICT ("userId", "feature")
-          DO UPDATE SET "used" = 0, "lastResetDate" = ${now}, "updatedAt" = ${now}
-        `,
-      ),
-    );
+    // Set hasEverPaid = true on first paid purchase
+    if (!isFree) {
+      await tx.user.update({
+        where: { id: userId },
+        data: { hasEverPaid: true },
+      });
+    }
 
-    // 5. Create invoice record + enqueue background PDF job
-    //    pdfData and pdfUrl start as null — the cron job fills them in async.
+    // Stacking: accumulate limits for PAID plans.
+    // For FREE plan: only seed credits if user has never paid before.
+    const user = await tx.user.findUnique({ where: { id: userId }, select: { hasEverPaid: true } });
+    const shouldSeedCredits = !isFree || !user?.hasEverPaid;
+
+    if (shouldSeedCredits) {
+      const METERED_FEATURES: { feature: string; planLimit: number }[] = [
+        { feature: 'ATS_ANALYSIS', planLimit: planLimits.limitAtsAnalysis },
+        { feature: 'AI_SUGGESTION', planLimit: planLimits.limitAiSuggestion },
+      ];
+
+      for (const { feature, planLimit } of METERED_FEATURES) {
+        if (isFree) {
+          // Free plan: seed initial credits only (no stacking)
+          await tx.$executeRaw`
+            INSERT INTO "usage_tracking" ("userId", "feature", "used", "limit", "lastResetDate", "createdAt", "updatedAt")
+            VALUES (${userId}, ${feature}, 0, ${planLimit}, ${now}, ${now}, ${now})
+            ON CONFLICT ("userId", "feature") DO NOTHING
+          `;
+        } else {
+          // Paid plan: stack/accumulate credits on top of existing balance
+          await tx.$executeRaw`
+            INSERT INTO "usage_tracking" ("userId", "feature", "used", "limit", "lastResetDate", "createdAt", "updatedAt")
+            VALUES (${userId}, ${feature}, 0, ${planLimit}, ${now}, ${now}, ${now})
+            ON CONFLICT ("userId", "feature")
+            DO UPDATE SET
+              "limit" = COALESCE("usage_tracking"."limit", 0) + ${planLimit},
+              "updatedAt" = ${now}
+          `;
+        }
+      }
+    }
+
     await createInvoice(tx, {
       userId,
       paymentId: payment.id,
@@ -147,10 +183,7 @@ export async function activateUserSubscription({
     return subscription;
   });
 
-  // Invalidate cached plan limits so the fresh snapshot takes effect immediately
   invalidatePlanLimitsCache();
-
-  // ── Fire-and-forget: trigger cron to generate invoice PDF automatically ──
   triggerInvoiceCronAsync();
 
   return result;
@@ -190,8 +223,6 @@ export async function getSubscriptionStatus(userId: string) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LAZY EXPIRY ENFORCEMENT
-// Called on every GET /api/subscription/status. If the paid period has passed,
-// atomically downgrades to FREE and resets usage counters.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function expireSubscriptionIfDue(
@@ -214,8 +245,6 @@ export async function expireSubscriptionIfDue(
     `[SubscriptionService] Subscription for user ${userId} expired at ${subscription.currentPeriodEnd.toISOString()}. Downgrading to FREE.`,
   );
 
-  const RESETTABLE_FEATURES = ['RESUME_CREATE', 'ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
-
   const updated = await prisma.$transaction(async (tx) => {
     const downgraded = await tx.subscription.update({
       where: { userId },
@@ -227,16 +256,7 @@ export async function expireSubscriptionIfDue(
       },
     });
 
-    await Promise.all(
-      RESETTABLE_FEATURES.map((feature) =>
-        tx.$executeRaw`
-          INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
-          VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
-          ON CONFLICT ("userId", "feature")
-          DO UPDATE SET "used" = 0, "lastResetDate" = ${now}, "updatedAt" = ${now}
-        `,
-      ),
-    );
+    // Credits are preserved on expiry — users keep remaining balance.
 
     return downgraded;
   });

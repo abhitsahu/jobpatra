@@ -1,10 +1,11 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { getPlanLimits } from './plan-limit.service';
 
-const RESETTABLE_FEATURES = ['RESUME_CREATE', 'ATS_ANALYSIS', 'AI_SUGGESTION', 'DOWNLOAD_PDF'];
+// Only ATS and AI are metered — resume and PDF limits removed
+const RESETTABLE_FEATURES = ['ATS_ANALYSIS', 'AI_SUGGESTION'];
 
 type UsageClient = Prisma.TransactionClient | PrismaClient;
-type UsageTrackingRow = { used: number; lastResetDate: Date | null };
+type UsageTrackingRow = { used: number; limit: number | null; lastResetDate: Date | null };
 
 export async function checkAndIncrementUsage(
   tx: UsageClient,
@@ -12,59 +13,37 @@ export async function checkAndIncrementUsage(
   feature: string,
   incrementBy = 1,
 ) {
-  // 1. Fetch user subscription to resolve plan
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
 
-  // Safety gate: treat as FREE if the paid period has already ended.
-  // This is the second line of defence — the primary enforcement is in
-  // GET /api/subscription/status which calls expireSubscriptionIfDue().
   const isExpired =
     subscription?.plan !== 'FREE' &&
     subscription?.currentPeriodEnd != null &&
     subscription.currentPeriodEnd < new Date();
 
-  // ── Use snapshot limits when available (production-grade snapshotting) ──
-  // Snapshot limits are frozen at purchase time, so pricing_plans changes
-  // never retroactively affect subscribers mid-period.
-  let limits: { limitResumeCreate: number; limitAtsAnalysis: number; limitAiSuggestion: number; limitDownloadPdf: number };
+  // Resolve limit: stacked `limit` column wins; fall back to plan default
+  const planSlug = isExpired ? 'FREE' : (subscription?.plan?.toLowerCase() || 'free');
+  const planLimits = await getPlanLimits(planSlug, tx);
 
-  if (!isExpired && subscription?.snapshotLimitResumes != null) {
-    limits = {
-      limitResumeCreate: subscription.snapshotLimitResumes,
-      limitAtsAnalysis:  subscription.snapshotLimitAts!,
-      limitAiSuggestion: subscription.snapshotLimitAi!,
-      limitDownloadPdf:  subscription.snapshotLimitPdf!,
-    };
-  } else {
-    // FREE tier, expired, or legacy row without snapshot → live plan lookup
-    const planSlug = isExpired ? 'FREE' : (subscription?.plan?.toUpperCase() || 'FREE');
-    limits = await getPlanLimits(planSlug, tx);
-  }
-
-  const featureLimitMap: Record<string, keyof typeof limits> = {
-    RESUME_CREATE: 'limitResumeCreate',
+  const featureLimitMap: Record<string, keyof typeof planLimits> = {
     ATS_ANALYSIS:  'limitAtsAnalysis',
     AI_SUGGESTION: 'limitAiSuggestion',
-    DOWNLOAD_PDF:  'limitDownloadPdf',
   };
   const limitKey = featureLimitMap[feature];
-  const limit = limits[limitKey];
-
+  const defaultLimit = limitKey ? (planLimits[limitKey] as number) : -1;
 
   const now = new Date();
 
-  // 2. Ensure row exists first via thread-safe INSERT ... ON CONFLICT DO NOTHING
+  // Ensure row exists
   await tx.$executeRaw`
     INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
     VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
     ON CONFLICT ("userId", "feature") DO NOTHING
   `;
 
-  // 3. Acquire pessimistic write lock (FOR UPDATE)
   const lockedRecords = await tx.$queryRaw<UsageTrackingRow[]>`
-    SELECT * FROM "usage_tracking"
+    SELECT "used", "limit", "lastResetDate" FROM "usage_tracking"
     WHERE "userId" = ${userId} AND "feature" = ${feature}
     FOR UPDATE
   `;
@@ -75,8 +54,10 @@ export async function checkAndIncrementUsage(
 
   let currentUsed = lockedRecord.used;
   let lastResetDate = lockedRecord.lastResetDate;
+  // Stacked limit wins over plan default; -1 means unlimited
+  const effectiveLimit = lockedRecord.limit ?? defaultLimit;
 
-  // 4. Handle anniversary monthly resets for metered features
+  // Anniversary monthly resets for metered features
   if (RESETTABLE_FEATURES.includes(feature)) {
     const cycleStart = new Date(subscription?.currentPeriodStart || now);
     const anniversaryDate = new Date(cycleStart);
@@ -92,14 +73,12 @@ export async function checkAndIncrementUsage(
     }
   }
 
-  // 5. Assert limits check
-  if (limit !== -1 && currentUsed + incrementBy > limit) {
+  if (effectiveLimit !== -1 && currentUsed + incrementBy > effectiveLimit) {
     const err = new Error(`Usage limit exceeded for feature: ${feature}`);
     (err as Error & { code?: string }).code = 'LIMIT_EXCEEDED';
     throw err;
   }
 
-  // 6. Perform write operations
   return await tx.usageTracking.update({
     where: { userId_feature: { userId, feature } },
     data: {
@@ -117,7 +96,6 @@ export async function decrementUsage(
 ) {
   const now = new Date();
 
-  // Ensure row exists
   await tx.$executeRaw`
     INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
     VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
@@ -125,54 +103,49 @@ export async function decrementUsage(
   `;
 
   const lockedRecords = await tx.$queryRaw<UsageTrackingRow[]>`
-    SELECT * FROM "usage_tracking"
+    SELECT "used", "limit", "lastResetDate" FROM "usage_tracking"
     WHERE "userId" = ${userId} AND "feature" = ${feature}
     FOR UPDATE
   `;
   const lockedRecord = lockedRecords[0];
   if (!lockedRecord) return;
 
-  const newUsed = Math.max(0, lockedRecord.used - decrementBy);
-
   await tx.usageTracking.update({
     where: { userId_feature: { userId, feature } },
-    data: {
-      used: newUsed,
-    },
+    data: { used: Math.max(0, lockedRecord.used - decrementBy) },
   });
 }
 
 export async function getOrSeedUsage(tx: UsageClient, userId: string, feature: string) {
-  // 1. Fetch user plan limits
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
-  const planSlug = subscription?.plan?.toUpperCase() || 'FREE';
-  const limits = await getPlanLimits(planSlug, tx);
+  const planSlug = subscription?.plan?.toLowerCase() || 'free';
+  const planLimits = await getPlanLimits(planSlug, tx);
 
-  const featureLimitMap: Record<string, keyof typeof limits> = {
-    RESUME_CREATE: 'limitResumeCreate',
-    ATS_ANALYSIS: 'limitAtsAnalysis',
+  const featureLimitMap: Record<string, keyof typeof planLimits> = {
+    ATS_ANALYSIS:  'limitAtsAnalysis',
     AI_SUGGESTION: 'limitAiSuggestion',
-    DOWNLOAD_PDF: 'limitDownloadPdf',
   };
   const limitKey = featureLimitMap[feature];
-  const limit = limits[limitKey];
+  const defaultLimit = limitKey ? (planLimits[limitKey] as number) : -1;
 
   const now = new Date();
 
-  // 2. Fetch/seed usage using thread-safe INSERT ... ON CONFLICT DO NOTHING
   await tx.$executeRaw`
     INSERT INTO "usage_tracking" ("userId", "feature", "used", "lastResetDate", "createdAt", "updatedAt")
     VALUES (${userId}, ${feature}, 0, ${now}, ${now}, ${now})
     ON CONFLICT ("userId", "feature") DO NOTHING
   `;
 
-  let record = await tx.usageTracking.findUniqueOrThrow({
+  const record = await tx.usageTracking.findUniqueOrThrow({
     where: { userId_feature: { userId, feature } },
   });
 
-  // 3. Resettable check
+  // Use stacked limit if present
+  const effectiveLimit = record.limit ?? defaultLimit;
+
+  // Anniversary reset check
   if (RESETTABLE_FEATURES.includes(feature)) {
     const cycleStart = new Date(subscription?.currentPeriodStart || now);
     const anniversaryDate = new Date(cycleStart);
@@ -183,18 +156,13 @@ export async function getOrSeedUsage(tx: UsageClient, userId: string, feature: s
     currentCycleStart.setMonth(currentCycleStart.getMonth() - 1);
 
     if (!record.lastResetDate || record.lastResetDate < currentCycleStart) {
-      record = await tx.usageTracking.update({
+      await tx.usageTracking.update({
         where: { userId_feature: { userId, feature } },
-        data: {
-          used: 0,
-          lastResetDate: now,
-        },
+        data: { used: 0, lastResetDate: now },
       });
+      return { ...record, used: 0, limit: effectiveLimit };
     }
   }
 
-  return {
-    ...record,
-    limit,
-  };
+  return { ...record, limit: effectiveLimit };
 }

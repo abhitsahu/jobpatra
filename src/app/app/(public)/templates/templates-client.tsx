@@ -114,24 +114,35 @@ export default function TemplatesClient() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [previewTemplate, setPreviewTemplate] = useState<TemplateData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [canAccessPremium, setCanAccessPremium] = useState(false);
 
   // Fetch live templates from API if available
   useEffect(() => {
-    async function loadTemplates() {
+    async function init() {
+      // Load templates
       try {
         const res = await fetch('/api/template');
         const data = await res.json();
         if (data.success && data.data?.templates?.length > 0) {
           setTemplates(data.data.templates);
-          if (data.data.categories?.length > 0) {
-            setCategories(data.data.categories);
-          }
+          if (data.data.categories?.length > 0) setCategories(data.data.categories);
         }
       } catch (err) {
         console.warn('Using static templates fallback:', err);
       }
+      // Check subscription for template access
+      try {
+        const res = await fetch('/api/subscription/status');
+        const data = await res.json();
+        if (data.success) {
+          const access = data.subscription?.templateAccess ?? 'FREE';
+          setCanAccessPremium(access === 'ALL');
+        }
+      } catch {
+        // Not logged in — free access only
+      }
     }
-    loadTemplates();
+    init();
   }, []);
 
   // Filter templates based on search & category selection
@@ -149,6 +160,12 @@ export default function TemplatesClient() {
   });
 
   const handleUseTemplate = async (id: string) => {
+    const tpl = templates.find((t) => t.id === id);
+    // If premium and user doesn't have access, redirect to pricing
+    if (tpl?.isPremium && !canAccessPremium) {
+      router.push('/app/pricing');
+      return;
+    }
     const session = await getSessionClient();
     if (session?.user) {
       router.push(`/app/resume/new?template=${encodeURIComponent(id)}`);
@@ -223,6 +240,7 @@ export default function TemplatesClient() {
 
         <TemplateGrid
           templates={filteredTemplates}
+          canAccessPremium={canAccessPremium}
           onUseTemplate={handleUseTemplate}
           onPreview={handlePreview}
         />

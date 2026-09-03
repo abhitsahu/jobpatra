@@ -19,19 +19,13 @@ export interface TemplateData {
 
 interface TemplateCardProps {
   template: TemplateData;
+  isLocked?: boolean;
   onUseTemplate: (id: string) => void;
   onPreview: (id: string) => void;
 }
 
-export function TemplateCard({ template, onUseTemplate, onPreview }: TemplateCardProps) {
-  const {
-    id,
-    name,
-    description,
-    previewImage,
-    atsFriendly,
-    isPremium,
-  } = template;
+export function TemplateCard({ template, isLocked = false, onUseTemplate, onPreview }: TemplateCardProps) {
+  const { id, name, description, previewImage, atsFriendly, isPremium } = template;
 
   return (
     <div className="group relative flex flex-col gap-5 cursor-pointer">
@@ -49,24 +43,33 @@ export function TemplateCard({ template, onUseTemplate, onPreview }: TemplateCar
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-[#FFF8EE]/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-4 m-2 z-20">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onUseTemplate(id);
-            }}
-            className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-75 shadow-lg hover:bg-[#7a1f1f] cursor-pointer active:scale-95"
-          >
-            Use Design
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onPreview(id);
-            }}
-            className="text-[#5b060c] font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] border border-[#5b060c]/30 bg-white px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-150 hover:bg-[#fff0ed] cursor-pointer active:scale-95"
-          >
-            Preview
-          </button>
+          {isLocked ? (
+            <>
+              <span className="text-2xl">🔒</span>
+              <p className="text-xs font-semibold text-[#5b060c] text-center px-4">Premium template — upgrade to unlock</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); onUseTemplate(id); }}
+                className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] px-8 py-3 rounded-full transition-all duration-300 shadow-lg hover:bg-[#7a1f1f] cursor-pointer active:scale-95"
+              >
+                Upgrade
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); onUseTemplate(id); }}
+                className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-75 shadow-lg hover:bg-[#7a1f1f] cursor-pointer active:scale-95"
+              >
+                Use Design
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onPreview(id); }}
+                className="text-[#5b060c] font-['Hanken_Grotesk'] text-[12px] font-semibold uppercase tracking-[0.15em] border border-[#5b060c]/30 bg-white px-8 py-3 rounded-full transform translate-y-3 group-hover:translate-y-0 transition-all duration-300 delay-150 hover:bg-[#fff0ed] cursor-pointer active:scale-95"
+              >
+                Preview
+              </button>
+            </>
+          )}
         </div>
 
         {/* Badge Seal */}

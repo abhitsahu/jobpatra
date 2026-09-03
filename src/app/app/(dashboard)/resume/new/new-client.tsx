@@ -27,10 +27,6 @@ export default function NewResumeClient() {
   const { data: subData } = useSubscriptionStatus();
   const createMutation = useCreateResume();
 
-  // Resume count from subscription usage (same source as Dashboard) — not raw DB count
-  const resumesUsed = subData?.usage?.resumes?.current ?? 0;
-  const resumesMax = subData?.usage?.resumes?.max;
-  const resumesMaxLabel = resumesMax === -1 ? '∞' : (resumesMax ?? '—');
   const categories: string[] = templatesData?.categories ?? ['All'];
   const hasProfile = !!userProfile?.profileResumeId;
 
@@ -48,9 +44,8 @@ export default function NewResumeClient() {
     });
   }, [templatesData?.templates, activeCategory, search]);
 
-  // Limit check using live usage data (matches Dashboard) — -1 means unlimited
-  const atLimit = resumesMax !== undefined && resumesMax !== -1 && resumesUsed >= resumesMax;
-  const canCreate = title.trim().length > 0 && !!selectedTemplate && !atLimit;
+  // Resumes are unlimited for all plans
+  const canCreate = title.trim().length > 0 && !!selectedTemplate;
 
   /** Called when user clicks "Create Resume" in the sticky footer */
   const handleCreate = () => {
@@ -205,9 +200,9 @@ export default function NewResumeClient() {
             </p>
           </div>
 
-          {/* Workspace Card */}
+          {/* Plan Badge Card */}
           <div
-            className="flex items-center gap-4 px-6 py-4 rounded-xl border border-[#E5D9C8] transition-all duration-300 hover:-translate-y-0.5 shrink-0"
+            className="flex items-center gap-4 px-6 py-4 rounded-xl border border-[#E5D9C8] shrink-0"
             style={{
               background: '#FFF8EE',
               boxShadow: '0 10px 30px -10px rgba(78,52,46,0.08)',
@@ -215,48 +210,27 @@ export default function NewResumeClient() {
           >
             <div className="flex flex-col">
               <span
-                className="text-[12px] leading-[16px] font-medium text-[#564240] uppercase tracking-widest"
+                className="text-[11px] font-bold uppercase tracking-widest text-[#564240]"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
-                Workspace
+                Active Plan
               </span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span
-                  className="text-[24px] leading-[32px] font-semibold text-[#5b060c]"
-                  style={{ fontFamily: 'Playfair Display, serif' }}
-                >
-                  {resumesUsed} / {resumesMaxLabel}
-                </span>
-                <span
-                  className="text-[12px] text-[#564240]"
-                  style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-                >
-                  Resumes
-                </span>
-              </div>
-            </div>
-
-            <div className="w-px h-10 bg-[#ddc0bd]" />
-
-            <div className="flex flex-col items-end gap-2">
-              {/* Gold PRO Badge */}
               <span
-                className="px-2 py-0.5 rounded text-[10px] text-white font-bold tracking-tighter"
-                style={{
-                  background: 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
-                  boxShadow: 'inset 0 -1px 2px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1)',
-                  fontFamily: 'Hanken Grotesk, sans-serif',
-                }}
+                className="text-[18px] font-semibold text-[#5b060c] mt-0.5"
+                style={{ fontFamily: 'Playfair Display, serif' }}
               >
-                PRO
+                {subData?.subscription?.planName || 'Free Plan'}
               </span>
+            </div>
+            {subData?.subscription?.plan === 'FREE' && (
               <button
-                className="text-[#795900] text-[12px] font-semibold hover:underline"
+                onClick={() => router.push('/app/pricing')}
+                className="text-[#795900] text-[12px] font-semibold hover:underline cursor-pointer ml-2"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
                 Upgrade
               </button>
-            </div>
+            )}
           </div>
         </div>
 

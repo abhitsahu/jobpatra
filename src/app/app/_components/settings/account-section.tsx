@@ -6,10 +6,10 @@ import { SheetCard, SectionHeading, SettingsRow } from './settings-primitives';
 export function AccountSection() {
   return (
     <SheetCard id="account">
-      <SectionHeading>Account &amp; Security</SectionHeading>
+      <SectionHeading icon="account_circle">Account &amp; Security</SectionHeading>
 
       <div className="space-y-0">
-        <SettingsRow label="Password Management" description="Last changed 3 months ago">
+        {/* <SettingsRow label="Password Management" description="Last changed 3 months ago">
           <button
             className="text-[#5b060c] text-[14px] font-semibold border border-[#5b060c] px-4 py-2 rounded-lg hover:bg-[#5b060c]/5 transition-colors"
             style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -17,7 +17,7 @@ export function AccountSection() {
           >
             Update Password
           </button>
-        </SettingsRow>
+        </SettingsRow> */}
         <SettingsRow
           label="Verified Email Identity"
           description="Your primary email has been formally verified"

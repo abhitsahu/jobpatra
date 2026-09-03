@@ -9,25 +9,11 @@ import { cn } from '@/app/app/_util/cn';
 import { ProfileSection } from '@/app/app/_components/settings/profile-section';
 import { AccountSection } from '@/app/app/_components/settings/account-section';
 import { SubscriptionSection } from '@/app/app/_components/settings/subscription-section';
-import { NotificationsSection } from '@/app/app/_components/settings/notifications-section';
-import { ResumePrefsSection } from '@/app/app/_components/settings/resume-prefs-section';
-import { AIPreferencesSection } from '@/app/app/_components/settings/ai-preferences-section';
-import { PrivacySection } from '@/app/app/_components/settings/privacy-section';
-import { ConnectedAccountsSection } from '@/app/app/_components/settings/connected-accounts-section';
-import { ExportDefaultsSection } from '@/app/app/_components/settings/export-defaults-section';
-import { DangerZoneSection } from '@/app/app/_components/settings/danger-zone-section';
 
 const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', icon: 'person' },
-  { id: 'account', label: 'Account', icon: 'manage_accounts' },
+  { id: 'account', label: 'Account', icon: 'account_circle' },
   { id: 'subscription', label: 'Subscription', icon: 'workspace_premium' },
-  { id: 'notifications', label: 'Notifications', icon: 'notifications' },
-  { id: 'resume-prefs', label: 'Resume Prefs', icon: 'article' },
-  { id: 'ai-prefs', label: 'AI Preferences', icon: 'history_edu' },
-  { id: 'privacy', label: 'Privacy & Security', icon: 'security' },
-  { id: 'connected', label: 'Connected Accounts', icon: 'link' },
-  { id: 'export', label: 'Export Defaults', icon: 'file_download' },
-  { id: 'danger', label: 'Danger Zone', icon: 'dangerous', danger: true },
 ];
 
 export default function SettingsClient({ session }: { session: Session }) {
@@ -63,20 +49,6 @@ export default function SettingsClient({ session }: { session: Session }) {
         return <AccountSection />;
       case 'subscription':
         return <SubscriptionSection />;
-      case 'notifications':
-        return <NotificationsSection />;
-      case 'resume-prefs':
-        return <ResumePrefsSection />;
-      case 'ai-prefs':
-        return <AIPreferencesSection />;
-      case 'privacy':
-        return <PrivacySection />;
-      case 'connected':
-        return <ConnectedAccountsSection />;
-      case 'export':
-        return <ExportDefaultsSection />;
-      case 'danger':
-        return <DangerZoneSection />;
       default:
         return <ProfileSection />;
     }
@@ -168,13 +140,9 @@ export default function SettingsClient({ session }: { session: Session }) {
                   onClick={() => handleSelectSection(item.id)}
                   className={cn(
                     'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0',
-                    item.danger
-                      ? isActive
-                        ? 'bg-[#ba1a1a] text-white'
-                        : 'bg-white text-[#ba1a1a] border border-[#ffdad6]'
-                      : isActive
-                        ? 'bg-[#5b060c] text-white'
-                        : 'bg-white text-[#564240] border border-[#ddc0bd]'
+                    isActive
+                      ? 'bg-[#5b060c] text-white'
+                      : 'bg-white text-[#564240] border border-[#ddc0bd]'
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >
@@ -201,13 +169,9 @@ export default function SettingsClient({ session }: { session: Session }) {
                   onClick={() => handleSelectSection(item.id)}
                   className={cn(
                     'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-semibold transition-all text-left cursor-pointer',
-                    item.danger
-                      ? isActive
-                        ? 'bg-[#ba1a1a] text-white shadow-sm'
-                        : 'text-[#ba1a1a] hover:bg-[#ffdad6]/40'
-                      : isActive
-                        ? 'bg-[#5b060c] text-white shadow-sm'
-                        : 'text-[#564240] hover:bg-[#ffe9e4]'
+                    isActive
+                      ? 'bg-[#5b060c] text-white shadow-sm'
+                      : 'text-[#564240] hover:bg-[#ffe9e4]'
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >

@@ -49,10 +49,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const price = billingPeriod === BillingPeriod.QUARTERLY ? plan.quarterlyPrice : plan.monthlyPrice;
+    const price = currency.toUpperCase() === 'USD' ? plan.priceUsd : plan.priceInr;
 
     // 3. Handle free plan tier bypass
     if (price === 0) {
+      // Block downgrade if user has an active paid subscription
+      const existingSub = await prisma.subscription.findUnique({
+        where: { userId },
+        select: { plan: true, status: true, currentPeriodEnd: true },
+      });
+      const isActivePaid =
+        existingSub?.plan !== 'FREE' &&
+        existingSub?.status === 'ACTIVE' &&
+        existingSub?.currentPeriodEnd &&
+        existingSub.currentPeriodEnd > new Date();
+      if (isActivePaid) {
+        return NextResponse.json<CreateOrderResponse>(
+          { success: false, message: 'You cannot switch to the Free plan while on an active paid subscription.' },
+          { status: 400 },
+        );
+      }
+
       const uniqueId = `free_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
       await activateUserSubscription({
         userId,

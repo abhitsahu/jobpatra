@@ -7,11 +7,13 @@ import type { TemplateData } from './template-card';
 
 interface TemplateGridProps {
   templates: TemplateData[];
+  /** When false, isPremium templates show a lock overlay instead of use/preview buttons */
+  canAccessPremium?: boolean;
   onUseTemplate: (id: string) => void;
   onPreview: (id: string) => void;
 }
 
-export function TemplateGrid({ templates, onUseTemplate, onPreview }: TemplateGridProps) {
+export function TemplateGrid({ templates, canAccessPremium = false, onUseTemplate, onPreview }: TemplateGridProps) {
   if (templates.length === 0) {
     return (
       <section className="max-w-7xl mx-auto px-4 md:px-16 py-16 text-center">
@@ -35,6 +37,7 @@ export function TemplateGrid({ templates, onUseTemplate, onPreview }: TemplateGr
           <TemplateCard
             key={tpl.id}
             template={tpl}
+            isLocked={tpl.isPremium && !canAccessPremium}
             onUseTemplate={onUseTemplate}
             onPreview={onPreview}
           />

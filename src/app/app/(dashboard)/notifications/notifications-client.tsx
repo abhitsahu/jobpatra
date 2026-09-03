@@ -89,7 +89,7 @@ export function NotificationsClient() {
               </button>
             )}
             <Link
-              href="/app/settings?section=notifications"
+              href="/app/settings"
               className="text-xs font-semibold text-[#564240] hover:text-[#370003] bg-white border border-[#E5D9C8] px-4 py-2 rounded-full shadow-xs flex items-center gap-1.5"
             >
               <IconMapper name="settings" className="text-xs" />

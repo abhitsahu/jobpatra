@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { authOptions } from '@/app/api/(controller)/auth/[...nextauth]/options';
 import { prisma } from '@/app/_lib/prisma';
 import { ArrowLeft } from 'lucide-react';
+import { getPlanLimits } from '@/app/service/subscription/plan-limit.service';
+import { UserCreditsCard } from './credits-card';
 
 export const metadata: Metadata = { title: 'User Details | JobPatra Admin' };
 
@@ -28,6 +30,7 @@ export default async function AdminUserDetailPage({
       role: true,
       jobTitle: true,
       industry: true,
+      hasEverPaid: true,
       createdAt: true,
       subscription: true,
       usageTracking: true,
@@ -54,7 +57,22 @@ export default async function AdminUserDetailPage({
   const fmt = (n: number, currency = 'INR') =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(n);
 
-  const usageMap = Object.fromEntries(user.usageTracking.map((u) => [u.feature, u.used]));
+  const isExpired =
+    user.subscription?.plan !== 'FREE' &&
+    user.subscription?.currentPeriodEnd != null &&
+    user.subscription.currentPeriodEnd < new Date();
+
+  const planSlug = isExpired ? 'free' : (user.subscription?.plan?.toLowerCase() || 'free');
+  const planLimits = await getPlanLimits(planSlug);
+
+  const atsRecord = user.usageTracking.find((u) => u.feature === 'ATS_ANALYSIS');
+  const aiRecord = user.usageTracking.find((u) => u.feature === 'AI_SUGGESTION');
+
+  const atsLimit = atsRecord?.limit ?? planLimits.limitAtsAnalysis;
+  const atsUsed = atsRecord?.used ?? 0;
+
+  const aiLimit = aiRecord?.limit ?? planLimits.limitAiSuggestion;
+  const aiUsed = aiRecord?.used ?? 0;
 
   return (
     <div className="space-y-6 font-['Hanken_Grotesk']">
@@ -82,6 +100,9 @@ export default async function AdminUserDetailPage({
                 {user.subscription.plan}
               </span>
             )}
+            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${user.hasEverPaid ? 'bg-[#fef9c3] text-[#713f12] border border-[#fde68a]' : 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]'}`}>
+              {user.hasEverPaid ? '💳 Has Paid' : 'Never Paid'}
+            </span>
           </div>
           <p className="text-sm font-medium text-[#564240] mt-1">{user.email}</p>
           {(user.jobTitle || user.industry) && (
@@ -106,8 +127,8 @@ export default async function AdminUserDetailPage({
                   ? new Date(user.subscription.currentPeriodEnd).toLocaleDateString('en-IN')
                   : '—'],
                 ['Billing Period', user.subscription.snapshotBillingPeriod ?? '—'],
-                ['Amount Paid', user.subscription.snapshotMonthlyPrice != null
-                  ? fmt(user.subscription.snapshotMonthlyPrice, user.subscription.snapshotCurrency ?? 'INR')
+                ['Amount Paid', user.subscription.snapshotPriceInr != null
+                  ? fmt(user.subscription.snapshotPriceInr, user.subscription.snapshotCurrency ?? 'INR')
                   : '—'],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between gap-2 pt-2 first:pt-0">
@@ -121,23 +142,14 @@ export default async function AdminUserDetailPage({
           )}
         </div>
 
-        {/* Usage */}
-        <div className="bg-white border border-[#ddc0bd] rounded-xl p-5 shadow-xs">
-          <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Usage Metrics</p>
-          <dl className="space-y-2.5 text-sm divide-y divide-[#ddc0bd]/40">
-            {[
-              ['Resumes Created', usageMap['RESUME_CREATE'] ?? 0],
-              ['ATS Analyses', usageMap['ATS_ANALYSIS'] ?? 0],
-              ['AI Suggestions', usageMap['AI_SUGGESTION'] ?? 0],
-              ['PDF Downloads', usageMap['DOWNLOAD_PDF'] ?? 0],
-            ].map(([label, value]) => (
-              <div key={label} className="flex justify-between pt-2 first:pt-0">
-                <dt className="text-[#564240] font-medium">{label}</dt>
-                <dd className="text-[#2b1611] font-bold">{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        {/* Usage & Credits */}
+        <UserCreditsCard
+          userId={user.id}
+          initialAtsUsed={atsUsed}
+          initialAtsLimit={atsLimit}
+          initialAiUsed={aiUsed}
+          initialAiLimit={aiLimit}
+        />
       </div>
 
       {/* Resumes */}

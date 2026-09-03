@@ -12,7 +12,7 @@ interface Sub {
   currentPeriodEnd: string | null;
   snapshotPlanName: string | null;
   snapshotBillingPeriod: string | null;
-  snapshotMonthlyPrice: number | null;
+  snapshotPriceInr: number | null;
   snapshotCurrency: string | null;
   user: { id: string; name: string | null; email: string };
   createdAt: string;
@@ -36,6 +36,7 @@ const STATUS_BADGE: Record<string, string> = {
 const STATUSES = ['', 'ACTIVE', 'EXPIRED', 'CANCELLED', 'TRIALING'];
 const PLAN_BADGE: Record<string, string> = {
   FREE: 'bg-[#fff0ed] text-[#564240] border border-[#ddc0bd]/60',
+  PLUS: 'bg-[#fef3c7] text-[#92400e] border border-[#fde68a]',
   PRO: 'bg-[#dcfce7] text-[#166534] border border-[#86efac]',
   ENTERPRISE: 'bg-[#e0f2fe] text-[#0369a1] border border-[#7dd3fc]',
 };
@@ -101,7 +102,7 @@ export function AdminSubscriptionsClient({ initialSubs, total, page, totalPages,
                     {s.currentPeriodEnd ? new Date(s.currentPeriodEnd).toLocaleDateString('en-IN') : '—'}
                   </td>
                   <td className="px-5 py-3.5 text-[#2b1611] font-bold hidden lg:table-cell">
-                    {s.snapshotMonthlyPrice != null ? fmt(s.snapshotMonthlyPrice, s.snapshotCurrency ?? 'INR') : '—'}
+                    {s.snapshotPriceInr != null ? fmt(s.snapshotPriceInr, s.snapshotCurrency ?? 'INR') : '—'}
                   </td>
                   <td className="px-5 py-3.5">
                     <Link

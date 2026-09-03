@@ -88,18 +88,8 @@ export function Header() {
         </h1>
       </div>
 
-      {/* Right Actions: Notifications + User Avatar Dropdown */}
+      {/* Right Actions: User Avatar Dropdown */}
       <div className="flex items-center gap-3">
-        {/* Notifications Icon Button */}
-        <Link
-          href="/app/notifications"
-          className="w-9 h-9 rounded-full bg-white/70 hover:bg-white border border-[#ddc0bd] flex items-center justify-center text-[#564240] hover:text-[#370003] transition-colors relative shadow-sm"
-          title="Notifications"
-        >
-          <IconMapper name="notifications" className="text-[18px]" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-[#7a1f1f] rounded-full ring-2 ring-white" />
-        </Link>
-
         {/* User Dropdown Trigger */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -164,14 +154,6 @@ export function Header() {
                 >
                   <IconMapper name="settings" className="text-[18px] text-[#7a1f1f]" />
                   <span className="font-medium">Profile &amp; Settings</span>
-                </Link>
-
-                <Link
-                  href="/app/notifications"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#564240] hover:text-[#370003] hover:bg-[#fff0ed] transition-colors"
-                >
-                  <IconMapper name="notifications" className="text-[18px] text-[#7a1f1f]" />
-                  <span className="font-medium">Notifications</span>
                 </Link>
 
                 <Link

@@ -43,12 +43,31 @@ export async function PATCH(
     select: { plan: true, status: true, currentPeriodEnd: true },
   });
 
+  const normalizedPlan = body.plan ? body.plan.toUpperCase() : undefined;
+  let planSnapshotUpdate = {};
+  if (normalizedPlan) {
+    const p = await prisma.pricingPlan.findUnique({
+      where: { slug: normalizedPlan.toLowerCase() },
+    });
+    if (p) {
+      planSnapshotUpdate = {
+        snapshotPlanName: p.name,
+        snapshotTemplateAccess: p.templateAccess,
+        snapshotDurationDays: p.durationDays,
+        snapshotLimitAts: p.limitAtsAnalysis,
+        snapshotLimitAi: p.limitAiSuggestion,
+      };
+    }
+  }
+
   const updated = await prisma.subscription.update({
     where: { id },
     data: {
-      ...(body.plan != null ? { plan: body.plan } : {}),
+      ...(normalizedPlan != null ? { plan: normalizedPlan, ...planSnapshotUpdate } : {}),
       ...(body.status != null ? { status: body.status } : {}),
-      ...(body.currentPeriodEnd != null ? { currentPeriodEnd: new Date(body.currentPeriodEnd) } : {}),
+      ...(body.currentPeriodEnd !== undefined
+        ? { currentPeriodEnd: body.currentPeriodEnd ? new Date(body.currentPeriodEnd) : null }
+        : {}),
     },
   });
 

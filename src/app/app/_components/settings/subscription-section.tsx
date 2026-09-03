@@ -141,11 +141,11 @@ export function SubscriptionSection() {
         </h3>
 
         <div className="grid grid-cols-2 gap-10">
-          {/* Left: plan info + usage */}
-          <div>
-            <div className="mb-6">
+          {/* Left: plan info & progress bars */}
+          <div className="space-y-4">
+            <div>
               <p
-                className="text-[10px] font-semibold text-[#564240] uppercase tracking-widest mb-1"
+                className="text-[12px] font-semibold text-[#564240] uppercase tracking-wider mb-1"
                 style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
               >
                 Current Plan
@@ -159,15 +159,15 @@ export function SubscriptionSection() {
             </div>
             <div className="space-y-4">
               <ProgressBar
-                label="Resume Drafts"
-                current={usage?.resumes?.current ?? 0}
-                max={usage?.resumes?.max ?? 3}
-                percent={usage?.resumes?.percent ?? 0}
+                label="ATS Analyses"
+                current={usage?.atsScans?.current ?? 0}
+                max={usage?.atsScans?.max === -1 ? '∞' : (usage?.atsScans?.max ?? 1)}
+                percent={usage?.atsScans?.percent ?? 0}
               />
               <ProgressBar
                 label="AI Optimization Credits"
                 current={usage?.aiOptimizations?.current ?? 0}
-                max={usage?.aiOptimizations?.max ?? 1}
+                max={usage?.aiOptimizations?.max === -1 ? '∞' : (usage?.aiOptimizations?.max ?? 1)}
                 percent={usage?.aiOptimizations?.percent ?? 0}
               />
             </div>

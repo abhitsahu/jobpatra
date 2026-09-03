@@ -2,7 +2,7 @@ import { prisma } from '@/app/_lib/prisma';
 import path from 'path';
 import fs from 'fs';
 import type { Prisma } from '@prisma/client';
-import { checkAndIncrementUsage, decrementUsage } from '@/app/service/subscription/usage.service';
+
 import type {
   CreateResumeDTO,
   UpdateResumeDTO,
@@ -56,7 +56,6 @@ async function verifyOwnership(resumeId: string, userId: string) {
 
 export async function createResume(userId: string, data: CreateResumeDTO) {
   return prisma.$transaction(async (tx) => {
-    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
 
     return tx.resume.create({
       data: {
@@ -398,7 +397,6 @@ export async function duplicateResume(resumeId: string, userId: string) {
   const source = await getResume(resumeId, userId);
 
   return prisma.$transaction(async (tx) => {
-    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
 
     const copy = await tx.resume.create({
       data: {
@@ -521,12 +519,9 @@ export async function duplicateResume(resumeId: string, userId: string) {
 
 export async function deleteResume(resumeId: string, userId: string) {
   await verifyOwnership(resumeId, userId);
-  await prisma.$transaction(async (tx) => {
-    await tx.resume.update({
-      where: { id: resumeId },
-      data: { deletedAt: new Date() },
-    });
-    await decrementUsage(tx, userId, 'RESUME_CREATE');
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: { deletedAt: new Date() },
   });
 }
 

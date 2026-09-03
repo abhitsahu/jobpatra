@@ -18,6 +18,7 @@ model User {
   jobTitle           String?
   industry           String?
   role               String    @default("USER")
+  hasEverPaid        Boolean   @default(false)  // true once user completes first paid purchase
   razorpayCustomerId String?   @unique
 
   // Pointer to the reserved "profile resume" (status = PROFILE).
@@ -347,14 +348,15 @@ model Subscription {
   // ── PLAN SNAPSHOT (frozen at purchase time) ──────────────────────────────
   // Copied from pricing_plans at the moment of subscription creation.
   // This ensures pricing changes never retroactively affect existing subscribers.
-  snapshotPlanName      String?  // e.g. "Pro"
-  snapshotMonthlyPrice  Float?   // price paid in local currency
-  snapshotCurrency      String?  // "INR" | "USD"
-  snapshotBillingPeriod String?  // "MONTHLY" | "QUARTERLY"
-  snapshotLimitResumes  Int?     // resume create limit at purchase time
-  snapshotLimitAts      Int?     // ATS analysis limit at purchase time
-  snapshotLimitAi       Int?     // AI suggestion limit at purchase time
-  snapshotLimitPdf      Int?     // PDF download limit at purchase time
+  snapshotPlanName         String?  // e.g. "Pro"
+  snapshotPriceInr         Float?   // INR price paid at purchase time
+  snapshotPriceUsd         Float?   // USD price at purchase time
+  snapshotCurrency         String?  // "INR" | "USD"
+  snapshotBillingPeriod    String?  // "MONTHLY"
+  snapshotLimitAts         Int?     // ATS analysis limit at purchase time
+  snapshotLimitAi          Int?     // AI suggestion limit at purchase time
+  snapshotTemplateAccess   String?  // "FREE" | "ALL"
+  snapshotDurationDays     Int?     // plan duration in days at purchase time
   // ─────────────────────────────────────────────────────────────────────────
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -369,8 +371,9 @@ model Subscription {
 
 model UsageTracking {
   userId        String
-  feature       String // e.g., "RESUME_CREATE", "ATS_ANALYSIS", "AI_SUGGESTION", "DOWNLOAD_PDF"
+  feature       String    // e.g., "ATS_ANALYSIS", "AI_SUGGESTION"
   used          Int       @default(0)
+  limit         Int?      // accumulated limit (stacking); null = plan default
   lastResetDate DateTime?
 
   createdAt DateTime @default(now())
@@ -387,28 +390,26 @@ model UsageTracking {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model PricingPlan {
-  id                      String  @id @default(cuid())
-  name                    String
-  slug                    String  @unique
-  monthlyPrice            Float
-  quarterlyPrice          Float
-  quarterlyDiscount       Int     @default(0) // percentage e.g. 20
-  currency                String  @default("USD")
-  description             String
-  badge                   String? // "Most Popular" | "Recommended" | null
-  badgeColor              String? // "primary" | "secondary" | null
-  buttonText              String
-  buttonVariant           String  @default("outline") // "solid" | "outline"
-  isPopular               Boolean @default(false)
-  displayOrder            Int     @default(0)
-  isActive                Boolean @default(true)
-  razorpayPlanIdMonthly   String?
-  razorpayPlanIdQuarterly String?
+  id                    String  @id @default(cuid())
+  name                  String
+  slug                  String  @unique
+  priceInr              Float   @default(0)      // Price in Indian Rupees
+  priceUsd              Float   @default(0)      // Price in US Dollars
+  currency              String  @default("INR")  // Default display currency
+  templateAccess        String  @default("FREE") // "FREE" | "ALL"
+  durationDays          Int?                     // null = 30-day monthly; 7 = Plus plan
+  description           String
+  badge                 String?                  // "Most Popular" | "Recommended" | null
+  badgeColor            String?                  // "primary" | "secondary" | null
+  buttonText            String
+  buttonVariant         String  @default("outline") // "solid" | "outline"
+  isPopular             Boolean @default(false)
+  displayOrder          Int     @default(0)
+  isActive              Boolean @default(true)
+  razorpayPlanIdMonthly String?
 
-  limitResumeCreate Int @default(3)
   limitAtsAnalysis  Int @default(1)
   limitAiSuggestion Int @default(1)
-  limitDownloadPdf  Int @default(3)
 
   features PlanFeature[]
 

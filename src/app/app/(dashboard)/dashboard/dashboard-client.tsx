@@ -97,7 +97,7 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-12 gap-6">
             {/* Widget 1: Plan & Usage Summary (col-span-12 lg:col-span-8) */}
-            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-between relative overflow-hidden">
+            <div className="col-span-12 lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] shadow-sm p-6 flex flex-col justify-start relative overflow-hidden">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#5b060c]">
@@ -118,44 +118,26 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     {subData?.subscription?.planName || 'Free Plan'}
                   </div>
                 )}
-
               </div>
 
               {isSubLoading ? (
-                <div className="space-y-4">
-                  {[1, 2, 3, 4].map((i) => (
+                <div className="space-y-5">
+                  {[1, 2].map((i) => (
                     <div key={i} className="h-10 bg-[#fff0ed] animate-pulse rounded-none" />
                   ))}
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* Resumes Usage */}
-                  <div>
-                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
-                      <span>Resumes Created</span>
-                      <span>
-                        {subData?.usage?.resumes?.current ?? resumes.length} /{' '}
-                        {subData?.usage?.resumes?.max === -1 ? '∞' : (subData?.usage?.resumes?.max ?? 3)}
-                      </span>
-                    </div>
-                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
-                      <div
-                        className="bg-[#5b060c] h-full transition-all duration-500"
-                        style={{ width: `${subData?.usage?.resumes?.percent ?? 0}%` }}
-                      />
-                    </div>
-                  </div>
-
                   {/* ATS Scans Usage */}
                   <div>
-                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                    <div className="flex justify-between text-[13px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1.5">
                       <span>ATS Analyses</span>
                       <span>
                         {subData?.usage?.atsScans?.current ?? 0} /{' '}
-                        {subData?.usage?.atsScans?.max === -1 ? '∞' : (subData?.usage?.atsScans?.max ?? 5)}
+                        {subData?.usage?.atsScans?.max === -1 ? '∞' : (subData?.usage?.atsScans?.max ?? 1)}
                       </span>
                     </div>
-                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                    <div className="w-full bg-[#f3eae1] h-2 rounded-none overflow-hidden">
                       <div
                         className="bg-[#795900] h-full transition-all duration-500"
                         style={{ width: `${subData?.usage?.atsScans?.percent ?? 0}%` }}
@@ -165,14 +147,14 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
 
                   {/* AI Suggestions Usage */}
                   <div>
-                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
+                    <div className="flex justify-between text-[13px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1.5">
                       <span>AI Suggestions Used</span>
                       <span>
                         {subData?.usage?.aiOptimizations?.current ?? 0} /{' '}
-                        {subData?.usage?.aiOptimizations?.max === -1 ? '∞' : (subData?.usage?.aiOptimizations?.max ?? 10)}
+                        {subData?.usage?.aiOptimizations?.max === -1 ? '∞' : (subData?.usage?.aiOptimizations?.max ?? 1)}
                       </span>
                     </div>
-                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
+                    <div className="w-full bg-[#f3eae1] h-2 rounded-none overflow-hidden">
                       <div
                         className="bg-[#1b5e20] h-full transition-all duration-500"
                         style={{ width: `${subData?.usage?.aiOptimizations?.percent ?? 0}%` }}
@@ -180,21 +162,25 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     </div>
                   </div>
 
-                  {/* PDF Downloads Usage */}
-                  <div>
-                    <div className="flex justify-between text-[12px] font-['Hanken_Grotesk'] font-semibold text-[#564240] mb-1">
-                      <span>PDF Exports</span>
-                      <span>
-                        {subData?.usage?.pdfDownloads?.current ?? 0} /{' '}
-                        {subData?.usage?.pdfDownloads?.max === -1 ? '∞' : (subData?.usage?.pdfDownloads?.max ?? 5)}
+                  {/* Template Access & Renewal Footer */}
+                  <div className="pt-3 border-t border-[#ddc0bd]/40 flex items-center justify-between text-[12px] font-['Hanken_Grotesk'] text-[#564240]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-[#5b060c]">Template Access:</span>
+                      <span className="font-medium text-[#2b1611]">
+                        {subData?.subscription?.templateAccess === 'ALL'
+                          ? 'All Templates'
+                          : 'Free Templates'}
                       </span>
                     </div>
-                    <div className="w-full bg-[#f3eae1] h-1.5 rounded-none overflow-hidden">
-                      <div
-                        className="bg-[#564240] h-full transition-all duration-500"
-                        style={{ width: `${subData?.usage?.pdfDownloads?.percent ?? 0}%` }}
-                      />
-                    </div>
+                    {subData?.subscription?.currentPeriodEnd ? (
+                      <span className="text-[11px] text-[#795900] font-medium">
+                        Renews {new Date(subData.subscription.currentPeriodEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-[#564240]">
+                        Lifetime Access
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
