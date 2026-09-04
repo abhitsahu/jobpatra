@@ -26,6 +26,15 @@ import type { SignupRequest } from '@/app/api/model/request/auth/auth';
  *   reveal it — tighten this before going to production.
  */
 export async function signupUser(data: SignupRequest) {
+  // 0. Block admin email squatting — must be first check
+  const adminEmails = (process.env.ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  if (adminEmails.includes(data.email.toLowerCase())) {
+    throw new Error('This email cannot be used for registration');
+  }
+
   // 1. Check for existing user
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email },

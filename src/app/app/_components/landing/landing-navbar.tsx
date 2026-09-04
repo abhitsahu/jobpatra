@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { Logo } from '@/app/app/_components/common/logo';
+
 const navLinks = [
-  { label: 'Templates', href: '/app/templates', active: false },
-  { label: 'ATS Checker', href: '/app/ats-checker', active: false },
-  { label: 'Features', href: '/#features', active: false },
-  { label: 'Pricing', href: '/app/pricing', active: false },
-  { label: 'Resources', href: '/#resources', active: false },
+  { label: 'Templates', href: '/app/templates' },
+  { label: 'ATS Checker', href: '/app/ats-checker' },
+  { label: 'Pricing', href: '/app/pricing' },
 ];
 
 export function LandingNavbar() {
@@ -25,57 +25,56 @@ export function LandingNavbar() {
   const isAuthPage = pathname === '/app/login' || pathname === '/app/signup';
 
   return (
-    <nav
-      className={`sticky top-0 z-50 w-full border-b border-[#ddc0bd] transition-all duration-300 ${
-        scrolled ? 'shadow-sm bg-white/90 backdrop-blur-md' : 'bg-[#FFF8F6]'
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-[#E5D9C8]/40 ${
+        scrolled
+          ? 'bg-[#FFF8F6]/75 backdrop-blur-md shadow-[0_4px_20px_rgba(55,0,3,0.06)]'
+          : 'bg-[#FFF8F6]/60 backdrop-blur-md shadow-[0_2px_10px_rgba(55,0,3,0.03)]'
       }`}
     >
-      <div className="flex justify-between items-center w-full px-4 md:px-16 py-4 max-w-7xl mx-auto">
-        {/* Brand */}
-        <Link
-          href="/"
-          className="font-['Playfair_Display'] text-[32px] leading-[40px] font-bold text-[#5b060c]"
-        >
-          JobPatra
+      <div className="h-16 max-w-7xl mx-auto px-4 md:px-16 flex items-center justify-between">
+        <Link href="/">
+          <Logo />
         </Link>
 
-        {/* Nav Links - Desktop */}
-        <div className="hidden md:flex gap-8 items-center">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${
-                link.active
-                  ? 'text-[#5b060c] font-bold border-b-2 border-[#5b060c]'
-                  : 'text-[#564240] hover:text-[#5b060c]'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        <nav className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                className={`font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold transition-colors ${
+                  isActive
+                    ? 'text-[#370003] font-semibold underline decoration-[#f6be39] decoration-2 underline-offset-8'
+                    : 'text-[#564240] hover:text-[#370003]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
 
-        {/* CTA */}
         {!isAuthPage ? (
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <Link
               href="/app/login"
-              className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#2b1611] hover:opacity-80 transition-opacity"
+              className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] px-4 py-2 hover:text-[#370003] transition-colors"
             >
               Login
             </Link>
             <Link
               href="/app/signup"
-              className="bg-[#5b060c] text-white px-6 py-2 rounded-lg font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold hover:bg-[#7a1f1f] transition-all"
+              className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 py-2 rounded-full hover:scale-105 transition-transform shadow-lg"
             >
               Get Started
             </Link>
           </div>
         ) : (
-          <div className="w-[120px] md:w-[200px]" /> /* spacer to balance layout */
+          <div className="w-[120px] md:w-[200px]" />
         )}
       </div>
-    </nav>
+    </header>
   );
 }

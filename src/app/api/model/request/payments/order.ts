@@ -1,9 +1,10 @@
 import { BillingPeriod } from '@/app/api/model/enums/subscription';
+import { Currency } from '@/app/api/model/enums/currency';
 
 export interface CreateOrderRequest {
   planSlug: string;
   billingPeriod: BillingPeriod;
-  currency?: 'INR' | 'USD';
+  currency?: Currency | 'INR' | 'USD';
 }
 
 export interface VerifyPaymentRequest {

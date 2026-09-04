@@ -3,6 +3,8 @@
 // These are the shapes returned by the API and consumed by React Query hooks.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { Currency, TemplateAccess } from '@/app/api/model/enums/currency';
+
 export interface PlanFeatureResponse {
   id: string;
   feature: string;
@@ -15,10 +17,11 @@ export interface PricingPlanResponse {
   id: string;
   name: string;
   slug: string;
-  monthlyPrice: number;
-  quarterlyPrice: number;
-  quarterlyDiscount: number;
-  currency: string;
+  priceInr: number;
+  priceUsd: number;
+  currency: Currency | 'INR' | 'USD';
+  templateAccess: TemplateAccess | 'FREE' | 'ALL';
+  durationDays: number | null; // null = 30-day monthly
   description: string;
   badge: string | null;
   badgeColor: string | null;
@@ -26,6 +29,8 @@ export interface PricingPlanResponse {
   buttonVariant: string; // "solid" | "outline"
   isPopular: boolean;
   displayOrder: number;
+  limitAtsAnalysis: number;
+  limitAiSuggestion: number;
   features: PlanFeatureResponse[];
 }
 
@@ -60,6 +65,4 @@ export interface PricingPageResponse {
   plans: PricingPlanResponse[];
   comparison: ComparisonFeatureResponse[];
   testimonials: TestimonialResponse[];
-  /** Max quarterlyDiscount across active plans — used in the billing toggle badge */
-  globalDiscount: number;
 }

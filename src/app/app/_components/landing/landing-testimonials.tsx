@@ -1,114 +1,118 @@
 'use client';
-
-import { useRef, useCallback } from 'react';
-
-const testimonials = [
-  {
-    postmark: 'NYC',
-    year: '2024',
-    quote:
-      'The AI suggestions felt less like a machine and more like a seasoned mentor guiding my hand. I landed my role at Google within two weeks.',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDsYZMNKnqAoqlqGoyVYRvG20yCRnA_T-Tjf4QtWyDHOoVGqVe0CVl3bmFJ6h6iHPHuyfHUpMgFnKBPn8FqLOnKgPAuZtB5_MyzPGYB8ypDeaixkhC0jr4OQBjTLh_VIANk4NuSCdx82b4eaRszTbR_hyG2zKbB1SzUnZjx_1hu-GVuEaOTe6hNH4WPNRfYk_Jji7_1d9UBQpiLZS5m6zz93H8FWROW-TxuO7hUF-VoBvyOfROWjTW3ssy7bJLqpIZ6bUIFmTkMPPsj',
-    name: 'Sarah Jenkins',
-    role: 'Senior Product Designer',
-    rotation: '-rotate-1',
-    hoverRotation: 'rotate(0deg)',
-    restRotation: 'rotate(-1deg)',
-  },
-  {
-    postmark: 'LON',
-    year: '2024',
-    quote:
-      'The tactile interface makes resume building feel like an art. It\u2019s the most sophisticated career tool I have used in 15 years.',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBUHmPKl912_-M-7vbvajI2Tf8Yp0uruPquhZniW9itMdx2GRfl9EyRpEmWMnb9DrOLcL-HPfMDsPFqIDb-yZN9EoqsEbLN2JasZVA1jjYMw0Vy3BwKg6go5KcS2Ga4-79aibnHQQJIz167I3iSi8PiuDtpdNBqiRbTXBAFnhZ3GpjvuGlOqScLitiPgGWMYd4idZRGTtbzeIBCHIIIFl8dEheHg7zcYTjSeK_nA7bl-hJQReFvTe1WQrNr1RkhG-jX9dohinMI0p-Y',
-    name: 'David Sterling',
-    role: 'Engineering Director',
-    rotation: 'rotate-2',
-    hoverRotation: 'rotate(0deg)',
-    restRotation: 'rotate(2deg)',
-  },
-];
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 export function LandingTestimonials() {
   return (
-    <section className="py-24 bg-[#FFF8F6]">
-      <div className="max-w-7xl mx-auto px-4 md:px-16">
-        <h2 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611] text-center mb-16 italic">
-          Words of Recommendation
-        </h2>
-
-        <div className="flex flex-wrap justify-center gap-12">
-          {testimonials.map((t) => (
-            <TestimonialCard key={t.name} {...t} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TestimonialCard({
-  postmark,
-  year,
-  quote,
-  image,
-  name,
-  role,
-  rotation,
-  hoverRotation,
-  restRotation,
-}: (typeof testimonials)[number]) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleEnter = useCallback(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    el.style.transform = `translateY(-10px) ${hoverRotation}`;
-    el.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    el.style.boxShadow = '0 20px 40px rgba(78, 52, 46, 0.08)';
-  }, [hoverRotation]);
-
-  const handleLeave = useCallback(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    el.style.transform = `translateY(0) ${restRotation}`;
-    el.style.boxShadow = '0 4px 20px rgba(78, 52, 46, 0.04)';
-  }, [restRotation]);
-
-  return (
-    <div
-      ref={cardRef}
-      className={`landing-paper-sheet max-w-sm p-10 transform ${rotation}`}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-    >
-      <div className="flex justify-between items-start mb-6">
-        <div className="w-10 h-10 border border-[#ddc0bd] bg-[#ffe9e4] flex items-center justify-center">
-          <span className="text-[8px] font-bold text-[#8a716f]">{postmark}</span>
-        </div>
-        <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#8a716f] uppercase tracking-widest">
-          Postmark {year}
-        </span>
+    <section className="w-full py-32 bg-[#FFF8F6] relative overflow-hidden">
+      {/* Large structural background typography */}
+      <div className="absolute top-10 left-[-5%] font-['Playfair_Display'] text-[160px] md:text-[200px] text-[#ffe9e5] opacity-50 whitespace-nowrap pointer-events-none tracking-tighter select-none">
+        ENDORSEMENTS
       </div>
 
-      <p className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#564240] italic mb-8 leading-relaxed">
-        &ldquo;{quote}&rdquo;
-      </p>
-
-      <div className="flex items-center gap-4 border-t border-[#ddc0bd] pt-6">
-        <div className="w-12 h-12 rounded-full bg-[#ffe9e4] overflow-hidden flex-shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt={name} className="w-full h-full object-cover" />
+      <div className="max-w-7xl mx-auto px-4 md:px-16 relative z-10">
+        <div className="text-center mb-20 flex flex-col items-center">
+          <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] md:leading-[56px] font-bold text-[#370003] mb-4">
+            Chronicles of Success
+          </h2>
+          <div className="w-12 h-px bg-[#8a716f]" />
         </div>
-        <div>
-          <div className="font-bold text-[#5b060c] font-['Hanken_Grotesk'] text-[16px]">{name}</div>
-          <div className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#564240] uppercase">
-            {role}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Testimonial 1 */}
+          <div className="bg-[#FFF8EE] p-8 md:p-10 relative shadow-[0_2px_10px_rgba(78,52,46,0.05)] transform -rotate-1 hover:rotate-0 transition-transform duration-300 border border-[#E5D9C8]">
+            <div className="absolute inset-1 border border-[#E5D9C8]/50 pointer-events-none" />
+            <IconMapper name="format_quote" className="text-[#a23c3a] opacity-30 text-4xl absolute top-6 left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <div className="relative z-10 mt-6 flex flex-col h-full justify-between">
+              <p className="font-['Hanken_Grotesk'] text-base md:text-lg text-[#2b1611] italic mb-8 leading-relaxed">
+                &ldquo;JobPatra feels less like software and more like a high-end stationery shop
+                equipped with a brilliant career strategist. My response rate doubled.&rdquo;
+              </p>
+              <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-12 h-12 rounded-full object-cover grayscale"
+                  alt="Marcus T."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG5cFPEsIYuANsiLTeF_0Rwl5OTBDoiOgakemPdo4DpOruimV5YefrxupzFKahKCt6MgPN_AzAt_hv9OeOnUuTm_YjYssHadga5ZLLSaJmlFNTYXspNlrD76MEJ9LvJ8Ldht2a1EiymrtXbTXQzgpmwXi2g0MnIooczZ9AqecUOYksl97Qz9eE1PAL-x7q_qjA06uMUV-_fCCoq0JFdfBGiRGFqFpadGDxf6C_z5RJiQnVStRjDxB7Cw"
+                />
+                <div className="flex flex-col">
+                  <span className="font-['Hanken_Grotesk'] text-sm font-semibold text-[#2b1611] uppercase tracking-wider">
+                    Marcus T.
+                  </span>
+                  <span className="font-['Hanken_Grotesk'] text-xs text-[#564240]">
+                    VP of Operations
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonial 2 (Elevated) */}
+          <div className="bg-[#FFF8EE] p-8 md:p-10 relative shadow-[0_8px_30px_rgba(78,52,46,0.08)] transform rotate-2 md:-translate-y-4 hover:rotate-0 transition-transform duration-300 z-20 border border-[#E5D9C8]">
+            <div className="absolute inset-1 border border-[#E5D9C8] pointer-events-none" />
+            <IconMapper name="format_quote" className="text-[#370003] opacity-40 text-4xl absolute top-6 left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <div className="relative z-10 mt-6 flex flex-col h-full justify-between">
+              <p className="font-['Hanken_Grotesk'] text-lg text-[#2b1611] italic mb-8 leading-relaxed font-normal">
+                &ldquo;The ATS analyzer is ruthlessly effective. It highlighted structural flaws
+                I&rsquo;d missed for years, formatting my experience into a narrative that simply
+                works.&rdquo;
+              </p>
+              <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-12 h-12 rounded-full object-cover"
+                  alt="Elena R."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvL-piYtQkH_Fvu15E-T4fnM-OJKWLX8xgmzpqgWkl-A6A2eCiSOkTePg0m2SRKgG5PMFQMJegK4Zz3jEuuDBo2Y5G-BO4Jhj5umNhIg5-JvpfjXH7VT-tK904FYO8YQFI_xLf5Kpu4el1j_ApbhT7fqChev2c7wl7RD_DSAf7Q1pRbKzenpy5iU23XVUKOTfbU30Y892Ed8pUwWFKQqrqH_jL_g4xmPl2S3jYANLcD4hDlLCdfrMBrw"
+                />
+                <div className="flex flex-col">
+                  <span className="font-['Hanken_Grotesk'] text-sm font-semibold text-[#2b1611] uppercase tracking-wider">
+                    Elena R.
+                  </span>
+                  <span className="font-['Hanken_Grotesk'] text-xs text-[#564240]">
+                    Senior Engineer
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative Pin */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#8a716f] shadow-sm">
+              <div className="absolute inset-1 rounded-full bg-[#ffdad3]" />
+            </div>
+          </div>
+
+          {/* Testimonial 3 */}
+          <div className="bg-[#FFF8EE] p-8 md:p-10 relative shadow-[0_2px_10px_rgba(78,52,46,0.05)] transform -rotate-2 hover:rotate-0 transition-transform duration-300 border border-[#E5D9C8]">
+            <div className="absolute inset-1 border border-[#E5D9C8]/50 pointer-events-none" />
+            <IconMapper name="format_quote" className="text-[#a23c3a] opacity-30 text-4xl absolute top-6 left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <div className="relative z-10 mt-6 flex flex-col h-full justify-between">
+              <p className="font-['Hanken_Grotesk'] text-base md:text-lg text-[#2b1611] italic mb-8 leading-relaxed">
+                &ldquo;Generating customized cover letters for distinct roles used to take hours.
+                The Digital Nib crafts compelling intros in seconds, maintaining my authentic
+                voice.&rdquo;
+              </p>
+              <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="w-12 h-12 rounded-full object-cover grayscale"
+                  alt="David K."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCT-lHNPvh8rkid6sLIVKH9L0CZvrhs6yuyU_3mocCMYzhMHLiIOKPwqlVS0D5Ix2WoYAp3Lgfb1tnKp7x3D_S4LZYB2N5AfQdvxHACwkjD2INWRkpy5D-fygKWfHFrXHDFFJ5BdHffq4xPESNFRFANduDdGdSYOaBAzws6TMDiTwgyw76Npv1jHOxdChcq4OgT1J50NuiIPxPOXyabvy11P9JKOrZiL0rbTCB_glbuCM12X0_vu1VQw"
+                />
+                <div className="flex flex-col">
+                  <span className="font-['Hanken_Grotesk'] text-sm font-semibold text-[#2b1611] uppercase tracking-wider">
+                    David K.
+                  </span>
+                  <span className="font-['Hanken_Grotesk'] text-xs text-[#564240]">
+                    Creative Director
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

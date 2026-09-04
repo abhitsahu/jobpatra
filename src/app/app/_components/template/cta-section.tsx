@@ -1,3 +1,6 @@
+'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
+
 import React from 'react';
 
 interface CtaSectionProps {
@@ -7,41 +10,47 @@ interface CtaSectionProps {
 
 export function CtaSection({ onStartBuilding, onBrowsePlans }: CtaSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-[#5b060c] text-white py-24 px-4 md:px-16">
-      {/* Decorative Envelope Flap */}
+    <section className="relative py-24 px-4 md:px-16 flex items-center justify-center overflow-hidden rounded-3xl bg-white border border-[#E5D9C8] my-12 max-w-7xl mx-auto shadow-sm">
+      {/* Background Radial Glow */}
       <div
-        className="absolute top-0 left-0 w-full h-16 bg-[#F8F2E8]"
-        style={{ clipPath: 'polygon(0 0, 50% 100%, 100% 0)' }}
-      ></div>
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 50% 50%, rgba(91, 6, 12, 0.08) 0%, transparent 70%)',
+        }}
+      />
 
-      <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8 mt-4">
-        <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] tracking-[-0.02em] font-bold text-white">
-          Find the Perfect Resume <br />
-          for Your Next Opportunity
+      <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
+        {/* Icon Badge */}
+        <div className="w-16 h-16 bg-[#ffe9e5] rounded-full flex items-center justify-center mb-6 shadow-sm text-[#5b060c]">
+          <IconMapper name="history_edu" className="text-3xl" />
+        </div>
+
+        <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold text-[#2b1611] mb-6 tracking-tight">
+          Ready to Build a Better Job Search?
         </h2>
-        <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] font-normal text-white/80 max-w-2xl mx-auto">
-          Join over 50,000 professionals who have advanced their careers using JobPatra&apos;s
-          precision-crafted resume workshop.
+
+        <p className="font-['Hanken_Grotesk'] text-[16px] md:text-[18px] leading-[26px] md:leading-[28px] text-[#564240] mb-10 max-w-xl">
+          Select a template above or let our AI guide you to the perfect format based on your industry
+          and experience level.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto">
           <button
             onClick={onStartBuilding}
-            className="seal-button px-10 py-4 rounded-lg font-['Playfair_Display'] text-[20px] font-semibold text-white cursor-pointer active:scale-95 transition-transform w-full sm:w-auto"
+            className="bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.15em] font-semibold uppercase px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#7a1f1f] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer w-full sm:w-auto"
           >
-            Start Building for Free
+            Start Writing
+            <IconMapper name="arrow_forward" className="text-sm" />
           </button>
+
           <button
             onClick={onBrowsePlans}
-            className="px-10 py-4 border border-white/30 rounded-lg font-['Playfair_Display'] text-[20px] font-semibold hover:bg-white/10 cursor-pointer transition-colors w-full sm:w-auto"
+            className="border border-[#5b060c]/30 text-[#5b060c] bg-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.15em] font-semibold uppercase px-8 py-4 rounded-full hover:bg-[#ffe9e5] transition-all duration-300 flex items-center justify-center cursor-pointer w-full sm:w-auto"
           >
             Browse Pro Plans
           </button>
         </div>
-      </div>
-
-      {/* Background Decorative Elements */}
-      <div className="absolute -bottom-10 -right-10 opacity-10 pointer-events-none select-none">
-        <span className="material-symbols-outlined text-[300px]">mail</span>
       </div>
     </section>
   );

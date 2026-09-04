@@ -1,14 +1,21 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type { ATSAnalyzeResponse } from '@/app/app/services/ats.service';
 import { HistoryPanel } from '../../components/HistoryPanel';
+import { useAtsResult } from '@/app/app/_hooks/use-ats-history';
 
 export default function ResultPage() {
   const params = useParams();
   const router = useRouter();
   const analysisId = params.analysisId as string;
+
+  // Legacy localStorage IDs always start with 'analysis_'
+  const isLegacyId = analysisId?.startsWith('analysis_');
+
+  const { data: dbRecord, isLoading: dbLoading } = useAtsResult(isLegacyId ? '' : analysisId);
 
   const [result, setResult] = useState<ATSAnalyzeResponse | null>(null);
   const [resumeName, setResumeName] = useState('');
@@ -19,9 +26,48 @@ export default function ResultPage() {
   const [expandedRecs, setExpandedRecs] = useState<Record<number, boolean>>({});
   const [copiedRecId, setCopiedRecId] = useState<number | null>(null);
 
-  // Load from local storage
+  // ── DB result: map ATSAnalysisDetail back to ATSAnalyzeResponse shape ────
   useEffect(() => {
-    if (!analysisId) return;
+    if (!dbRecord) return;
+    // Reconstruct the display shape from stored sub-fields
+    const r = {
+      overall_score: dbRecord.overallScore,
+      keyword_score: dbRecord.keywordScore,
+      experience_score: dbRecord.experienceScore,
+      skills_score: dbRecord.skillsScore,
+      education_score: dbRecord.educationScore,
+      summary_score: dbRecord.summaryScore,
+      formatting_score: dbRecord.formattingScore,
+      matched_keywords: dbRecord.matchedKeywords.map((k) => ({ keyword: k, matchType: 'EXACT', similarity: null, matched_jd_keyword: null, is_related_concept: false })),
+      missing_keywords: dbRecord.missingKeywords,
+      related_keywords: [],
+      matched_skills: dbRecord.matchedSkills,
+      missing_skills: dbRecord.missingSkills,
+      required_skill_count: 0,
+      culture_signals: [],
+      extraction_mode: 'hybrid_ai' as const,
+      required_experience_years: 0,
+      candidate_experience_years: 0,
+      required_education_level: '',
+      candidate_education_level: '',
+      experience_summary: { total_entries: 0, total_years: 0, has_metrics: false },
+      education_summary: { highest_degree: null, certifications: [] },
+      processing_time_ms: dbRecord.processingTimeMs ?? 0,
+      version: dbRecord.version ?? '',
+      ai_status: 'ok' as const,
+      ai_explanation: dbRecord.aiExplanation as ATSAnalyzeResponse['ai_explanation'],
+    } satisfies ATSAnalyzeResponse;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResult(r);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResumeName(dbRecord.resumeName);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setJdText(dbRecord.jobDescription);
+  }, [dbRecord]);
+
+  // ── Legacy localStorage fallback ─────────────────────────────────────────
+  useEffect(() => {
+    if (!isLegacyId || !analysisId) return;
 
     const savedResult = localStorage.getItem(`jobpatra_ats_result_${analysisId}`);
     if (savedResult) {
@@ -33,24 +79,34 @@ export default function ResultPage() {
       }
     }
 
-    // Find in history for metadata
     const savedHistory = localStorage.getItem('jobpatra_ats_analyses');
     if (savedHistory) {
       try {
         const historyList = JSON.parse(savedHistory) as { id: string; resumeTitle: string }[];
         const item = historyList.find((h) => h.id === analysisId);
-        if (item) {
-          setResumeName(item.resumeTitle);
-        }
+        if (item) setResumeName(item.resumeTitle);
       } catch (err) {
         console.error('Failed to parse history list', err);
       }
     }
 
-    // Retrieve pending texts if matching current analysis
     const pendingJdText = sessionStorage.getItem('jobpatra_ats_pending_jd_text') || '';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setJdText(pendingJdText);
-  }, [analysisId]);
+  }, [analysisId, isLegacyId]);
+
+  if (dbLoading && !isLegacyId) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-[#F8F2E8] p-12 flex flex-col items-center justify-center min-h-[500px]">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 rounded-full border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] animate-spin mx-auto"></div>
+          <h3 className="font-['Playfair_Display'] text-[20px] font-bold text-[#2b1611]">
+            Retrieving Analysis Audit...
+          </h3>
+        </div>
+      </div>
+    );
+  }
 
   if (!result) {
     return (
@@ -64,6 +120,7 @@ export default function ResultPage() {
       </div>
     );
   }
+
 
   const scoreColour = (score: number) => {
     if (score >= 80) return 'text-[#1B5E20]';
@@ -92,7 +149,7 @@ export default function ResultPage() {
           onClick={() => router.push('/app/ats-workspace')}
           className="flex items-center gap-1.5 font-['Hanken_Grotesk'] text-[12px] font-bold text-[#7a1f1f] uppercase tracking-wider hover:underline"
         >
-          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+          <IconMapper name="arrow_back" className="text-[16px]" />
           Back to Workspace
         </button>
 
@@ -101,7 +158,7 @@ export default function ResultPage() {
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-4 py-2 bg-white border border-[#ddc0bd] hover:bg-[#fff0ed] font-['Hanken_Grotesk'] text-[11px] font-bold text-[#2b1611] uppercase tracking-wider rounded-lg transition-all"
           >
-            <span className="material-symbols-outlined text-[16px]">print</span>
+            <IconMapper name="print" className="text-[16px]" />
             Print Report
           </button>
         </div>
@@ -111,19 +168,15 @@ export default function ResultPage() {
       <div className="max-w-6xl bg-[#FFF8EE] border border-[#E5D9C8] p-8 md:p-12 shadow-md rounded-2xl relative print:border-none print:shadow-none print:bg-white print:p-0">
         {/* Paper watermarks */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none">
-          <span className="material-symbols-outlined text-[360px]">verified</span>
+          <IconMapper name="verified" className="text-[360px]" />
         </div>
 
         {/* Header Board */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-[#5b060c] pb-8 mb-8 gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span
-                className="material-symbols-outlined text-[#5b060c]"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                description
-              </span>
+              <IconMapper name="description" className="text-[#5b060c]"
+                style={{ fontVariationSettings: "'FILL' 1" }} />
               <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] tracking-[0.05em] font-semibold text-[#5b060c] uppercase">
                 Official Dossier
               </span>
@@ -178,7 +231,7 @@ export default function ResultPage() {
                   : 'border-transparent text-[#564240] hover:text-[#7a1f1f] hover:border-[#ddc0bd]'
               }`}
             >
-              <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
+              <IconMapper name={tab.icon} className="text-[16px]" />
               {tab.label}
             </button>
           ))}
@@ -246,9 +299,7 @@ export default function ResultPage() {
                     result.ai_explanation.strengths.length > 0 && (
                       <div className="space-y-3">
                         <h4 className="font-bold text-[11px] text-green-700 uppercase tracking-widest flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[16px]">
-                            check_circle
-                          </span>
+                          <IconMapper name="check_circle" className="text-[16px]" />
                           Verified Strengths
                         </h4>
                         <div className="space-y-2">
@@ -270,7 +321,7 @@ export default function ResultPage() {
                     result.ai_explanation.weaknesses.length > 0 && (
                       <div className="space-y-3 border-t border-[#E5D9C8] pt-6">
                         <h4 className="font-bold text-[11px] text-[#795900] uppercase tracking-widest flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[16px]">info</span>
+                          <IconMapper name="info" className="text-[16px]" />
                           Critical Alignment Gaps
                         </h4>
                         <div className="space-y-2">
@@ -328,9 +379,7 @@ export default function ResultPage() {
                             className="flex items-center justify-between text-[13px] border-b border-[#E5D9C8]/20 pb-1.5 last:border-0 last:pb-0"
                           >
                             <span className="text-[#2b1611] flex items-center gap-2">
-                              <span className="material-symbols-outlined text-[16px] text-green-600">
-                                check_circle
-                              </span>
+                              <IconMapper name="check_circle" className="text-[16px] text-green-600" />
                               {kw.keyword}
                             </span>
                             <span className="text-[9px] font-bold text-[#564240] bg-[#e5d9c8]/50 px-1.5 py-0.5 rounded">
@@ -358,7 +407,7 @@ export default function ResultPage() {
                             key={idx}
                             className="flex items-center text-[13px] text-[#ba1a1a] gap-2 border-b border-[#E5D9C8]/20 pb-1.5 last:border-0 last:pb-0"
                           >
-                            <span className="material-symbols-outlined text-[16px]">cancel</span>
+                            <IconMapper name="cancel" className="text-[16px]" />
                             <span>{kw}</span>
                           </div>
                         ))
@@ -426,9 +475,7 @@ export default function ResultPage() {
 
               {result.ai_status === 'unavailable' ? (
                 <div className="border border-red-200 bg-red-50/50 rounded-xl p-8 text-center text-red-900 text-[13px] flex flex-col items-center justify-center space-y-3">
-                  <span className="material-symbols-outlined text-[32px] text-red-600 animate-pulse">
-                    error
-                  </span>
+                  <IconMapper name="error" className="text-[32px] text-red-600 animate-pulse" />
                   <div className="space-y-1">
                     <p className="font-bold text-[14px]">
                       AI recommendation generation failed. Please retry.
@@ -480,11 +527,10 @@ export default function ResultPage() {
                                 <h4 className="flex-1 font-bold text-[14px] text-[#2b1611] line-clamp-1">
                                   {rec.issue}
                                 </h4>
-                                <span
-                                  className={`material-symbols-outlined text-[20px] text-[#564240] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-                                >
-                                  keyboard_arrow_down
-                                </span>
+                                <IconMapper
+                                  name="keyboard_arrow_down"
+                                  className={`text-[20px] text-[#564240] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                                />
                               </button>
 
                               {/* Card Content (Expandable Section) */}
@@ -525,9 +571,7 @@ export default function ResultPage() {
                                         }}
                                         className="flex items-center gap-1 text-[11px] font-semibold text-[#7a1f1f] hover:text-[#5c1616] transition-colors"
                                       >
-                                        <span className="material-symbols-outlined text-[16px]">
-                                          {copiedRecId === idx ? 'check_circle' : 'content_copy'}
-                                        </span>
+                                        <IconMapper name={copiedRecId === idx ? 'check_circle' : 'content_copy'} className="text-[16px]" />
                                         {copiedRecId === idx ? 'Copied!' : 'Copy to Clipboard'}
                                       </button>
                                     </div>
@@ -574,9 +618,7 @@ export default function ResultPage() {
 
                   return (
                     <div className="border border-dashed border-[#E5D9C8] rounded-xl p-12 text-center text-[#564240]/60 text-[13px] flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-[32px] text-[#7a1f1f]/50 mb-2">
-                        lightbulb
-                      </span>
+                      <IconMapper name="lightbulb" className="text-[32px] text-[#7a1f1f]/50 mb-2" />
                       <p>
                         No suggestions required. The document has achieved premium compatibilities.
                       </p>
@@ -585,9 +627,7 @@ export default function ResultPage() {
                 })()
               ) : (
                 <div className="border border-dashed border-[#E5D9C8] rounded-xl p-12 text-center text-[#564240]/60 text-[13px] flex flex-col items-center justify-center">
-                  <span className="material-symbols-outlined text-[32px] text-[#7a1f1f]/50 mb-2">
-                    lightbulb
-                  </span>
+                  <IconMapper name="lightbulb" className="text-[32px] text-[#7a1f1f]/50 mb-2" />
                   <p>No suggestions required. The document has achieved premium compatibilities.</p>
                 </div>
               )}

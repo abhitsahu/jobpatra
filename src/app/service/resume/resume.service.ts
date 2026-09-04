@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from '@/app/_lib/prisma';
 import path from 'path';
 import fs from 'fs';
 import type { Prisma } from '@prisma/client';
-import { checkAndIncrementUsage, decrementUsage } from '@/app/service/subscription/usage.service';
+
 import type {
   CreateResumeDTO,
   UpdateResumeDTO,
@@ -57,7 +56,6 @@ async function verifyOwnership(resumeId: string, userId: string) {
 
 export async function createResume(userId: string, data: CreateResumeDTO) {
   return prisma.$transaction(async (tx) => {
-    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
 
     return tx.resume.create({
       data: {
@@ -269,7 +267,10 @@ export async function getResume(resumeId: string, userId: string): Promise<Resum
     throw new Error('Resume not found');
   }
 
-  if (isResumeEmpty(resume)) {
+  // The career profile must stay genuinely empty until the user enters data.
+  // Demo data is useful for a new resume editor, but showing it in the profile
+  // would let a later save accidentally persist the demo as profile data.
+  if (resume.status !== 'PROFILE' && isResumeEmpty(resume)) {
     const populated = populateWithSampleData(resume);
     return {
       ...populated,
@@ -291,10 +292,11 @@ export async function listResumes(userId: string, query: ListResumesQueryDTO) {
   const where: Prisma.ResumeWhereInput = {
     userId,
     deletedAt: null,
-    ...(status ? { status } : {}),
+    // Always exclude the reserved profile resume from dashboard listings
+    status: { not: 'PROFILE', ...(status ? { equals: status } : {}) },
   };
 
-  const [resumes, total] = await prisma.$transaction([
+  const [resumes, total] = await Promise.all([
     prisma.resume.findMany({
       where,
       orderBy: { updatedAt: 'desc' },
@@ -395,7 +397,6 @@ export async function duplicateResume(resumeId: string, userId: string) {
   const source = await getResume(resumeId, userId);
 
   return prisma.$transaction(async (tx) => {
-    await checkAndIncrementUsage(tx, userId, 'RESUME_CREATE');
 
     const copy = await tx.resume.create({
       data: {
@@ -518,12 +519,9 @@ export async function duplicateResume(resumeId: string, userId: string) {
 
 export async function deleteResume(resumeId: string, userId: string) {
   await verifyOwnership(resumeId, userId);
-  await prisma.$transaction(async (tx) => {
-    await tx.resume.update({
-      where: { id: resumeId },
-      data: { deletedAt: new Date() },
-    });
-    await decrementUsage(tx, userId, 'RESUME_CREATE');
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: { deletedAt: new Date() },
   });
 }
 

@@ -25,6 +25,10 @@ import type { NextRequest } from 'next/server';
 // Routes that DON'T require authentication
 const publicPaths = [
   '/',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/terms',
   '/app/login',
   '/app/signup',
   '/app/ats-checker',
@@ -33,13 +37,16 @@ const publicPaths = [
   '/app/features',
   '/app/resources',
   '/app/about',
+  '/app/contact',
+  '/app/privacy',
+  '/app/terms',
   '/verify-email',
-  '/reset-password',
-  '/forgot-password',
+  '/app/forgot-password',
+  '/app/reset-password',
 ];
 
 // API paths that DON'T require authentication
-const publicApiPrefixes = ['/api/auth', '/api/public', '/api/webhooks'];
+const publicApiPrefixes = ['/api/auth', '/api/public', '/api/webhooks', '/api/feedback'];
 
 // API paths that DO require authentication
 const protectedApiPrefixes = [
@@ -78,13 +85,46 @@ export async function proxy(request: NextRequest) {
 
   const isAuthenticated = !!token;
 
-  // 1. PUBLIC API routes → always allow
+  // Direct friendly shortcuts (/about -> /app/about, /contact -> /app/contact, /privacy -> /app/privacy, /terms -> /app/terms)
+  if (
+    pathname === '/about' ||
+    pathname === '/contact' ||
+    pathname === '/privacy' ||
+    pathname === '/terms'
+  ) {
+    const directUrl = request.nextUrl.clone();
+    directUrl.pathname = `/app${pathname}`;
+    return NextResponse.redirect(directUrl);
+  }
+
+  // Legacy paths from older reset emails
+  if (pathname === '/reset-password' || pathname === '/forgot-password') {
+    const legacyUrl = request.nextUrl.clone();
+    legacyUrl.pathname =
+      pathname === '/reset-password' ? '/app/reset-password' : '/app/forgot-password';
+    return NextResponse.redirect(legacyUrl);
+  }
+
+  // 1. ADMIN ROUTES → require ADMIN role
+  if (pathname.startsWith('/admin')) {
+    if (!isAuthenticated) {
+      const loginUrl = new URL('/app/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    if (token?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/app/dashboard', request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // 2. PUBLIC API routes → always allow
 
   if (isPublicApi(pathname)) {
     return NextResponse.next();
   }
 
-  // 2. PROTECTED API routes → require auth
+  // 3. PROTECTED API routes → require auth
 
   if (isProtectedApi(pathname)) {
     if (!isAuthenticated) {
@@ -93,22 +133,29 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. AUTH PAGES → redirect to dashboard if already logged in
+  // 4. AUTH PAGES → redirect away if already logged in
+  //    Admins → /admin, regular users → /app/dashboard
 
-  if (pathname === '/app/login' || pathname === '/app/signup') {
+  if (
+    pathname === '/app/login' ||
+    pathname === '/app/signup' ||
+    pathname === '/app/forgot-password' ||
+    pathname === '/app/reset-password'
+  ) {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/app/dashboard', request.url));
+      const dest = token?.role === 'ADMIN' ? '/admin' : '/app/dashboard';
+      return NextResponse.redirect(new URL(dest, request.url));
     }
     return NextResponse.next();
   }
 
-  // 4. PUBLIC PAGES → always allow
+  // 5. PUBLIC PAGES → always allow
 
   if (isPublicPage(pathname)) {
     return NextResponse.next();
   }
 
-  // 5. APP PAGES → require auth
+  // 6. APP PAGES → require auth
 
   if (isAppRoute(pathname)) {
     if (!isAuthenticated) {
@@ -119,7 +166,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 6. Everything else → allow (static files, etc.)
+  // 7. Everything else → allow (static files, etc.)
   return NextResponse.next();
 }
 

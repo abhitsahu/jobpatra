@@ -50,8 +50,54 @@ async function createPrismaClient() {
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // The default 2-second wait is too short for a hosted, shared Postgres
+    // pool when several page queries arrive together. Transactions themselves
+    // remain short; this only gives the pool time to hand one out.
+    transactionOptions: {
+      maxWait: 10_000,
+      timeout: 10_000,
+    },
   });
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INVOICE IMMUTABILITY MIDDLEWARE
+// Prevents application code from ever updating the financial columns of an
+// Invoice record once it has been created. pdfData and pdfUrl are exempt
+// (set asynchronously by the cron job) — only the billing fields are locked.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function applyMiddleware(client: PrismaClient): PrismaClient {
+  return client.$extends({
+    query: {
+      invoice: {
+        async update({ args, query }) {
+          const IMMUTABLE_FIELDS = ['subtotal', 'taxAmount', 'total', 'lineItems', 'status', 'invoiceNumber'];
+          const attempted = Object.keys(args.data ?? {});
+          const blocked = attempted.filter((k) => IMMUTABLE_FIELDS.includes(k));
+          if (blocked.length > 0) {
+            throw new Error(
+              `[Prisma] Invoice fields are immutable and cannot be updated: ${blocked.join(', ')}`,
+            );
+          }
+          return query(args);
+        },
+        async updateMany({ args, query }) {
+          const IMMUTABLE_FIELDS = ['subtotal', 'taxAmount', 'total', 'lineItems', 'status', 'invoiceNumber'];
+          const attempted = Object.keys(args.data ?? {});
+          const blocked = attempted.filter((k) => IMMUTABLE_FIELDS.includes(k));
+          if (blocked.length > 0) {
+            throw new Error(
+              `[Prisma] Invoice fields are immutable and cannot be updated: ${blocked.join(', ')}`,
+            );
+          }
+          return query(args);
+        },
+      },
+    },
+  }) as unknown as PrismaClient;
+}
+
 
 // Async IIFE to handle DNS resolution at module initialisation.
 // The singleton is preserved across Next.js hot reloads via global.__prisma.
@@ -59,8 +105,11 @@ export const prisma: PrismaClient =
   global.__prisma ??
   (await (async () => {
     const client = await createPrismaClient();
+    const extendedClient = applyMiddleware(client);
     if (process.env.NODE_ENV !== 'production') {
-      global.__prisma = client;
+      global.__prisma = extendedClient;
     }
-    return client;
+    return extendedClient;
   })());
+
+

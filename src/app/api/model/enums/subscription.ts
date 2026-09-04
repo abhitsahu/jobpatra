@@ -12,5 +12,4 @@ export enum SubscriptionStatus {
 
 export enum BillingPeriod {
   MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
 }

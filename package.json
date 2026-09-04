@@ -5,14 +5,21 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "dev:host": "next dev -H 0.0.0.0",
     "start": "next start",
     "lint": "eslint",
+    "db:seed": "node prisma/seed.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:integration": "node --experimental-strip-types tests/integration/ai-service.test.ts"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.4.0",
+    "@marsidev/react-turnstile": "^1.6.1",
+    "@mui/icons-material": "^9.4.0",
+    "@mui/material": "^9.4.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@tanstack/react-query": "^5.101.2",
@@ -27,7 +34,10 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.80.0",
+    "react-resizable-panels": "^4.12.3",
+    "recharts": "^3.10.1",
     "resend": "^6.14.0",
+    "sonner": "^2.0.8",
     "zod": "^4.4.3"
   },
   "devDependencies": {

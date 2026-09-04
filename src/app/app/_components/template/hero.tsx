@@ -1,38 +1,26 @@
+'use client';
+
 import React from 'react';
 
 export function Hero() {
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 py-8 items-center">
-      <div className="space-y-6 lg:col-span-2">
-        <div className="inline-flex items-center gap-2 text-[#795900] font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold border-b border-[#795900] pb-1">
-          <span className="material-symbols-outlined text-[18px]">edit_note</span>
-          THE ARCHIVE
-        </div>
-        <h1 className="font-['Playfair_Display'] text-[32px] md:text-[48px] leading-[40px] md:leading-[56px] tracking-[-0.02em] font-bold text-[#5b060c] leading-tight">
-          Choose Your <br />
-          Resume Template
-        </h1>
-        <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] font-normal text-[#564240] max-w-lg">
-          Discover a curated collection of professional artifacts designed to stand out. Each
-          template is precision-engineered for ATS systems and aesthetic excellence.
-        </p>
-      </div>
-      <div className="relative flex justify-center lg:justify-end min-h-[360px] items-center">
-        {/* Floating Stack */}
-        <div className="floating-stack relative w-64 h-80 bg-white shadow-xl border border-[#ddc0bd] rotate-[-3deg] transform z-10 paper-texture p-6 flex flex-col justify-between">
-          <div>
-            <div className="w-1/2 h-4 bg-[#5b060c]/10 mb-4"></div>
-            <div className="w-full h-2 bg-[#564240]/5 mb-2"></div>
-            <div className="w-full h-2 bg-[#564240]/5 mb-2"></div>
-            <div className="w-2/3 h-2 bg-[#564240]/5"></div>
-          </div>
-          <div className="absolute bottom-4 right-4 text-[#5b060c] opacity-20">
-            <span className="material-symbols-outlined text-[48px]">history_edu</span>
-          </div>
-        </div>
-        <div className="absolute w-64 h-80 bg-white/80 shadow-lg border border-[#ddc0bd] rotate-[6deg] translate-x-12 translate-y-4 paper-texture"></div>
-        <div className="absolute w-64 h-80 bg-white/60 shadow-md border border-[#ddc0bd] rotate-[-8deg] -translate-x-8 translate-y-8 paper-texture"></div>
-      </div>
+    <section className="relative pt-24 pb-16 px-4 md:px-16 max-w-7xl mx-auto w-full flex flex-col items-center text-center">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fff0ee]/70 via-[#FFF8EE]/40 to-transparent pointer-events-none -z-10 rounded-3xl" />
+      
+      <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] tracking-[0.2em] text-[#5b060c] uppercase mb-4 flex items-center gap-3 font-semibold">
+        <span className="w-8 h-px bg-[#5b060c]/30"></span>
+        The Ledger Collection
+        <span className="w-8 h-px bg-[#5b060c]/30"></span>
+      </span>
+
+      <h1 className="font-['Playfair_Display'] text-[36px] md:text-[56px] leading-[44px] md:leading-[64px] font-bold text-[#2b1611] mb-6 max-w-3xl tracking-tight">
+        Professional Resume Templates
+      </h1>
+
+      <p className="font-['Hanken_Grotesk'] text-[16px] md:text-[18px] leading-[26px] md:leading-[28px] text-[#564240] max-w-2xl leading-relaxed">
+        Curated by career experts and refined by AI. Each template is meticulously crafted to navigate
+        ATS filters while presenting your narrative with undeniable elegance.
+      </p>
     </section>
   );
 }

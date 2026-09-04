@@ -1,6 +1,5 @@
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { activateUserSubscription, failUserPayment } from '@/app/service/subscription/subscription.service';
-import { BillingPeriod } from '@/app/api/model/enums/subscription';
 import { VerifyPaymentRequest } from '@/app/api/model/request/payments/order';
 import { VerifyPaymentResponse } from '@/app/api/model/response/payments/order';
 import { prisma } from '@/app/_lib/prisma';
@@ -73,7 +72,7 @@ export async function POST(request: Request) {
 
     // 4. Activate the subscription and complete the transaction ledger
     try {
-      const subscription = await activateUserSubscription({
+      await activateUserSubscription({
         userId,
         planSlug,
         billingPeriod,
@@ -83,10 +82,56 @@ export async function POST(request: Request) {
         currency: paymentRecord.currency,
       });
 
+      // Fetch the final subscription and invoice to return a rich response
+      const [subscription, invoice] = await Promise.all([
+        prisma.subscription.findUnique({ where: { userId } }),
+        prisma.invoice.findFirst({
+          where: { razorpayOrderId },
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            invoiceNumber: true,
+            total: true,
+            currency: true,
+            status: true,
+            pdfUrl: true,
+            createdAt: true,
+          },
+        }),
+      ]);
+
       return NextResponse.json<VerifyPaymentResponse>({
         success: true,
         message: 'Payment verified and subscription activated successfully',
-        data: subscription,
+        data: {
+          subscription: {
+            plan: subscription?.plan,
+            planName: subscription?.snapshotPlanName,
+            status: subscription?.status,
+            currentPeriodStart: subscription?.currentPeriodStart,
+            currentPeriodEnd: subscription?.currentPeriodEnd,
+            limits: {
+              atsScans:       subscription?.snapshotLimitAts,
+              aiSuggestions:  subscription?.snapshotLimitAi,
+              templateAccess: subscription?.snapshotTemplateAccess,
+            },
+          },
+          invoice: invoice
+            ? {
+                invoiceNumber: invoice.invoiceNumber,
+                total:         invoice.total,
+                currency:      invoice.currency,
+                status:        invoice.status,
+                // pdfUrl is null until the cron job generates it asynchronously
+                pdfUrl:        invoice.pdfUrl,
+                createdAt:     invoice.createdAt,
+              }
+            : null,
+          razorpay: {
+            orderId:   razorpayOrderId,
+            paymentId: razorpayPaymentId,
+          },
+        },
       });
     } catch (err: any) {
       if (err.message === 'PAYMENT_ALREADY_COMPLETED') {
@@ -97,6 +142,7 @@ export async function POST(request: Request) {
       }
       throw err;
     }
+
   } catch (err) {
     console.error('[POST /api/payments/verify]', err);
     return NextResponse.json<VerifyPaymentResponse>(

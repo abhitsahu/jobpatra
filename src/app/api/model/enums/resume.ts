@@ -1,7 +1,10 @@
 export enum ResumeStatus {
   DRAFT = 'DRAFT',
   COMPLETE = 'COMPLETE',
+  /** Reserved — the user's master career profile resume. Hidden from all lists. */
+  PROFILE = 'PROFILE',
 }
+
 
 export enum SkillCategory {
   TECHNICAL = 'TECHNICAL',

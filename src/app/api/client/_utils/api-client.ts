@@ -12,6 +12,9 @@ export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): P
   const response = await fetch(url, {
     // ── Defaults every call must have ─────────────────────────────────────────
     credentials: 'include', // send HTTP-only session cookie on every request
+    // Resume/profile data is edited in-place. Never let a browser HTTP cache
+    // return an older version after a successful save.
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json', // overridable by callerHeaders
       ...callerHeaders,

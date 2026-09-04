@@ -1,4 +1,5 @@
 'use client';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { SheetCard, SectionHeading, Toggle } from './settings-primitives';
 import { cn } from '@/app/app/_util/cn';
@@ -79,9 +80,7 @@ export function AIPreferencesSection() {
           {toggles.map((t) => (
             <div key={t.label} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#5b060c] text-[18px]">
-                  {t.icon}
-                </span>
+                <IconMapper name={t.icon} className="text-[#5b060c] text-[18px]" />
                 <span
                   className="text-[14px] font-semibold text-[#2b1611]"
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}

@@ -1,3 +1,4 @@
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 /**
  * Reusable primitives for the Settings page.
  * These follow the JobPatra paper/Burgundy design language.
@@ -34,48 +35,13 @@ export function SheetCard({
 export function SectionHeading({ children, icon }: { children: React.ReactNode; icon?: string }) {
   return (
     <div className="flex items-center gap-3 mb-8">
-      {icon && <span className="material-symbols-outlined text-[#5b060c]">{icon}</span>}
+      {icon && <IconMapper name={icon} className="text-[#5b060c]" />}
       <h3
         className="text-[24px] leading-[32px] font-semibold text-[#5b060c]"
         style={{ fontFamily: 'Playfair Display, serif' }}
       >
         {children}
       </h3>
-    </div>
-  );
-}
-
-// ─── Paper Input ──────────────────────────────────────────────────────────────
-export function PaperInput({
-  label,
-  type = 'text',
-  defaultValue,
-  placeholder,
-  className,
-  colSpan2,
-}: {
-  label: string;
-  type?: string;
-  defaultValue?: string;
-  placeholder?: string;
-  className?: string;
-  colSpan2?: boolean;
-}) {
-  return (
-    <div className={cn('space-y-1', colSpan2 && 'col-span-2', className)}>
-      <label
-        className="text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-[0.05em]"
-        style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-      >
-        {label}
-      </label>
-      <input
-        type={type}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        className="w-full bg-transparent border-b border-[#ddc0bd] focus:border-[#5b060c] focus:outline-none py-2 text-[#2b1611] transition-colors"
-        style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: 15 }}
-      />
     </div>
   );
 }
@@ -157,37 +123,7 @@ export function PrimaryBtn({
       type={type}
       onClick={onClick}
       className={cn(
-        'bg-[#5b060c] text-white px-8 py-3 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity',
-        className,
-      )}
-      style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-    >
-      {children}
-    </button>
-  );
-}
-
-// ─── Outline Button ───────────────────────────────────────────────────────────
-export function OutlineBtn({
-  children,
-  onClick,
-  className,
-  danger,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
-  danger?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'px-6 py-3 rounded-lg text-[14px] font-semibold border transition-all',
-        danger
-          ? 'border-[#ba1a1a] text-[#ba1a1a] hover:bg-[#ba1a1a] hover:text-white'
-          : 'border-[#8a716f] text-[#564240] hover:bg-[#fff0ed]',
+        'bg-[#5b060c] text-white px-8 py-3 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity cursor-pointer',
         className,
       )}
       style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -208,12 +144,8 @@ export function WaxSeal() {
         border: '2px solid #5c4300',
       }}
     >
-      <span
-        className="material-symbols-outlined text-white"
-        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }}
-      >
-        workspace_premium
-      </span>
+      <IconMapper name="workspace_premium" className="text-white"
+        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { PASSWORD_RULES } from './password-rules';
+import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 interface PasswordRequirementsProps {
   password: string;
@@ -19,19 +20,14 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
         return (
           <li key={rule.id} className="flex items-center gap-2">
             {/* Icon */}
-            <span
+            <IconMapper
+              name={met ? 'check_circle' : 'radio_button_unchecked'}
               className={[
-                'material-symbols-outlined flex-shrink-0 transition-colors duration-300',
+                'flex-shrink-0 transition-colors duration-300 text-[16px]',
                 met ? 'text-[#2a7040]' : 'text-[#8a716f]',
               ].join(' ')}
-              style={{
-                fontSize: '16px',
-                fontVariationSettings: met ? "'FILL' 1" : "'FILL' 0",
-              }}
-              aria-hidden="true"
-            >
-              {met ? 'check_circle' : 'radio_button_unchecked'}
-            </span>
+              style={{ fontSize: '16px' }}
+            />
 
             {/* Label */}
             <span

@@ -33,8 +33,10 @@ export interface ATSAnalyzeRequestBody {
 
 export interface MatchedKeyword {
   keyword: string;
-  matchType: 'EXACT' | 'SYNONYM' | 'FUZZY' | 'SEMANTIC';
+  matchType: 'EXACT' | 'SYNONYM' | 'FUZZY' | 'RELATED';
   similarity: number | null;
+  matched_jd_keyword: string | null;
+  is_related_concept: boolean;
 }
 
 export interface ExperienceSummary {
@@ -85,10 +87,18 @@ export interface ATSAnalyzeResponse {
   // Keyword matching
   matched_keywords: MatchedKeyword[];
   missing_keywords: string[];
+  related_keywords: MatchedKeyword[];
 
   // Skill coverage
   matched_skills: string[];
   missing_skills: string[];
+  required_skill_count: number;
+  culture_signals: string[];
+  extraction_mode: 'hybrid_ai' | 'deterministic_fallback';
+  required_experience_years: number;
+  candidate_experience_years: number;
+  required_education_level: string;
+  candidate_education_level: string;
 
   // Extracted metadata
   experience_summary: ExperienceSummary;
