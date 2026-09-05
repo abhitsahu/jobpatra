@@ -112,10 +112,10 @@ export function ResumeSourceSelector({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Selector Options */}
-      <div className="flex gap-4">
-        <label className="flex-1">
+    <div className="space-y-4">
+      {/* Source Choice Radio Cards */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <label className="flex-1 cursor-pointer">
           <input
             type="radio"
             name="resume_source"
@@ -129,20 +129,20 @@ export function ResumeSourceSelector({
             }}
             className="sr-only peer"
           />
-          <div className="flex flex-col items-start gap-2 p-5 bg-white/60 border border-[#ddc0bd] rounded-lg hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
+          <div className="flex flex-col items-start gap-1.5 sm:gap-2 p-3.5 sm:p-4 bg-white/60 border border-[#ddc0bd] rounded-xl hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
             <div className="flex items-center gap-2">
-              <IconMapper name="folder_open" className="text-[#7a1f1f] text-[22px]" />
-              <span className="font-['Hanken_Grotesk'] text-[14px] font-bold text-[#2b1611]">
+              <IconMapper name="folder_open" className="text-[#7a1f1f] text-[20px] sm:text-[22px]" />
+              <span className="font-['Hanken_Grotesk'] text-[13px] sm:text-[14px] font-bold text-[#2b1611]">
                 Use JobPatra Resume
               </span>
             </div>
-            <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]/80">
+            <p className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] text-[#564240]/80 leading-relaxed">
               Select one of your existing, formatted resumes from your account workspace.
             </p>
           </div>
         </label>
 
-        <label className="flex-1">
+        <label className="flex-1 cursor-pointer">
           <input
             type="radio"
             name="resume_source"
@@ -154,14 +154,14 @@ export function ResumeSourceSelector({
             }}
             className="sr-only peer"
           />
-          <div className="flex flex-col items-start gap-2 p-5 bg-white/60 border border-[#ddc0bd] rounded-lg hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
+          <div className="flex flex-col items-start gap-1.5 sm:gap-2 p-3.5 sm:p-4 bg-white/60 border border-[#ddc0bd] rounded-xl hover:border-[#7a1f1f] cursor-pointer transition-all peer-checked:border-[#7a1f1f] peer-checked:bg-[#fff0ed]/40 h-full">
             <div className="flex items-center gap-2">
-              <IconMapper name="upload_file" className="text-[#7a1f1f] text-[22px]" />
-              <span className="font-['Hanken_Grotesk'] text-[14px] font-bold text-[#2b1611]">
+              <IconMapper name="upload_file" className="text-[#7a1f1f] text-[20px] sm:text-[22px]" />
+              <span className="font-['Hanken_Grotesk'] text-[13px] sm:text-[14px] font-bold text-[#2b1611]">
                 Upload New Resume
               </span>
             </div>
-            <p className="font-['Hanken_Grotesk'] text-[12px] text-[#564240]/80">
+            <p className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] text-[#564240]/80 leading-relaxed">
               Upload a standard document file (PDF, DOCX, TXT) from your system.
             </p>
           </div>
@@ -170,7 +170,7 @@ export function ResumeSourceSelector({
 
       {/* Library Selection View */}
       {sourceType === 'library' && (
-        <div className="border border-[#ddc0bd] bg-white/60 rounded-xl p-5 space-y-4">
+        <div className="border border-[#ddc0bd] bg-white/60 rounded-xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
           <div className="relative">
             <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f]" />
             <input

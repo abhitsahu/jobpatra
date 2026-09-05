@@ -304,6 +304,26 @@ section > .title {
 
 /* ─── Print & PDF Styles ─────────────────────────────────────────────────── */
 
+/* ─── Page Break Control ──────────────────────────────────────────────────── */
+
+/* Keep individual job/project entries together — prevents heading split */
+section.project {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Keep section headings with the first item below them */
+section > h2 {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+/* Keep table rows intact */
+tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 @media print {
   body {
     background-color: #ffffff;
@@ -315,6 +335,7 @@ section > .title {
     margin: 0;
     padding: 0;
     box-shadow: none;
+    min-height: auto;
   }
 
   a {

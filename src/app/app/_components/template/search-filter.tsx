@@ -19,19 +19,19 @@ export function SearchFilter({
   categories,
 }: SearchFilterProps) {
   return (
-    <section className="sticky top-16 z-40 bg-[#FFF8EE]/90 backdrop-blur-md py-4 px-4 md:px-16 border-y border-[#E5D9C8] mb-12 shadow-sm">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <section className="sticky top-16 z-40 bg-[#FFF8EE]/95 backdrop-blur-md py-3 sm:py-4 px-4 md:px-16 border-y border-[#E5D9C8] mb-8 sm:mb-12 shadow-xs">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
         {/* Category Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto scrollbar-none">
+        <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 w-full md:w-auto scrollbar-none">
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat;
             return (
               <button
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
-                className={`px-5 py-2 rounded-full font-['Hanken_Grotesk'] text-[13px] font-semibold tracking-wider uppercase transition-all duration-200 shrink-0 cursor-pointer ${
+                className={`px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full font-['Hanken_Grotesk'] text-[12px] sm:text-[13px] font-semibold tracking-wider uppercase transition-all duration-200 shrink-0 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#5b060c] text-white shadow-md scale-[1.02]'
+                    ? 'bg-[#5b060c] text-white shadow-sm scale-[1.02]'
                     : 'text-[#564240] bg-white/60 border border-[#E5D9C8]/60 hover:bg-[#ffe2db] hover:text-[#5b060c]'
                 }`}
               >

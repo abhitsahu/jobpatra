@@ -33,28 +33,28 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
         </button>
 
         {/* Left: Template Preview Image */}
-        <div className="flex-1 bg-white border-r border-[#E5D9C8] p-6 flex items-center justify-center overflow-y-auto max-h-[45vh] md:max-h-full">
+        <div className="flex-1 bg-white border-b md:border-b-0 md:border-r border-[#E5D9C8] p-4 sm:p-6 flex items-center justify-center overflow-y-auto max-h-[45vh] md:max-h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={template.previewImage}
             alt={`${template.name} Template Preview`}
-            className="max-w-full max-h-[65vh] object-contain shadow-md border border-[#E5D9C8]/60 rounded-sm"
+            className="max-w-full max-h-[40vh] md:max-h-[65vh] object-contain shadow-md border border-[#E5D9C8]/60 rounded-sm"
           />
         </div>
 
         {/* Right: Template Details */}
-        <div className="w-full md:w-80 p-8 flex flex-col justify-between bg-[#FFF8EE] relative">
-          <div className="space-y-6">
-            <div className="flex items-center gap-2 text-[#795900] font-['Hanken_Grotesk'] text-[12px] uppercase tracking-wider font-semibold">
+        <div className="w-full md:w-80 p-5 sm:p-8 flex flex-col justify-between bg-[#FFF8EE] relative overflow-y-auto">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-2 text-[#795900] font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] uppercase tracking-wider font-semibold">
               <IconMapper name="bookmark" className="text-[16px]" />
               {template.category}
             </div>
 
-            <h3 className="font-['Playfair_Display'] text-[28px] leading-tight font-bold text-[#2b1611]">
+            <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[28px] leading-tight font-bold text-[#2b1611]">
               {template.name}
             </h3>
 
-            <p className="font-['Hanken_Grotesk'] text-[15px] leading-[22px] text-[#564240]">
+            <p className="font-['Hanken_Grotesk'] text-[13px] sm:text-[15px] leading-[20px] sm:leading-[22px] text-[#564240]">
               {template.description}
             </p>
 

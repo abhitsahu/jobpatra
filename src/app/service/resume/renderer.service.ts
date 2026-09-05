@@ -166,7 +166,7 @@ export async function renderResumeHtml(resumeId: string, userId: string): Promis
 
   // Inject CSS inline so PDF generation works without external file references
   const hbsWithInlineCss = hbsSource.replace(
-    /<link[^>]+rel="stylesheet"[^>]*\/>/gi,
+    /<link[^>]+rel=["']stylesheet["'][^>]*\/?>/gi,
     `<style>${cssSource}</style>`,
   );
 

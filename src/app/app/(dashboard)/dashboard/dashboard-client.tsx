@@ -7,7 +7,10 @@ import { useResumes, useResumePreview } from '@/app/app/_hooks/use-resumes';
 import { useSubscriptionStatus } from '@/app/app/_hooks/use-subscription';
 import { ResumeCard } from '@/app/app/_components/features/dashboard/resume-card';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
+import { Pagination } from '@/app/app/_components/ui/pagination';
 import Link from 'next/link';
+
+const PAGE_SIZE = 5;
 
 
 // Quick Preview Modal Component
@@ -58,8 +61,9 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'updated' | 'title-asc' | 'title-desc'>('updated');
   const [previewResumeId, setPreviewResumeId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError } = useResumes({ limit: 20 });
+  const { data, isLoading, isError } = useResumes({ limit: 50 });
   const { data: subData, isLoading: isSubLoading } = useSubscriptionStatus();
 
   const resumes = data?.data ?? [];
@@ -74,6 +78,10 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
     }
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const validPage = Math.min(page, totalPages);
+  const paginatedResumes = sorted.slice((validPage - 1) * PAGE_SIZE, validPage * PAGE_SIZE);
 
   return (
     <div className="h-full overflow-y-auto relative flex flex-col justify-between">
@@ -245,7 +253,10 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                       id="dashboard-search"
                       type="text"
                       value={search}
-                      onChange={(e) => setSearch(e.target.value)}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                      }}
                       placeholder="Search archive..."
                       className="w-full pl-12 pr-4 py-2.5 sm:py-3 border border-[#ddc0bd] rounded-full transition-all outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 bg-[#fff0ed] text-[#2b1611] font-['Hanken_Grotesk'] text-[14px] leading-[20px] placeholder:text-[#8a716f]/60 shadow-xs"
                     />
@@ -256,9 +267,10 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
                     <select
                       id="dashboard-sort"
                       value={sortBy}
-                      onChange={(e) =>
-                        setSortBy(e.target.value as 'updated' | 'title-asc' | 'title-desc')
-                      }
+                      onChange={(e) => {
+                        setSortBy(e.target.value as 'updated' | 'title-asc' | 'title-desc');
+                        setPage(1);
+                      }}
                       className="w-full sm:w-auto bg-[#fff0ed] border border-[#ddc0bd] pl-5 pr-10 py-2.5 sm:py-3 rounded-full font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#2b1611] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 transition-all appearance-none cursor-pointer shadow-xs"
                     >
                       <option value="updated">Last Updated</option>
@@ -329,13 +341,26 @@ export default function DashboardPageClient({ userName }: { userName: string }) 
 
               {/* Resume list */}
               {!isLoading && !isError && sorted.length > 0 && (
-                <AnimatePresence>
-                  <div className="flex flex-col">
-                    {sorted.map((resume) => (
-                      <ResumeCard key={resume.id} resume={resume} onPreview={setPreviewResumeId} />
-                    ))}
-                  </div>
-                </AnimatePresence>
+                <>
+                  <AnimatePresence>
+                    <div className="flex flex-col">
+                      {paginatedResumes.map((resume) => (
+                        <ResumeCard key={resume.id} resume={resume} onPreview={setPreviewResumeId} />
+                      ))}
+                    </div>
+                  </AnimatePresence>
+
+                  {/* Reusable Pagination */}
+                  {totalPages > 1 && (
+                    <div className="p-4 sm:p-6 border-t border-[#ddc0bd]/30 flex justify-center">
+                      <Pagination
+                        currentPage={validPage}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

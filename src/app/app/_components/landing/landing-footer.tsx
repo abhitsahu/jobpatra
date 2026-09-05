@@ -6,9 +6,9 @@ import { Logo } from '@/app/app/_components/common/logo';
 
 export function LandingFooter() {
   return (
-    <footer className="w-full bg-[#fff0ee] border-t border-[#E5D9C8] py-16">
+    <footer className="w-full bg-[#fff0ee] border-t border-[#E5D9C8] py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 md:px-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8 sm:mb-12">
           {/* Brand Col */}
           <div className="col-span-1">
             <Link href="/" className="inline-block mb-4">

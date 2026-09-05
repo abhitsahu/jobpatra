@@ -315,6 +315,7 @@ section > .title {
     margin: 0;
     padding: 0;
     box-shadow: none;
+    min-height: auto;
   }
 
   a {

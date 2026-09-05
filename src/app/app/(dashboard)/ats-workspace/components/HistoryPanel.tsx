@@ -5,10 +5,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAtsHistory, useDeleteAtsAnalysis, useClearAtsHistory } from '@/app/app/_hooks/use-ats-history';
 import { ConfirmationModal } from '@/app/app/_components/common/confirmation-modal';
+import { Pagination } from '@/app/app/_components/ui/pagination';
+
+const PAGE_SIZE = 5;
 
 export function HistoryPanel() {
   const router = useRouter();
-  const { data, isLoading } = useAtsHistory({ limit: 50 });
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useAtsHistory({ page, limit: PAGE_SIZE });
   const deleteMutation = useDeleteAtsAnalysis();
   const clearMutation = useClearAtsHistory();
 
@@ -16,6 +20,7 @@ export function HistoryPanel() {
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 
   const analyses = data?.items ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -25,24 +30,32 @@ export function HistoryPanel() {
   const handleConfirmDeleteItem = () => {
     if (deleteItemId) {
       deleteMutation.mutate(deleteItemId, {
-        onSuccess: () => setDeleteItemId(null),
+        onSuccess: () => {
+          setDeleteItemId(null);
+          if (analyses.length === 1 && page > 1) {
+            setPage((prev) => prev - 1);
+          }
+        },
       });
     }
   };
 
   const handleConfirmClearAll = () => {
     clearMutation.mutate(undefined, {
-      onSuccess: () => setConfirmClearOpen(false),
+      onSuccess: () => {
+        setConfirmClearOpen(false);
+        setPage(1);
+      },
     });
   };
 
   return (
-    <div className="bg-[#FFF8EE] border border-[#E5D9C8] rounded-2xl p-6 shadow-sm flex flex-col h-full">
+    <div className="bg-[#FFF8EE] border border-[#E5D9C8] rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-[#E5D9C8] mb-4 shrink-0">
+      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#E5D9C8] mb-3 sm:mb-4 shrink-0">
         <div className="flex items-center gap-2">
-          <IconMapper name="history" className="text-[#7a1f1f] text-[22px]" />
-          <h3 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611]">
+          <IconMapper name="history" className="text-[#5b060c] text-[20px] sm:text-[22px]" />
+          <h3 className="font-['Playfair_Display'] text-[16px] sm:text-[18px] font-bold text-[#5b060c]">
             Analysis History
           </h3>
         </div>
@@ -123,6 +136,19 @@ export function HistoryPanel() {
           ))
         )}
       </div>
+
+      {/* Reusable Pagination */}
+      {totalPages > 1 && (
+        <div className="pt-3 border-t border-[#E5D9C8] mt-3 shrink-0">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            maxVisible={3}
+            showFirstLast={false}
+          />
+        </div>
+      )}
 
       {/* Clear All Confirmation Modal */}
       <ConfirmationModal

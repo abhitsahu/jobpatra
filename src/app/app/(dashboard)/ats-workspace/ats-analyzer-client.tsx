@@ -176,34 +176,28 @@ export function AtsAnalyzerClient() {
         <IconMapper name="history_edu" className="text-[140px]" />
       </div>
 
-      <header className="mb-8 max-w-5xl">
-        <div className="flex items-center gap-2 mb-2">
-          <IconMapper name="verified_user" className="text-[#7a1f1f] text-[18px]" />
-          <span className="font-['Hanken_Grotesk'] text-[11px] leading-[14px] font-bold text-[#7a1f1f] uppercase tracking-widest">
-            JobPatra Audit Department
-          </span>
-        </div>
-        <h1 className="font-['Playfair_Display'] text-[32px] md:text-[40px] leading-tight font-bold text-[#2b1611] mb-2">
+      <header className="mb-6 sm:mb-8 lg:mb-10 max-w-5xl">
+        <h1 className="font-['Playfair_Display'] text-[24px] sm:text-[32px] md:text-[40px] leading-tight font-bold text-[#5b060c] mb-1.5 sm:mb-2">
           ATS Analyzer Workspace
         </h1>
-        <p className="font-['Hanken_Grotesk'] text-[14px] text-[#564240] leading-relaxed max-w-2xl">
+        <p className="font-['Hanken_Grotesk'] text-[13px] sm:text-[15px] md:text-[16px] text-[#564240] leading-relaxed max-w-2xl">
           Evaluate compatibility by comparing your archival resume against modern recruitment
           algorithms and role criteria.
         </p>
       </header>
 
       {/* Main Guided Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 max-w-6xl">
         {/* Workspace Form: Step 1 & Step 2 */}
-        <div className="lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] p-8 shadow-sm relative flex flex-col justify-between rounded-2xl">
-          <div className="space-y-8">
+        <div className="lg:col-span-8 bg-[#FFF8EE] border border-[#E5D9C8] p-4 sm:p-6 lg:p-8 shadow-xs relative flex flex-col justify-between rounded-xl sm:rounded-2xl">
+          <div className="space-y-6 sm:space-y-8">
             {/* Step 1: Choose Resume */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-3 border-b border-[#E5D9C8] pb-2">
-                <div className="w-6 h-6 rounded-full bg-[#7a1f1f] text-white flex items-center justify-center font-['Playfair_Display'] text-[12px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#5b060c] text-white flex items-center justify-center font-['Playfair_Display'] text-[12px] font-bold shrink-0">
                   I
                 </div>
-                <h2 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611]">
+                <h2 className="font-['Playfair_Display'] text-[16px] sm:text-[18px] font-bold text-[#5b060c]">
                   Choose Target Resume
                 </h2>
               </div>
@@ -221,12 +215,12 @@ export function AtsAnalyzerClient() {
             </div>
 
             {/* Step 2: Provide Job Description */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-3 border-b border-[#E5D9C8] pb-2">
-                <div className="w-6 h-6 rounded-full bg-[#7a1f1f] text-white flex items-center justify-center font-['Playfair_Display'] text-[12px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#5b060c] text-white flex items-center justify-center font-['Playfair_Display'] text-[12px] font-bold shrink-0">
                   II
                 </div>
-                <h2 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611]">
+                <h2 className="font-['Playfair_Display'] text-[16px] sm:text-[18px] font-bold text-[#5b060c]">
                   Target Job Description
                 </h2>
               </div>
@@ -239,7 +233,7 @@ export function AtsAnalyzerClient() {
           </div>
 
           {/* Action button */}
-          <div className="mt-8 border-t border-[#E5D9C8] pt-6 flex justify-end">
+          <div className="mt-6 sm:mt-8 border-t border-[#E5D9C8] pt-4 sm:pt-6 flex justify-end">
             <button
               onClick={handleStartAnalysis}
               disabled={!isFormValid}
@@ -252,7 +246,7 @@ export function AtsAnalyzerClient() {
                     }
                   : {}
               }
-              className={`px-8 py-3 rounded-xl font-['Hanken_Grotesk'] text-[13px] font-bold uppercase tracking-wider text-white transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+              className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-['Hanken_Grotesk'] text-[12px] sm:text-[13px] font-bold uppercase tracking-wider text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                 isFormValid
                   ? 'hover:scale-[1.02] active:scale-95 text-white'
                   : 'bg-[#ddc0bd] border border-[#ddc0bd]/60 text-[#564240]/40 cursor-not-allowed'

@@ -31,8 +31,8 @@ export function TemplateGrid({ templates, canAccessPremium = false, onUseTemplat
   }
 
   return (
-    <section className="max-w-7xl mx-auto px-4 md:px-16 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
+    <section className="max-w-7xl mx-auto px-4 md:px-16 py-4 sm:py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
         {templates.map((tpl) => (
           <TemplateCard
             key={tpl.id}
