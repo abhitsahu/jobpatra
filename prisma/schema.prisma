@@ -126,6 +126,7 @@ model PersonalInfo {
   id       String  @id @default(cuid())
   resumeId String  @unique
   fullName String
+  photoUrl String? @db.Text
   jobTitle String?
   email    String
   phone    String?

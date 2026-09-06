@@ -119,6 +119,7 @@ function populateWithSampleData(resume: ResumeWithRelations): ResumeWithRelation
       createdAt: new Date(),
       updatedAt: new Date(),
       fullName: personal.name || '',
+      photoUrl: personal.photoUrl || null,
       jobTitle: personal.jobTitle || '',
       email: personal.email || '',
       phone: personal.phone || '',

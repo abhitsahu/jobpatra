@@ -8,6 +8,7 @@ import { ResumeStatus, SkillCategory, LanguageProficiency } from '@/app/api/mode
 
 export const personalInfoSchema = z.object({
   fullName: z.string().max(100).optional().default(''),
+  photoUrl: z.string().optional().or(z.literal('')),
   jobTitle: z.string().max(100).optional(),
   email: z.string().max(200).optional().default(''),
   phone: z.string().max(30).optional(),

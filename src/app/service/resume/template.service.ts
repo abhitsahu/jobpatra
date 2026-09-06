@@ -14,6 +14,7 @@ export interface TemplateMetadata {
   engine: string;
   ats: boolean;
   sections: string[];
+  hasPhoto?: boolean;
   slug?: string;
   description?: string;
   previewImage?: string;
@@ -40,12 +41,20 @@ function registerTemplate(registry: Map<string, TemplateInfo>, dir: string, dirN
 
   try {
     const meta: TemplateMetadata = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-    registry.set(meta.id, {
+    const info: TemplateInfo = {
       ...meta,
+      hasPhoto: meta.hasPhoto ?? false,
       hbsPath: path.join(dir, 'template.hbs'),
       cssPath: path.join(dir, 'style.css'),
       thumbnailPath: path.join(dir, meta.thumbnail),
-    });
+    };
+    registry.set(meta.id, info);
+    if (meta.slug && meta.slug !== meta.id) {
+      registry.set(meta.slug, info);
+    }
+    if (dirName && dirName !== meta.id && !registry.has(dirName)) {
+      registry.set(dirName, info);
+    }
   } catch {
     console.warn(`[template.service] Failed to parse metadata for template: ${dirName}`);
   }
@@ -88,7 +97,15 @@ function scanTemplates(): Map<string, TemplateInfo> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function listTemplates(): TemplateInfo[] {
-  return Array.from(scanTemplates().values());
+  const seen = new Set<string>();
+  const list: TemplateInfo[] = [];
+  for (const t of scanTemplates().values()) {
+    if (!seen.has(t.id)) {
+      seen.add(t.id);
+      list.push(t);
+    }
+  }
+  return list;
 }
 
 export function getTemplate(templateId: string): TemplateInfo {

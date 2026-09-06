@@ -133,6 +133,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       title: '',
       personalInfo: {
         fullName: '',
+        photoUrl: '',
         jobTitle: '',
         email: '',
         phone: '',
@@ -163,6 +164,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   // Order and presence come 100% from the `sections` array in metadata.json.
   // No hardcoded list lives here — TEMPLATE_KEY_TO_EDITOR is just a translator.
   const templateRawSections = (templateData as { sections?: string[] } | null)?.sections ?? [];
+  const templateSupportsPhoto = Boolean((templateData as { hasPhoto?: boolean } | null)?.hasPhoto);
   const visibleSectionsKeys = templateRawSections
     .map((k) => TEMPLATE_KEY_TO_EDITOR[k])
     .filter(Boolean) as string[];
@@ -188,6 +190,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
         title: resume.title ?? '',
         personalInfo: {
           fullName: resume.personalInfo?.fullName ?? '',
+          photoUrl: resume.personalInfo?.photoUrl ?? '',
           jobTitle: resume.personalInfo?.jobTitle ?? '',
           email: resume.personalInfo?.email ?? '',
           phone: resume.personalInfo?.phone ?? '',
@@ -523,7 +526,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
-          {activeSection === 'personalInfo' && <PersonalInfoForm form={form} />}
+          {activeSection === 'personalInfo' && (
+            <PersonalInfoForm form={form} supportsPhoto={templateSupportsPhoto} />
+          )}
           {activeSection === 'summary' && <SummaryForm form={form} />}
           {activeSection === 'experience' && <ExperienceForm form={form} />}
           {activeSection === 'education' && <EducationForm form={form} />}

@@ -12,6 +12,7 @@ export interface TemplateData {
   metadata: { title: string };
   personal: {
     name: string;
+    photoUrl?: string | null;
     jobTitle?: string | null;
     email: string;
     phone?: string | null;
@@ -48,6 +49,10 @@ export interface TemplateData {
     link?: string | null;
   }[];
   skills: string[];
+  skillsList?: {
+    name: string;
+    category?: string | null;
+  }[];
   certifications: {
     name: string;
     issuer?: string | null;
@@ -56,6 +61,10 @@ export interface TemplateData {
   }[];
   achievements: { title: string; date?: string | null; description?: string | null }[];
   languages: string[];
+  languagesList?: {
+    name: string;
+    proficiency?: string | null;
+  }[];
   references: {
     name: string;
     designation?: string | null;
@@ -78,6 +87,7 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
 
     personal: {
       name: p?.fullName ?? '',
+      photoUrl: p?.photoUrl,
       jobTitle: p?.jobTitle,
       email: p?.email ?? '',
       phone: p?.phone,
@@ -120,6 +130,10 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
 
     // Templates use {{#each skills}} {{this}} — flat string array
     skills: resume.skills.map((s) => s.name),
+    skillsList: resume.skills.map((s) => ({
+      name: s.name,
+      category: s.category,
+    })),
 
     certifications: resume.certifications.map((c) => ({
       name: c.name,
@@ -138,6 +152,10 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
     languages: resume.languages.map((l) =>
       l.proficiency ? `${l.name} (${l.proficiency})` : l.name,
     ),
+    languagesList: resume.languages.map((l) => ({
+      name: l.name,
+      proficiency: l.proficiency,
+    })),
 
     references: resume.references.map((r) => ({
       name: r.name,

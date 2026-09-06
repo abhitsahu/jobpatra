@@ -130,6 +130,7 @@ export interface Template {
   isPremium: boolean;
   usageCount: number;
   sections: string[];
+  hasPhoto?: boolean;
 }
 
 export interface TemplatesResponse {

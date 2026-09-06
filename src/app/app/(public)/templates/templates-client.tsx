@@ -13,6 +13,19 @@ import { getSessionClient } from '@/app/api/client/auth/auth-client';
 
 const STATIC_TEMPLATES: TemplateData[] = [
   {
+    id: 'modern-demo',
+    name: 'Modern Tech',
+    slug: 'modern-demo',
+    category: 'Modern',
+    description: 'Contemporary two-column layout with profile photo, dynamic icons, timeline accents, and interactive links.',
+    previewImage: '/api/template/modern-demo/thumbnail',
+    atsFriendly: true,
+    isPremium: false,
+    usageCount: 16400,
+    tag: 'NEW',
+    rotateClass: 'group-hover:rotate-1',
+  },
+  {
     id: 'classic-demo',
     name: 'The Executive',
     slug: 'classic-demo',
