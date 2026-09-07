@@ -154,7 +154,7 @@ export function SubscriptionSection() {
                 className="text-[24px] leading-[32px] font-semibold text-[#795900]"
                 style={{ fontFamily: 'Playfair Display, serif' }}
               >
-                {sub?.planName || 'Free Lifetime'}
+                {sub?.planName || 'Free'}
               </p>
             </div>
             <div className="space-y-4">

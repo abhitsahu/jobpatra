@@ -104,6 +104,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import SendIcon from '@mui/icons-material/Send';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { TrashIcon } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
   send: SendIcon,
@@ -215,6 +216,7 @@ const iconMap: Record<string, React.ElementType> = {
   language: LanguageIcon,
   code: CodeIcon,
   radio_button_unchecked: RadioButtonUncheckedIcon,
+  trash: TrashIcon,
 };
 
 export type IconName = string;

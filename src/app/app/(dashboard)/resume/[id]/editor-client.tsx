@@ -527,7 +527,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       >
         <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
           {activeSection === 'personalInfo' && (
-            <PersonalInfoForm form={form} supportsPhoto={templateSupportsPhoto} />
+            <PersonalInfoForm form={form} supportsPhoto={templateSupportsPhoto} resumeId={resumeId} />
           )}
           {activeSection === 'summary' && <SummaryForm form={form} />}
           {activeSection === 'experience' && <ExperienceForm form={form} />}
@@ -588,10 +588,10 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 <IconMapper name="remove" className="text-base" />
               </button>
               <span className="text-[12px] font-semibold text-[#2b1611] px-1 font-['Hanken_Grotesk']">
-                {Math.round(effectiveScale * 100)}%
+                {zoom}%
               </span>
               <button
-                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+                onClick={() => setZoom((prev) => Math.min(200, prev + 10))}
                 className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
                 title="Zoom In"
               >

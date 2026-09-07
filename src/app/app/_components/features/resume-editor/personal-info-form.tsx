@@ -1,17 +1,22 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { toast } from 'sonner';
 import type { UpdateResumeDTO } from '@/app/api/model/request/resume/resume';
+import { MAX_PHOTO_SIZE_BYTES } from '@/app/api/model/enums/upload';
+import { getResumePhotoUploadUrl, uploadBlobToS3 } from '@/app/api/client/upload/upload-client';
 import { FormInput } from './form-field';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
+import { ImageEditorModal } from './ImageEditorModal';
 
 interface PersonalInfoFormProps {
   form: UseFormReturn<UpdateResumeDTO>;
   supportsPhoto?: boolean;
+  resumeId?: string;
 }
 
-export function PersonalInfoForm({ form, supportsPhoto = false }: PersonalInfoFormProps) {
+export function PersonalInfoForm({ form, supportsPhoto = false, resumeId }: PersonalInfoFormProps) {
   const {
     register,
     setValue,
@@ -21,32 +26,84 @@ export function PersonalInfoForm({ form, supportsPhoto = false }: PersonalInfoFo
 
   const photoUrl = watch('personalInfo.photoUrl');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [editorImageSrc, setEditorImageSrc] = useState<string | null>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = ''; // reset so re-selecting same file triggers change
     if (!file) return;
 
-    // Read image file as base64 data URL
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setValue('personalInfo.photoUrl', dataUrl, {
-          shouldDirty: true,
-          shouldValidate: true,
-        });
+    if (file.size > MAX_PHOTO_SIZE_BYTES) {
+      toast.error('File size exceeds 10MB limit. Please choose a smaller image.');
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setEditorImageSrc(objectUrl);
+    setIsEditorOpen(true);
+  };
+
+  const handleEditCurrentPhoto = async () => {
+    if (!photoUrl) return;
+    try {
+      // Fetch through our own origin to avoid cross-origin canvas taint.
+      // A blob: URL is same-origin, so toBlob() won't throw SecurityError.
+      const res = await fetch(`/api/proxy-image?url=${encodeURIComponent(photoUrl)}`);
+      if (!res.ok) throw new Error('fetch failed');
+      const blob = await res.blob();
+      setEditorImageSrc(URL.createObjectURL(blob));
+    } catch {
+      // Fallback: pass the URL directly (will taint if no CORS, but better than nothing)
+      setEditorImageSrc(photoUrl);
+    }
+    setIsEditorOpen(true);
+  };
+
+  const handleEditorSave = async (blob: Blob) => {
+    if (!resumeId) {
+      toast.error('Resume ID is missing. Please save the resume first.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // 1. Get pre-signed PUT URL using the upload API client
+      const { uploadUrl, publicUrl } = await getResumePhotoUploadUrl(resumeId, 'image/jpeg');
+
+      // 2. PUT cropped JPEG blob directly to S3
+      await uploadBlobToS3(uploadUrl, blob, 'image/jpeg');
+
+      // 3. Store the public S3 URL in the form
+      setValue('personalInfo.photoUrl', publicUrl, { shouldDirty: true, shouldValidate: true });
+      toast.success('Profile photo updated successfully!');
+
+      // Close modal & clean up object URL
+      setIsEditorOpen(false);
+      if (editorImageSrc?.startsWith('blob:')) {
+        URL.revokeObjectURL(editorImageSrc);
       }
-    };
-    reader.readAsDataURL(file);
-    // Reset file input value so re-uploading same file triggers change
-    e.target.value = '';
+      setEditorImageSrc(null);
+    } catch (err) {
+      console.error('[photo upload]', err);
+      toast.error('Failed to upload photo. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleEditorClose = () => {
+    if (uploading) return;
+    setIsEditorOpen(false);
+    if (editorImageSrc?.startsWith('blob:')) {
+      URL.revokeObjectURL(editorImageSrc);
+    }
+    setEditorImageSrc(null);
   };
 
   const handleRemovePhoto = () => {
-    setValue('personalInfo.photoUrl', '', {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+    setValue('personalInfo.photoUrl', '', { shouldDirty: true, shouldValidate: true });
   };
 
   return (
@@ -61,7 +118,11 @@ export function PersonalInfoForm({ form, supportsPhoto = false }: PersonalInfoFo
       {supportsPhoto && (
         <div className="bg-[#fff8f6] border border-[#ddc0bd] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm">
           <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white border-2 border-[#ddc0bd] flex items-center justify-center shrink-0 shadow-inner group">
-            {photoUrl ? (
+            {uploading ? (
+              <div className="w-full h-full flex items-center justify-center bg-white">
+                <IconMapper name="autorenew" className="text-3xl text-[#7a1f1f] animate-spin" />
+              </div>
+            ) : photoUrl ? (
               <img
                 src={photoUrl}
                 alt="Profile photo"
@@ -77,34 +138,56 @@ export function PersonalInfoForm({ form, supportsPhoto = false }: PersonalInfoFo
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/png, image/jpeg, image/webp"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/tiff,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.gif,.bmp,.tiff,.tif,.heic,.heif"
                 className="hidden"
                 onChange={handleFileChange}
               />
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7a1f1f] hover:bg-[#5b060c] text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                disabled={uploading || !resumeId}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7a1f1f] hover:bg-[#5b060c] text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <IconMapper name="add" className="text-sm" />
-                {photoUrl ? 'Change Photo' : 'Upload Photo'}
+                {uploading ? 'Uploading...' : photoUrl ? 'Change Photo' : 'Upload Photo'}
               </button>
 
               {photoUrl && (
-                <button
-                  type="button"
-                  onClick={handleRemovePhoto}
-                  className="inline-flex items-center gap-1 px-3 py-2 bg-white hover:bg-[#ffe5e0] text-[#7a1f1f] border border-[#ddc0bd] text-xs font-medium rounded-lg transition-colors cursor-pointer"
-                >
-                  <IconMapper name="remove" className="text-sm" />
-                  Remove
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleEditCurrentPhoto}
+                    disabled={uploading}
+                    className="inline-flex items-center gap-1 px-3 py-2 bg-white hover:bg-[#fff0eb] text-[#7a1f1f] border border-[#ddc0bd] text-xs font-medium rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    <IconMapper name="edit" className="text-sm" />
+                    Adjust
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    disabled={uploading}
+                    className="inline-flex items-center gap-1 px-3 py-2 bg-white hover:bg-[#ffe5e0] text-[#7a1f1f] border border-[#ddc0bd] text-xs font-medium rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    <IconMapper name="delete" className="text-sm" />
+                    Remove
+                  </button>
+                </>
               )}
             </div>
             <p className="text-[12px] text-[#564240]">
-              Recommended: Square JPG, PNG or WebP image, minimum 400x400px.
+              Supports JPG, PNG, WebP, GIF, BMP, TIFF, HEIC up to 10MB. Includes built-in crop &amp; rotate editor.
             </p>
           </div>
+
+          <ImageEditorModal
+            isOpen={isEditorOpen}
+            imageSrc={editorImageSrc || ''}
+            onClose={handleEditorClose}
+            onSave={handleEditorSave}
+            isSaving={uploading}
+          />
         </div>
       )}
 

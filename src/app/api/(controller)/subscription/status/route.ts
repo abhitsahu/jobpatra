@@ -27,7 +27,7 @@ export async function GET() {
 
     const planName = (() => {
       const map: Record<string, string> = {
-        FREE: 'Free Lifetime',
+        FREE: 'Free',
         PRO: 'Pro',
         ENTERPRISE: 'Enterprise',
         PLUS: 'Plus',
