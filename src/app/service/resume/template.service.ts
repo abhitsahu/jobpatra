@@ -1,41 +1,14 @@
 import path from 'path';
 import fs from 'fs';
 import { getObject, objectExists } from '@/app/service/storage/s3.service';
+import type {
+  Template,
+  TemplatesResponse,
+  TemplateMetadata,
+  TemplateInfo,
+} from '@/app/api/model/response/template';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface TemplateMetadata {
-  id: string;
-  name: string;
-  category: string;
-  version: string;
-  thumbnail: string;
-  engine: string;
-  ats: boolean;
-  sections: string[];
-  hasPhoto?: boolean;
-  slug?: string;
-  description?: string;
-  previewImage?: string;
-  atsFriendly?: boolean;
-  isPremium?: boolean;
-  usageCount?: number;
-}
-
-export interface TemplateInfo extends TemplateMetadata {
-  /** S3 key for the Handlebars template, e.g. "templates/classic-demo/template.hbs" */
-  hbsKey: string;
-  /** S3 key for the CSS file, e.g. "templates/classic-demo/style.css" */
-  cssKey: string;
-  /** S3 key for the thumbnail image, e.g. "templates/classic-demo/template.png" */
-  thumbnailKey: string;
-  /** Local FS paths — used as fallback in dev when S3 is unavailable */
-  hbsPath: string;
-  cssPath: string;
-  thumbnailPath: string;
-}
+export type { Template, TemplatesResponse, TemplateMetadata, TemplateInfo };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TEMPLATE REGISTRY — scanned from local filesystem (metadata only)
@@ -118,10 +91,7 @@ const _contentCache = new Map<string, string>();
  * Fetches text content from S3, falling back to local FS in dev.
  * Caches the result in-process so each file is only fetched once per pod restart.
  */
-export async function getTemplateContent(
-  s3Key: string,
-  localPath: string,
-): Promise<string> {
+export async function getTemplateContent(s3Key: string, localPath: string): Promise<string> {
   if (_contentCache.has(s3Key)) return _contentCache.get(s3Key)!;
 
   let text: string;
@@ -147,10 +117,7 @@ export async function getTemplateContent(
  * Fetches binary content from S3, falling back to local FS in dev.
  * Used for thumbnail images.
  */
-export async function getTemplateBinary(
-  s3Key: string,
-  localPath: string,
-): Promise<Buffer> {
+export async function getTemplateBinary(s3Key: string, localPath: string): Promise<Buffer> {
   try {
     return await getObject(s3Key);
   } catch {

@@ -1,7 +1,8 @@
 'use client';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import type { TemplateData } from './template-card';
 
 interface PreviewModalProps {
@@ -9,19 +10,42 @@ interface PreviewModalProps {
   onClose: () => void;
   template: TemplateData | null;
   onUseTemplate: (id: string) => void;
+  canAccessPremium?: boolean;
 }
 
-export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: PreviewModalProps) {
-  if (!isOpen || !template) return null;
+export function PreviewModal({ isOpen, onClose, template, onUseTemplate, canAccessPremium }: PreviewModalProps) {
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !template || !mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-black/65 backdrop-blur-md animate-fade-in"
       onClick={onClose}
     >
+      <style>{`
+        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalScaleUp { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-fade-in { animation: modalFadeIn 0.2s ease-out forwards; }
+        .animate-scale-up { animation: modalScaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+      `}</style>
       {/* Modal Container */}
       <div
-        className="relative w-full max-w-4xl bg-[#FFF8EE] border border-[#E5D9C8] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-scale-up"
+        className="relative w-full max-w-5xl bg-[#FFF8EE] border border-[#E5D9C8] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -33,12 +57,12 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
         </button>
 
         {/* Left: Template Preview Image */}
-        <div className="flex-1 bg-white border-b md:border-b-0 md:border-r border-[#E5D9C8] p-4 sm:p-6 flex items-center justify-center overflow-y-auto max-h-[45vh] md:max-h-full">
+        <div className="flex-1 bg-white border-b md:border-b-0 md:border-r border-[#E5D9C8] p-4 sm:p-6 flex items-center justify-center overflow-y-auto max-h-[50vh] md:max-h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={template.previewImage}
             alt={`${template.name} Template Preview`}
-            className="max-w-full max-h-[40vh] md:max-h-[65vh] object-contain shadow-md border border-[#E5D9C8]/60 rounded-sm"
+            className="max-w-full max-h-[45vh] md:max-h-[75vh] object-contain shadow-md border border-[#E5D9C8]/60 rounded-sm transition-all"
           />
         </div>
 
@@ -84,9 +108,16 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
                 onUseTemplate(template.id);
                 onClose();
               }}
-              className="w-full py-3.5 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-[0.15em] rounded-full shadow-md hover:bg-[#7a1f1f] cursor-pointer active:scale-95 transition-all text-center"
+              className="w-full py-3.5 bg-[#5b060c] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold uppercase tracking-[0.15em] rounded-full shadow-md hover:bg-[#7a1f1f] cursor-pointer active:scale-95 transition-all text-center flex items-center justify-center gap-2"
             >
-              Use This Template
+              {template.isPremium && canAccessPremium === false ? (
+                <>
+                  <IconMapper name="lock" className="text-[16px]" />
+                  Upgrade to Unlock
+                </>
+              ) : (
+                'Use This Template'
+              )}
             </button>
             <button
               onClick={onClose}
@@ -97,6 +128,7 @@ export function PreviewModal({ isOpen, onClose, template, onUseTemplate }: Previ
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

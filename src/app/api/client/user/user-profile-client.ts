@@ -1,20 +1,8 @@
 import { apiFetch } from '@/app/api/client/_utils/api-client';
 import type { UpdateUserMetaDTO } from '@/app/api/model/request/user/user-profile';
+import type { UserProfile } from '@/app/api/model/response/user/user-profile';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface UserProfile {
-  id: string;
-  name: string | null;
-  email: string;
-  image: string | null;
-  jobTitle: string | null;
-  industry: string | null;
-  /** ID of the reserved profile resume — used to load/save all career sections */
-  profileResumeId: string | null;
-}
+export type { UserProfile };
 
 interface ApiResponse<T> {
   success: boolean;

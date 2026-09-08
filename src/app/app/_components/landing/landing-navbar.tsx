@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 import { Logo } from '@/app/app/_components/common/logo';
+import { getSessionClient } from '@/app/api/client/auth/auth-client';
+import type { Session } from 'next-auth';
 
 const navLinks = [
   { label: 'Templates', href: '/app/templates' },
@@ -15,6 +17,8 @@ const navLinks = [
 export function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -23,12 +27,27 @@ export function LandingNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Check auth state on mount and route change
+  useEffect(() => {
+    getSessionClient()
+      .then((sess) => {
+        setSession(sess);
+      })
+      .catch(() => {
+        setSession(null);
+      })
+      .finally(() => {
+        setAuthChecked(true);
+      });
+  }, [pathname]);
+
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
   const isAuthPage = pathname === '/app/login' || pathname === '/app/signup';
+  const isLoggedIn = !!session?.user;
 
   return (
     <header
@@ -66,18 +85,32 @@ export function LandingNavbar() {
         {/* Desktop Action Buttons */}
         {!isAuthPage ? (
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              href="/app/login"
-              className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] px-4 py-2 hover:text-[#370003] transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              href="/app/signup"
-              className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 py-2 rounded-full hover:scale-105 transition-transform shadow-lg"
-            >
-              Get Started
-            </Link>
+            {authChecked && isLoggedIn ? (
+              <Link
+                href="/app/dashboard"
+                className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 py-2 rounded-full hover:scale-105 transition-transform shadow-lg flex items-center gap-2"
+              >
+                <IconMapper name="dashboard" className="text-[18px]" />
+                <span>Dashboard</span>
+              </Link>
+            ) : authChecked ? (
+              <>
+                <Link
+                  href="/app/login"
+                  className="font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold text-[#564240] px-4 py-2 hover:text-[#370003] transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/app/signup"
+                  className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 py-2 rounded-full hover:scale-105 transition-transform shadow-lg"
+                >
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <div className="w-[180px] h-[36px]" />
+            )}
           </div>
         ) : (
           <div className="hidden md:block w-[120px] md:w-[200px]" />
@@ -85,13 +118,23 @@ export function LandingNavbar() {
 
         {/* Mobile Hamburger Button */}
         <div className="flex md:hidden items-center gap-2">
-          {!isAuthPage && (
-            <Link
-              href="/app/signup"
-              className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-sm"
-            >
-              Get Started
-            </Link>
+          {!isAuthPage && authChecked && (
+            isLoggedIn ? (
+              <Link
+                href="/app/dashboard"
+                className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"
+              >
+                <IconMapper name="dashboard" className="text-[14px]" />
+                <span>Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                href="/app/signup"
+                className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-sm"
+              >
+                Get Started
+              </Link>
+            )
           )}
           <button
             type="button"
@@ -127,22 +170,35 @@ export function LandingNavbar() {
             })}
           </nav>
 
-          {!isAuthPage && (
+          {!isAuthPage && authChecked && (
             <div className="pt-4 border-t border-[#E5D9C8]/40 flex flex-col gap-2.5">
-              <Link
-                href="/app/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center font-['Hanken_Grotesk'] text-[14px] font-semibold text-[#564240] py-2.5 rounded-xl border border-[#ddc0bd] hover:bg-[#fff0ed] hover:text-[#370003] transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/app/signup"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] font-semibold py-2.5 rounded-xl shadow-md hover:bg-[#5b060c] transition-colors"
-              >
-                Get Started
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  href="/app/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] font-semibold py-2.5 rounded-xl shadow-md hover:bg-[#5b060c] transition-colors flex items-center justify-center gap-2"
+                >
+                  <IconMapper name="dashboard" className="text-[18px]" />
+                  <span>Go to Dashboard</span>
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/app/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center font-['Hanken_Grotesk'] text-[14px] font-semibold text-[#564240] py-2.5 rounded-xl border border-[#ddc0bd] hover:bg-[#fff0ed] hover:text-[#370003] transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/app/signup"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] font-semibold py-2.5 rounded-xl shadow-md hover:bg-[#5b060c] transition-colors"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </div>

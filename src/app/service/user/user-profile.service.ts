@@ -1,20 +1,9 @@
 import { prisma } from '@/app/_lib/prisma';
 import type { UpdateUserMetaDTO } from '@/app/api/model/request/user/user-profile';
+import type { UserProfileResponse, UserProfile } from '@/app/api/model/response/user/user-profile';
+import { ResumeStatus } from '@/app/api/model/enums/resume';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PROFILE RESPONSE TYPE
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface UserProfileResponse {
-  id: string;
-  name: string | null;
-  email: string;
-  image: string | null;
-  jobTitle: string | null;
-  industry: string | null;
-  /** ID of the reserved "Profile Resume" (status=PROFILE). */
-  profileResumeId: string | null;
-}
+export type { UserProfileResponse, UserProfile, UpdateUserMetaDTO };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET PROFILE META
@@ -59,8 +48,9 @@ async function ensureProfileResume(userId: string): Promise<string> {
         userId,
         title: '__profile__',
         templateId: 'classic-demo',
-        status: 'PROFILE',
+        status: ResumeStatus.PROFILE,
         // Create an empty PersonalInfo shell so the editor always finds a record
+
         personalInfo: {
           create: {
             fullName: user.name ?? '',

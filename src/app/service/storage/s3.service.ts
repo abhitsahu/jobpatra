@@ -7,6 +7,12 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Readable } from 'stream';
+import { PhotoMimeType } from '@/app/api/model/enums/upload';
+import type { PresignedUrlRequestDTO } from '@/app/api/model/request/upload';
+import type { PresignedUrlResponseDTO, PresignedPhotoUrl } from '@/app/api/model/response/upload';
+
+export { PhotoMimeType };
+export type { PresignedUrlRequestDTO, PresignedUrlResponseDTO, PresignedPhotoUrl };
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION!,
@@ -20,9 +26,9 @@ const BUCKET = process.env.AWS_S3_BUCKET!;
 const PUBLIC_URL = process.env.AWS_S3_PUBLIC_URL!;
 
 const EXT_MAP: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
+  [PhotoMimeType.JPEG]: 'jpg',
+  [PhotoMimeType.PNG]: 'png',
+  [PhotoMimeType.WEBP]: 'webp',
 };
 
 /**
@@ -31,8 +37,8 @@ const EXT_MAP: Record<string, string> = {
  */
 export async function getResumePhotoPresignedUrl(
   resumeId: string,
-  contentType: string,
-): Promise<{ uploadUrl: string; publicUrl: string }> {
+  contentType: PhotoMimeType | string,
+): Promise<PresignedPhotoUrl> {
   const ext = EXT_MAP[contentType] ?? 'jpg';
   const key = `resume_picture/${resumeId}/avatar.${ext}`;
 
@@ -95,8 +101,6 @@ export async function objectExists(key: string): Promise<boolean> {
  * ponytail: single page (1000 objects max); upgrade path is to loop on ContinuationToken.
  */
 export async function listObjects(prefix: string): Promise<string[]> {
-  const res = await s3.send(
-    new ListObjectsV2Command({ Bucket: BUCKET, Prefix: prefix }),
-  );
+  const res = await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, Prefix: prefix }));
   return (res.Contents ?? []).map((obj) => obj.Key!).filter(Boolean);
 }

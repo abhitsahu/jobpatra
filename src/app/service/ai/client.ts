@@ -15,6 +15,9 @@
  */
 
 import { randomUUID } from 'crypto';
+import type { ApiFetchOptions } from '@/app/api/client/_utils/api-client';
+
+export type { ApiFetchOptions };
 
 // ---------------------------------------------------------------------------
 // Configuration (read once at module level)
@@ -44,6 +47,8 @@ export interface AIRequestConfig {
   body?: unknown;
   /** Extra headers (merged with defaults). */
   headers?: Record<string, string>;
+  /** Optional abort signal matching client ApiFetchOptions. */
+  signal?: AbortSignal;
 }
 
 /** Standardised error returned by the Python microservice. */
@@ -104,6 +109,9 @@ export async function aiRequest<T>(
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const signal = config.signal
+    ? AbortSignal.any([controller.signal, config.signal])
+    : controller.signal;
 
   console.log(`[AI Client] [${requestId.slice(0, 8)}] ${method} ${path}`);
 
@@ -112,7 +120,7 @@ export async function aiRequest<T>(
       method,
       headers,
       body: body != null ? JSON.stringify(body) : undefined,
-      signal: controller.signal,
+      signal,
     });
 
     if (!response.ok) {
@@ -188,6 +196,9 @@ export async function aiRequestStream(
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const signal = config.signal
+    ? AbortSignal.any([controller.signal, config.signal])
+    : controller.signal;
 
   console.log(`[AI Client Stream] [${requestId.slice(0, 8)}] ${method} ${path}`);
 
@@ -196,7 +207,7 @@ export async function aiRequestStream(
       method,
       headers,
       body: body != null ? JSON.stringify(body) : undefined,
-      signal: controller.signal,
+      signal,
     });
 
     if (!response.ok) {

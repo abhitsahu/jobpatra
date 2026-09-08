@@ -17,7 +17,15 @@ import type {
   ReferenceEntryDTO,
   ListResumesQueryDTO,
 } from '@/app/api/model/request/resume/resume';
-import type { ResumeWithRelations } from '@/app/api/model/response/resume';
+import { ResumeStatus } from '@/app/api/model/enums/resume';
+import type {
+  ResumeWithRelations,
+  PaginatedResumes,
+  ResumeDetail,
+} from '@/app/api/model/response/resume';
+
+export { ResumeStatus };
+export type { PaginatedResumes, ResumeDetail };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // INCLUDE SHAPE — used for all full-resume queries
@@ -56,7 +64,6 @@ async function verifyOwnership(resumeId: string, userId: string) {
 
 export async function createResume(userId: string, data: CreateResumeDTO) {
   return prisma.$transaction(async (tx) => {
-
     return tx.resume.create({
       data: {
         userId,
@@ -103,141 +110,150 @@ function populateWithSampleData(resume: ResumeWithRelations): ResumeWithRelation
     const sample = JSON.parse(fs.readFileSync(sampleDataPath, 'utf-8'));
 
     // Helper to add mock DB fields
-    const withDbFields = (item: any, index: number) => ({
+    const withDbFields = <T extends Record<string, unknown>>(item: T, index: number) => ({
       id: `temp-${index}`,
       resumeId: resume.id,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...item,
-      order: item.order ?? index,
+      order: (item.order as number | undefined) ?? index,
     });
 
-    const personal = sample.personal || {};
+    const personal = (sample.personal as Record<string, unknown>) || {};
     const personalInfo = {
       id: `temp-pi`,
       resumeId: resume.id,
       createdAt: new Date(),
       updatedAt: new Date(),
-      fullName: personal.name || '',
-      photoUrl: personal.photoUrl || null,
-      jobTitle: personal.jobTitle || '',
-      email: personal.email || '',
-      phone: personal.phone || '',
-      location: personal.location || '',
-      website: personal.website || '',
-      linkedin: personal.linkedin || '',
-      github: personal.github || '',
-      summary: personal.summary || '',
+      fullName: (personal.name as string) || '',
+      photoUrl: (personal.photoUrl as string) || null,
+      jobTitle: (personal.jobTitle as string) || '',
+      email: (personal.email as string) || '',
+      phone: (personal.phone as string) || '',
+      location: (personal.location as string) || '',
+      website: (personal.website as string) || '',
+      linkedin: (personal.linkedin as string) || '',
+      github: (personal.github as string) || '',
+      summary: (personal.summary as string) || '',
     };
 
-    const experiences = (sample.experience || []).map((exp: any, index: number) =>
-      withDbFields(
-        {
-          company: exp.company || '',
-          position: exp.position || '',
-          location: exp.location || '',
-          startDate: exp.startDate || '',
-          endDate: exp.endDate || '',
-          currentlyWorking: exp.currentlyWorking || false,
-          description: exp.description || '',
-          highlights: exp.highlights || [],
-        },
-        index,
-      ),
+    const experiences = ((sample.experience as Array<Record<string, unknown>>) || []).map(
+      (exp, index: number) =>
+        withDbFields(
+          {
+            company: (exp.company as string) || '',
+            position: (exp.position as string) || '',
+            location: (exp.location as string) || '',
+            startDate: (exp.startDate as string) || '',
+            endDate: (exp.endDate as string) || '',
+            currentlyWorking: Boolean(exp.currentlyWorking),
+            description: (exp.description as string) || '',
+            highlights: (exp.highlights as string[]) || [],
+          },
+          index,
+        ),
     );
 
-    const education = (sample.education || []).map((edu: any, index: number) =>
-      withDbFields(
-        {
-          institution: edu.institution || '',
-          degree: edu.degree || '',
-          fieldOfStudy: edu.fieldOfStudy || '',
-          startDate: edu.startDate || '',
-          endDate: edu.endDate || '',
-          result: edu.result || '',
-        },
-        index,
-      ),
+    const education = ((sample.education as Array<Record<string, unknown>>) || []).map(
+      (edu, index: number) =>
+        withDbFields(
+          {
+            institution: (edu.institution as string) || '',
+            degree: (edu.degree as string) || '',
+            fieldOfStudy: (edu.fieldOfStudy as string) || '',
+            startDate: (edu.startDate as string) || '',
+            endDate: (edu.endDate as string) || '',
+            result: (edu.result as string) || '',
+          },
+          index,
+        ),
     );
 
-    const projects = (sample.projects || []).map((proj: any, index: number) =>
-      withDbFields(
-        {
-          title: proj.title || '',
-          field: proj.field || '',
-          startDate: proj.startDate || '',
-          endDate: proj.endDate || '',
-          description: proj.description || '',
-          technologies: proj.technologies || [],
-          link: proj.link || '',
-        },
-        index,
-      ),
+    const projects = ((sample.projects as Array<Record<string, unknown>>) || []).map(
+      (proj, index: number) =>
+        withDbFields(
+          {
+            title: (proj.title as string) || '',
+            field: (proj.field as string) || '',
+            startDate: (proj.startDate as string) || '',
+            endDate: (proj.endDate as string) || '',
+            description: (proj.description as string) || '',
+            technologies: (proj.technologies as string[]) || [],
+            link: (proj.link as string) || '',
+          },
+          index,
+        ),
     );
 
-    const skills = (sample.skills || []).map((skill: any, index: number) =>
-      withDbFields(
-        {
-          name: skill.name || '',
-          category: skill.category || 'TECHNICAL',
-        },
-        index,
-      ),
+    const skills = ((sample.skills as Array<Record<string, unknown>>) || []).map(
+      (skill, index: number) =>
+        withDbFields(
+          {
+            name: (skill.name as string) || '',
+            category: (skill.category as string) || 'TECHNICAL',
+          },
+          index,
+        ),
     );
 
-    const certifications = (sample.certifications || []).map((cert: any, index: number) =>
-      withDbFields(
-        {
-          name: cert.name || '',
-          issuer: cert.issuer || '',
-          date: cert.date || '',
-          url: cert.url || '',
-        },
-        index,
-      ),
+    const certifications = ((sample.certifications as Array<Record<string, unknown>>) || []).map(
+      (cert, index: number) =>
+        withDbFields(
+          {
+            name: (cert.name as string) || '',
+            issuer: (cert.issuer as string) || '',
+            date: (cert.date as string) || '',
+            url: (cert.url as string) || '',
+          },
+          index,
+        ),
     );
 
-    const achievements = (sample.achievements || []).map((ach: any, index: number) =>
-      withDbFields(
-        {
-          title: ach.title || '',
-          date: ach.date || '',
-          description: ach.description || '',
-        },
-        index,
-      ),
+    const achievements = ((sample.achievements as Array<Record<string, unknown>>) || []).map(
+      (ach, index: number) =>
+        withDbFields(
+          {
+            title: (ach.title as string) || '',
+            date: (ach.date as string) || '',
+            description: (ach.description as string) || '',
+          },
+          index,
+        ),
     );
 
-    const languages = (sample.languages || []).map((lang: any, index: number) => {
-      if (typeof lang === 'string') {
+    const languages = ((sample.languages as Array<string | Record<string, unknown>>) || []).map(
+      (lang, index: number) => {
+        if (typeof lang === 'string') {
+          return withDbFields(
+            {
+              name: lang,
+              proficiency: null,
+            },
+            index,
+          );
+        }
         return withDbFields(
           {
-            name: lang,
-            proficiency: null,
+            name: (lang.name as string) || '',
+            proficiency: (lang.proficiency as string) || null,
           },
           index,
         );
-      }
-      return withDbFields(
-        {
-          name: lang.name || '',
-          proficiency: lang.proficiency || null,
-        },
-        index,
-      );
-    });
+      },
+    );
 
-    const references = (sample.references || []).map((ref: any, index: number) =>
-      withDbFields(
-        {
-          name: ref.name || '',
-          designation: ref.designation || '',
-          company: ref.company || '',
-          email: ref.email || '',
-          phone: ref.phone || '',
-        },
-        index,
-      ),
+    const references = ((sample.references as Array<Record<string, unknown>>) || []).map(
+      (ref, index: number) =>
+        withDbFields(
+          {
+            name: (ref.name as string) || '',
+            designation: (ref.designation as string) || '',
+            company: (ref.company as string) || '',
+            email: (ref.email as string) || '',
+            phone: (ref.phone as string) || '',
+          },
+          index,
+        ),
     );
 
     return {
@@ -271,12 +287,12 @@ export async function getResume(resumeId: string, userId: string): Promise<Resum
   // The career profile must stay genuinely empty until the user enters data.
   // Demo data is useful for a new resume editor, but showing it in the profile
   // would let a later save accidentally persist the demo as profile data.
-  if (resume.status !== 'PROFILE' && isResumeEmpty(resume)) {
+  if (resume.status !== ResumeStatus.PROFILE && isResumeEmpty(resume)) {
     const populated = populateWithSampleData(resume);
     return {
       ...populated,
       isSampleData: true,
-    } as any;
+    } as unknown as ResumeWithRelations;
   }
 
   return resume;
@@ -286,7 +302,10 @@ export async function getResume(resumeId: string, userId: string): Promise<Resum
 // LIST RESUMES (paginated, excludes soft-deleted)
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function listResumes(userId: string, query: ListResumesQueryDTO) {
+export async function listResumes(
+  userId: string,
+  query: ListResumesQueryDTO,
+): Promise<PaginatedResumes> {
   const { page, limit, status } = query;
   const skip = (page - 1) * limit;
 
@@ -294,7 +313,7 @@ export async function listResumes(userId: string, query: ListResumesQueryDTO) {
     userId,
     deletedAt: null,
     // Always exclude the reserved profile resume from dashboard listings
-    status: { not: 'PROFILE', ...(status ? { equals: status } : {}) },
+    status: { not: ResumeStatus.PROFILE, ...(status ? { equals: status } : {}) },
   };
 
   const [resumes, total] = await Promise.all([
@@ -398,14 +417,14 @@ export async function duplicateResume(resumeId: string, userId: string) {
   const source = await getResume(resumeId, userId);
 
   return prisma.$transaction(async (tx) => {
-
     const copy = await tx.resume.create({
       data: {
         userId,
         title: `Copy of ${source.title}`,
         templateId: source.templateId,
-        status: 'DRAFT',
+        status: ResumeStatus.DRAFT,
         declaration: source.declaration,
+
         sectionOrder: source.sectionOrder,
       },
     });

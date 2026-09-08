@@ -1,19 +1,14 @@
 import { Resend } from 'resend';
+import { FeedbackType } from '@/app/api/model/enums/feedback';
+import type { FeedbackRequestDTO, FeedbackEmailParams } from '@/app/api/model/request/feedback';
+import type { FeedbackSubmitResponse } from '@/app/api/model/response/feedback';
+
+export { FeedbackType };
+export type { FeedbackRequestDTO, FeedbackEmailParams, FeedbackSubmitResponse };
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@jobpatra.in';
 const FEEDBACK_TO_EMAIL = process.env.FEEDBACK_TO_EMAIL || 'support@jobpatra.in';
-
-interface FeedbackEmailParams {
-  userName: string;
-  userEmail: string;
-  type: string;
-  rating?: number | null;
-  subject?: string | null;
-  message: string;
-  pageUrl?: string | null;
-  submittedAt: Date;
-}
 
 /**
  * Sends user confirmation + admin notification emails concurrently.
@@ -23,10 +18,10 @@ export async function sendFeedbackEmails(params: FeedbackEmailParams): Promise<v
   const { userName, userEmail, type, rating, subject, message, pageUrl, submittedAt } = params;
 
   const typeLabel: Record<string, string> = {
-    BUG: '🐛 Bug Report',
-    FEATURE: '💡 Feature Request',
-    GENERAL: '💬 General Feedback',
-    COMPLIMENT: '⭐ Compliment',
+    [FeedbackType.BUG]: '🐛 Bug Report',
+    [FeedbackType.FEATURE]: '💡 Feature Request',
+    [FeedbackType.GENERAL]: '💬 General Feedback',
+    [FeedbackType.COMPLIMENT]: '⭐ Compliment',
   };
 
   const stars = rating ? '★'.repeat(rating) + '☆'.repeat(5 - rating) : 'Not rated';
@@ -89,22 +84,30 @@ export async function sendFeedbackEmails(params: FeedbackEmailParams): Promise<v
             <td style="padding: 8px 12px; background: #fff0ee; font-weight: bold; border: 1px solid #E5D9C8;">Rating</td>
             <td style="padding: 8px 12px; border: 1px solid #E5D9C8;">${stars}</td>
           </tr>
-          ${subject ? `
+          ${
+            subject
+              ? `
           <tr>
             <td style="padding: 8px 12px; background: #fff0ee; font-weight: bold; border: 1px solid #E5D9C8;">Subject</td>
             <td style="padding: 8px 12px; border: 1px solid #E5D9C8;">${subject}</td>
           </tr>
-          ` : ''}
+          `
+              : ''
+          }
           <tr>
             <td style="padding: 8px 12px; background: #fff0ee; font-weight: bold; border: 1px solid #E5D9C8;">Message</td>
             <td style="padding: 8px 12px; border: 1px solid #E5D9C8; white-space: pre-wrap;">${message}</td>
           </tr>
-          ${pageUrl ? `
+          ${
+            pageUrl
+              ? `
           <tr>
             <td style="padding: 8px 12px; background: #fff0ee; font-weight: bold; border: 1px solid #E5D9C8;">Page URL</td>
             <td style="padding: 8px 12px; border: 1px solid #E5D9C8;">${pageUrl}</td>
           </tr>
-          ` : ''}
+          `
+              : ''
+          }
           <tr>
             <td style="padding: 8px 12px; background: #fff0ee; font-weight: bold; border: 1px solid #E5D9C8;">Submitted</td>
             <td style="padding: 8px 12px; border: 1px solid #E5D9C8;">${submittedAt.toISOString()}</td>

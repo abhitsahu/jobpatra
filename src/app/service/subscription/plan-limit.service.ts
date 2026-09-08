@@ -1,12 +1,8 @@
 import { prisma } from '@/app/_lib/prisma';
 import type { Prisma } from '@prisma/client';
+import type { PlanLimits } from '@/app/api/model/response/pricing';
 
-interface PlanLimits {
-  limitAtsAnalysis: number;
-  limitAiSuggestion: number;
-  durationDays: number | null;
-  templateAccess: string;
-}
+export type { PlanLimits };
 
 interface CacheEntry {
   value: PlanLimits;

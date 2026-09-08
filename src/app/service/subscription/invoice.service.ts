@@ -1,6 +1,9 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/app/_lib/prisma';
 import { generatePdf } from '@/app/service/resume/pdf.service';
+import type { CreateInvoiceDTO } from '@/app/api/model/request/payments/invoice';
+
+export type { CreateInvoiceDTO };
 
 type TxClient = Prisma.TransactionClient;
 
@@ -19,16 +22,7 @@ export async function createInvoice(
     billingPeriod,
     amount,
     currency,
-  }: {
-    userId: string;
-    paymentId: string;
-    razorpayOrderId: string;
-    razorpayPaymentId: string;
-    planName: string;
-    billingPeriod: string;
-    amount: number;
-    currency: string;
-  },
+  }: CreateInvoiceDTO,
 ) {
   // Sequential invoice number: JP-YYYY-NNNNNN
   const invoiceCount = await tx.invoice.count();
@@ -92,10 +86,9 @@ export async function generateInvoicePdf(invoiceId: string): Promise<void> {
   // Prisma's Bytes field is typed as Uint8Array<ArrayBuffer> (concrete), but
   // Buffer has buffer: ArrayBufferLike (which includes SharedArrayBuffer).
   // Slicing produces a concrete ArrayBuffer copy that satisfies the type.
-  const pdfUint8 = new Uint8Array(pdfBuffer.buffer.slice(
-    pdfBuffer.byteOffset,
-    pdfBuffer.byteOffset + pdfBuffer.byteLength,
-  )) as Uint8Array<ArrayBuffer>;
+  const pdfUint8 = new Uint8Array(
+    pdfBuffer.buffer.slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength),
+  ) as Uint8Array<ArrayBuffer>;
   await prisma.invoice.update({
     where: { id: invoiceId },
     data: {

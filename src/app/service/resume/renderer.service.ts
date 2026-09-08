@@ -1,78 +1,12 @@
 import Handlebars from 'handlebars';
+import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume';
 import type { ResumeWithRelations } from '@/app/api/model/response/resume';
+import type { TemplateData } from '@/app/api/model/response/template';
 import { getResume } from './resume.service';
 import { getTemplate, getTemplateContent } from './template.service';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPLATE DATA SHAPE (matches sample-data.json contract)
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface TemplateData {
-  metadata: { title: string };
-  personal: {
-    name: string;
-    photoUrl?: string | null;
-    jobTitle?: string | null;
-    email: string;
-    phone?: string | null;
-    location?: string | null;
-    website?: string | null;
-    linkedin?: string | null;
-    github?: string | null;
-  };
-  summary?: string | null;
-  education: {
-    degree: string;
-    institution: string;
-    startDate: string;
-    endDate?: string | null;
-    result?: string | null;
-  }[];
-  experience: {
-    position: string;
-    company: string;
-    location?: string | null;
-    startDate: string;
-    endDate?: string | null;
-    currentlyWorking: boolean;
-    description?: string | null;
-    highlights: string[];
-  }[];
-  projects: {
-    title: string;
-    field?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    description?: string | null;
-    technologies: string[];
-    link?: string | null;
-  }[];
-  skills: string[];
-  skillsList?: {
-    name: string;
-    category?: string | null;
-  }[];
-  certifications: {
-    name: string;
-    issuer?: string | null;
-    date?: string | null;
-    url?: string | null;
-  }[];
-  achievements: { title: string; date?: string | null; description?: string | null }[];
-  languages: string[];
-  languagesList?: {
-    name: string;
-    proficiency?: string | null;
-  }[];
-  references: {
-    name: string;
-    designation?: string | null;
-    company?: string | null;
-    email?: string | null;
-    phone?: string | null;
-  }[];
-  declaration?: string | null;
-}
+export { SkillCategory, LanguageProficiency };
+export type { TemplateData };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ASSEMBLER — maps Prisma relations → HBS template object

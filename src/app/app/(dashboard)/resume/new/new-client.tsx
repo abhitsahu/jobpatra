@@ -1,5 +1,6 @@
 'use client';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
+import { PreviewModal } from '@/app/app/_components/template/preview-modal';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,7 +8,7 @@ import { useCreateResume } from '@/app/app/_hooks/use-resumes';
 import { useTemplates } from '@/app/app/_hooks/use-templates';
 import { useUserProfile } from '@/app/app/_hooks/use-user-profile';
 import { useSubscriptionStatus } from '@/app/app/_hooks/use-subscription';
-import { getResumeClient } from '@/app/api/client/resume/resume-client';
+import { getResumeClient, type Template } from '@/app/api/client/resume/resume-client';
 import { Skeleton } from '@/app/app/_components/common/skeleton';
 import { Pagination } from '@/app/app/_components/ui/pagination';
 import { cn } from '@/app/app/_util/cn';
@@ -17,6 +18,7 @@ export default function NewResumeClient() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [page, setPage] = useState(1);
@@ -33,6 +35,8 @@ export default function NewResumeClient() {
 
   const categories: string[] = templatesData?.categories ?? ['All'];
   const hasProfile = !!userProfile?.profileResumeId;
+  // ponytail: subscription may still be loading; default false until resolved
+  const canAccessPremium = subData?.subscription?.templateAccess === 'ALL';
 
   // Dynamic search + category filter
   const filtered = useMemo(() => {
@@ -72,8 +76,10 @@ export default function NewResumeClient() {
     templateSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Resumes are unlimited for all plans
-  const canCreate = title.trim().length > 0 && !!selectedTemplate;
+  // Resumes are unlimited for all plans; but premium templates need a paid plan
+  const selectedTemplateData = templatesData?.templates.find((t) => t.id === selectedTemplate);
+  const selectedIsLocked = !!selectedTemplateData?.isPremium && !canAccessPremium;
+  const canCreate = title.trim().length > 0 && !!selectedTemplate && !selectedIsLocked;
 
   /** Called when user clicks "Create Resume" in the sticky footer */
   const handleCreate = () => {
@@ -368,9 +374,18 @@ export default function NewResumeClient() {
                     <div key={t.id} className="group relative">
                       {/* Card shell */}
                       <div
-                        onClick={() => setSelectedTemplate(t.id)}
+                        onClick={() => {
+                          if (t.isPremium && !canAccessPremium) {
+                            router.push('/app/subscription');
+                            return;
+                          }
+                          setSelectedTemplate((prev) => (prev === t.id ? null : t.id));
+                        }}
                         className={cn(
-                          'aspect-[3/4] rounded-lg overflow-hidden relative cursor-pointer transition-all duration-300',
+                          'aspect-[3/4] rounded-lg overflow-hidden relative transition-all duration-300',
+                          t.isPremium && !canAccessPremium
+                            ? 'cursor-not-allowed'
+                            : 'cursor-pointer',
                           isSelected
                             ? 'border-[#5b060c]'
                             : 'border-[#E5D9C8] hover:border-[#5b060c]/40',
@@ -383,6 +398,13 @@ export default function NewResumeClient() {
                             : '0 10px 30px -10px rgba(78,52,46,0.08)',
                         }}
                       >
+                        {/* Lock overlay for premium templates on free plan */}
+                        {t.isPremium && !canAccessPremium && (
+                          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                            <IconMapper name="lock" className="text-2xl text-[#5b060c]" />
+                          </div>
+                        )}
+
                         {/* Selected primary overlay tint */}
                         {isSelected && (
                           <div className="absolute inset-0 bg-[#5b060c]/5 pointer-events-none z-10" />
@@ -436,11 +458,30 @@ export default function NewResumeClient() {
                           </div>
                         )}
 
-                        {/* Premium badge */}
-                        {t.isPremium && (
-                          <div className="absolute bottom-2.5 sm:bottom-3 right-2.5 sm:right-3 z-20">
+                        {/* Bottom-right: Preview eye icon & Premium badge */}
+                        <div className="absolute bottom-2.5 sm:bottom-3 right-2.5 sm:right-3 z-40 flex items-center gap-1.5">
+                          {/* Preview eye button */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewTemplate(t);
+                            }}
+                            className="group/eye relative w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 hover:bg-white text-[#564240] hover:text-[#5b060c] shadow-md border border-[#E5D9C8] flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                            title="Preview"
+                            aria-label={`Preview ${t.name} template`}
+                          >
+                            <IconMapper name="visibility" className="text-[16px] sm:text-[18px]" />
+                            {/* Hover tooltip */}
+                            <span className="pointer-events-none absolute -top-8 right-0 opacity-0 group-hover/eye:opacity-100 transition-opacity duration-150 bg-[#2b1611] text-[#FFF8EE] text-[10px] font-medium py-1 px-2 rounded shadow-lg whitespace-nowrap z-30">
+                              Preview
+                            </span>
+                          </button>
+
+                          {/* Premium badge */}
+                          {t.isPremium && (
                             <span
-                              className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter text-white"
+                              className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter text-white shadow-sm"
                               style={{
                                 background: 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
                                 fontFamily: 'Hanken Grotesk, sans-serif',
@@ -448,8 +489,8 @@ export default function NewResumeClient() {
                             >
                               PRO
                             </span>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
 
                       {/* Card info */}
@@ -476,7 +517,7 @@ export default function NewResumeClient() {
               </div>
 
               {/* Dynamic Pagination & Template Counter */}
-              <div className="mt-8 pt-6 border-t border-[#ddc0bd]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="mt-8 pt-6 pb-6 border-t border-[#ddc0bd]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p
                   className="text-[13px] text-[#564240] font-medium"
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
@@ -500,62 +541,64 @@ export default function NewResumeClient() {
           )}
         </section>
 
-      {/* ── Sticky Footer Action Bar ────────────────────────────────────────── */}
-      <footer
-        className="fixed bottom-0 left-0 md:left-20 lg:left-56 right-0 z-50 border-t border-[#ddc0bd] px-4 sm:px-8 lg:px-12 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/95 backdrop-blur-md shadow-lg"
-      >
-        {/* Hint */}
-        <div className="flex items-center gap-3">
-          <IconMapper name="auto_fix" className="text-[#795900] text-xl"
-            style={{ fontVariationSettings: "'FILL' 1" }} />
-          <p
-            className="text-[12px] text-[#564240]"
-            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-          >
-            <span className="font-bold text-[#795900]">AI Assistant Ready:</span>{' '}
-            {selectedTemplate
-              ? hasProfile
-                ? 'Profile detected — you can auto-fill this resume.'
-                : 'Selected template is ready to use.'
-              : 'Select a template to get started.'}
-          </p>
-        </div>
+      {/* ── Sticky Footer Action Bar (only shown when a template is selected) ── */}
+      {selectedTemplate && (
+        <footer
+          className="fixed bottom-0 left-0 md:left-20 lg:left-56 right-0 z-50 border-t border-[#ddc0bd] px-4 sm:px-8 lg:px-12 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/95 backdrop-blur-md shadow-2xl animate-fade-in"
+        >
+          {/* Hint */}
+          <div className="flex items-center gap-3">
+            <IconMapper name="auto_fix" className="text-[#795900] text-xl"
+              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <p
+              className="text-[12px] text-[#564240]"
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
+              <span className="font-bold text-[#795900]">AI Assistant Ready:</span>{' '}
+              {selectedTemplateData
+                ? `Template "${selectedTemplateData.name}" selected.`
+                : 'Selected template is ready to use.'}{' '}
+              {hasProfile && 'Profile detected — you can auto-fill this resume.'}
+            </p>
+          </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.push('/app/dashboard')}
-            className="px-6 py-2.5 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-colors cursor-pointer"
-            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-          >
-            Cancel
-          </button>
+          {/* Actions */}
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setSelectedTemplate(null)}
+              className="px-6 py-2.5 rounded-lg border border-[#8a716f] text-[#564240] font-semibold text-[14px] hover:bg-[#fff0ed] transition-colors cursor-pointer"
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
+              Cancel
+            </button>
 
-          <button
-            onClick={handleCreate}
-            disabled={!canCreate || isCreating}
-            className={cn(
-              'flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold text-[14px] transition-all shadow-lg cursor-pointer',
-              canCreate && !isCreating
-                ? 'bg-[#5b060c] text-white hover:opacity-95 active:scale-[0.98]'
-                : 'bg-[#5b060c]/40 text-white/60 cursor-not-allowed',
-            )}
-            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-          >
-            {isCreating ? (
-              <>
-                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Creating...</span>
-              </>
-            ) : (
-              <>
-                <span>Create Resume</span>
-                <IconMapper name="arrow_forward" className="text-[18px]" />
-              </>
-            )}
-          </button>
-        </div>
-      </footer>
+            <button
+              onClick={handleCreate}
+              disabled={!canCreate || isCreating}
+              className={cn(
+                'flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold text-[14px] transition-all shadow-lg cursor-pointer',
+                canCreate && !isCreating
+                  ? 'bg-[#5b060c] text-white hover:opacity-95 active:scale-[0.98]'
+                  : 'bg-[#5b060c]/40 text-white/60 cursor-not-allowed',
+              )}
+              style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+            >
+              {isCreating ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating...</span>
+                </>
+              ) : (
+                <>
+                  <span>Create Resume</span>
+                  <IconMapper name="arrow_forward" className="text-[18px]" />
+                </>
+              )}
+            </button>
+          </div>
+        </footer>
+      )}
 
       {/* ── Import from Profile Modal ─────────────────────────────────────────── */}
       {showImportPrompt && (
@@ -627,6 +670,23 @@ export default function NewResumeClient() {
           </div>
         </div>
       )}
+
+      {/* Template Preview Modal */}
+      <PreviewModal
+        isOpen={!!previewTemplate}
+        onClose={() => setPreviewTemplate(null)}
+        template={previewTemplate}
+        canAccessPremium={canAccessPremium}
+        onUseTemplate={(id) => {
+          const tpl = templatesData?.templates.find((item) => item.id === id);
+          if (tpl?.isPremium && !canAccessPremium) {
+            router.push('/app/subscription');
+            return;
+          }
+          setSelectedTemplate(id);
+          setPreviewTemplate(null);
+        }}
+      />
 
       {/* Decorative paper clip */}
       <div className="fixed top-24 right-12 z-[3] pointer-events-none opacity-40">
