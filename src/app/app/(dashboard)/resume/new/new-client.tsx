@@ -20,10 +20,11 @@ export default function NewResumeClient() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [page, setPage] = useState(1);
-  const TEMPLATES_PER_PAGE = 6;
+  const TEMPLATES_PER_PAGE = 8;
   const [showImportPrompt, setShowImportPrompt] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const nibRef = useRef<HTMLSpanElement>(null);
+  const templateSectionRef = useRef<HTMLElement>(null);
 
   const { data: templatesData, isLoading } = useTemplates();
   const { data: userProfile } = useUserProfile();
@@ -47,15 +48,29 @@ export default function NewResumeClient() {
     });
   }, [templatesData?.templates, activeCategory, search]);
 
-  const totalPages = Math.ceil(filtered.length / TEMPLATES_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / TEMPLATES_PER_PAGE));
+  const validPage = Math.min(Math.max(1, page), totalPages);
+
   const paginatedTemplates = useMemo(() => {
-    return filtered.slice((page - 1) * TEMPLATES_PER_PAGE, page * TEMPLATES_PER_PAGE);
-  }, [filtered, page]);
+    return filtered.slice((validPage - 1) * TEMPLATES_PER_PAGE, validPage * TEMPLATES_PER_PAGE);
+  }, [filtered, validPage]);
 
   // Reset to page 1 on filter or search change
   useEffect(() => {
     setPage(1);
   }, [search, activeCategory]);
+
+  // Clamp page if out of bounds when list changes
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    templateSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   // Resumes are unlimited for all plans
   const canCreate = title.trim().length > 0 && !!selectedTemplate;
@@ -195,7 +210,7 @@ export default function NewResumeClient() {
 
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 relative z-10 max-w-7xl mx-auto w-full pb-36">
+    <div className="p-4 sm:p-6 lg:p-8 relative z-10 max-w-7xl mx-auto w-full pb-44">
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 lg:mb-10 gap-4">
         <div>
@@ -276,7 +291,7 @@ export default function NewResumeClient() {
       </section>
 
       {/* ── Template Section ─────────────────────────────────────────────── */}
-      <section>
+      <section ref={templateSectionRef}>
         {/* Section header + search */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
@@ -326,7 +341,7 @@ export default function NewResumeClient() {
           {/* Template grid */}
           {isLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div key={i} className="flex flex-col gap-3">
                   <Skeleton className="aspect-[3/4] w-full rounded-lg" />
                   <Skeleton className="h-4 w-2/3" />
@@ -460,13 +475,27 @@ export default function NewResumeClient() {
                 })}
               </div>
 
-              {/* Reusable Pagination Component */}
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={setPage}
-                className="mt-10"
-              />
+              {/* Dynamic Pagination & Template Counter */}
+              <div className="mt-8 pt-6 border-t border-[#ddc0bd]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p
+                  className="text-[13px] text-[#564240] font-medium"
+                  style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                >
+                  Showing{' '}
+                  <span className="font-semibold text-[#5b060c]">
+                    {filtered.length === 0 ? 0 : (validPage - 1) * TEMPLATES_PER_PAGE + 1}–
+                    {Math.min(validPage * TEMPLATES_PER_PAGE, filtered.length)}
+                  </span>{' '}
+                  of <span className="font-semibold text-[#5b060c]">{filtered.length}</span> templates
+                </p>
+
+                <Pagination
+                  currentPage={validPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  hideOnSinglePage={false}
+                />
+              </div>
             </>
           )}
         </section>

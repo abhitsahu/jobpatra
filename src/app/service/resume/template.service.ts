@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { getObject, objectExists } from '@/app/service/storage/s3.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -24,13 +25,21 @@ export interface TemplateMetadata {
 }
 
 export interface TemplateInfo extends TemplateMetadata {
+  /** S3 key for the Handlebars template, e.g. "templates/classic-demo/template.hbs" */
+  hbsKey: string;
+  /** S3 key for the CSS file, e.g. "templates/classic-demo/style.css" */
+  cssKey: string;
+  /** S3 key for the thumbnail image, e.g. "templates/classic-demo/template.png" */
+  thumbnailKey: string;
+  /** Local FS paths — used as fallback in dev when S3 is unavailable */
   hbsPath: string;
   cssPath: string;
   thumbnailPath: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TEMPLATE REGISTRY — scanned from filesystem at runtime
+// TEMPLATE REGISTRY — scanned from local filesystem (metadata only)
+// .hbs / .css / .png content is fetched from S3 at render time
 // ─────────────────────────────────────────────────────────────────────────────
 
 const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
@@ -44,6 +53,11 @@ function registerTemplate(registry: Map<string, TemplateInfo>, dir: string, dirN
     const info: TemplateInfo = {
       ...meta,
       hasPhoto: meta.hasPhoto ?? false,
+      // S3 keys — used for content fetching
+      hbsKey: `templates/${meta.id}/template.hbs`,
+      cssKey: `templates/${meta.id}/style.css`,
+      thumbnailKey: `templates/${meta.id}/${meta.thumbnail}`,
+      // Local FS paths — used as dev fallback
       hbsPath: path.join(dir, 'template.hbs'),
       cssPath: path.join(dir, 'style.css'),
       thumbnailPath: path.join(dir, meta.thumbnail),
@@ -93,6 +107,62 @@ function scanTemplates(): Map<string, TemplateInfo> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// CONTENT CACHE — fetches .hbs / .css from S3, caches per process
+// ponytail: per-process cache; each pod caches independently — fine for
+// immutable template content. Upgrade path: Redis if hot-reload needed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _contentCache = new Map<string, string>();
+
+/**
+ * Fetches text content from S3, falling back to local FS in dev.
+ * Caches the result in-process so each file is only fetched once per pod restart.
+ */
+export async function getTemplateContent(
+  s3Key: string,
+  localPath: string,
+): Promise<string> {
+  if (_contentCache.has(s3Key)) return _contentCache.get(s3Key)!;
+
+  let text: string;
+
+  try {
+    const buf = await getObject(s3Key);
+    text = buf.toString('utf-8');
+  } catch (err) {
+    // Dev fallback: read from local FS if S3 is unavailable (e.g. seed not yet run)
+    if (localPath && fs.existsSync(localPath)) {
+      console.warn(`[template.service] S3 fetch failed for ${s3Key}, falling back to local FS`);
+      text = fs.readFileSync(localPath, 'utf-8');
+    } else {
+      throw err;
+    }
+  }
+
+  _contentCache.set(s3Key, text);
+  return text;
+}
+
+/**
+ * Fetches binary content from S3, falling back to local FS in dev.
+ * Used for thumbnail images.
+ */
+export async function getTemplateBinary(
+  s3Key: string,
+  localPath: string,
+): Promise<Buffer> {
+  try {
+    return await getObject(s3Key);
+  } catch {
+    if (localPath && fs.existsSync(localPath)) {
+      console.warn(`[template.service] S3 fetch failed for ${s3Key}, falling back to local FS`);
+      return fs.readFileSync(localPath);
+    }
+    throw new Error(`Template asset not found in S3 or local FS: ${s3Key}`);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // PUBLIC API
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -123,4 +193,10 @@ export function getTemplate(templateId: string): TemplateInfo {
 
 export function validateTemplateExists(templateId: string): boolean {
   return scanTemplates().has(templateId);
+}
+
+/** Checks whether the template's .hbs file has been uploaded to S3. */
+export async function isTemplateSynced(templateId: string): Promise<boolean> {
+  const t = getTemplate(templateId);
+  return objectExists(t.hbsKey);
 }

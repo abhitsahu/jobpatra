@@ -1,8 +1,7 @@
-import fs from 'fs';
 import Handlebars from 'handlebars';
 import type { ResumeWithRelations } from '@/app/api/model/response/resume';
 import { getResume } from './resume.service';
-import { getTemplate } from './template.service';
+import { getTemplate, getTemplateContent } from './template.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TEMPLATE DATA SHAPE (matches sample-data.json contract)
@@ -177,10 +176,8 @@ export async function renderResumeHtml(resumeId: string, userId: string): Promis
   const resume = await getResume(resumeId, userId);
   const template = getTemplate(resume.templateId);
 
-  const hbsSource = fs.readFileSync(template.hbsPath, 'utf-8');
-  const cssSource = fs.existsSync(template.cssPath)
-    ? fs.readFileSync(template.cssPath, 'utf-8')
-    : '';
+  const hbsSource = await getTemplateContent(template.hbsKey, template.hbsPath);
+  const cssSource = await getTemplateContent(template.cssKey, template.cssPath).catch(() => '');
 
   // Inject CSS inline so PDF generation works without external file references
   const hbsWithInlineCss = hbsSource.replace(

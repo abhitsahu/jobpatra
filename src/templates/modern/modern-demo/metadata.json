@@ -23,6 +23,6 @@
   "description": "Modern two-column layout with profile photo, dynamic icons, timeline accents, and interactive links.",
   "previewImage": "/api/template/modern-demo/thumbnail",
   "atsFriendly": true,
-  "isPremium": false,
+  "isPremium": true,
   "usageCount": 16400
 }
