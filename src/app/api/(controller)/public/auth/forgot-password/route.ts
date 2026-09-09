@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { checkRateLimit, getClientIp } from '@/app/api/(controller)/_util/rate-limiter';
 import { forgotPasswordSchema } from '@/app/api/model/request/auth/auth';
 import { forgotPassword } from '@/app/service/auth/forgot-password.service';
 
 export async function POST(request: Request) {
   try {
-    // 1. Rate limit (strict — email sending is expensive)
-    const ip = getClientIp(request);
-    const rateLimitError = checkRateLimit(`forgot-password:${ip}`, {
-      maxRequests: 3,
-      windowSeconds: 60,
-    });
-    if (rateLimitError) return rateLimitError;
-
-    // 2. Validate
+    // 1. Validate
     const result = await validateRequest(request, forgotPasswordSchema);
     if (result.error) return result.error;
 

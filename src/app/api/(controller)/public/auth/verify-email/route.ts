@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { checkRateLimit, getClientIp } from '@/app/api/(controller)/_util/rate-limiter';
 import { verifyEmailSchema } from '@/app/api/model/request/auth/auth';
 import { verifyEmail } from '@/app/service/auth/verify-email.service';
 
@@ -9,15 +8,7 @@ import { verifyEmail } from '@/app/service/auth/verify-email.service';
  */
 export async function POST(request: Request) {
   try {
-    // 1. Rate limit
-    const ip = getClientIp(request);
-    const rateLimitError = checkRateLimit(`verify-email:${ip}`, {
-      maxRequests: 10,
-      windowSeconds: 60,
-    });
-    if (rateLimitError) return rateLimitError;
-
-    // 2. Validate
+    // 1. Validate
     const result = await validateRequest(request, verifyEmailSchema);
     if (result.error) return result.error;
 

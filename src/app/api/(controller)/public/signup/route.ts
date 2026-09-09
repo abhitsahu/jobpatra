@@ -1,21 +1,12 @@
 import { NextResponse } from 'next/server';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { checkRateLimit, getClientIp } from '@/app/api/(controller)/_util/rate-limiter';
 import { signupSchema } from '@/app/api/model/request/auth/auth';
 import { signupUser } from '@/app/service/auth/signup.service';
 import { toUserResponse } from '@/app/api/model/response/auth';
 
 export async function POST(request: Request) {
   try {
-    // 1. Rate limit
-    const ip = getClientIp(request);
-    const rateLimitError = checkRateLimit(`signup:${ip}`, {
-      maxRequests: 5,
-      windowSeconds: 60,
-    });
-    if (rateLimitError) return rateLimitError;
-
-    // 2. Validate
+    // 1. Validate
     const result = await validateRequest(request, signupSchema);
     if (result.error) return result.error;
 
