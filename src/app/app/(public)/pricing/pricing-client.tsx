@@ -22,7 +22,9 @@ const loadRazorpayScript = () =>
     document.body.appendChild(script);
   });
 
-interface Props { currency: 'INR' | 'USD' }
+interface Props {
+  currency: 'INR' | 'USD';
+}
 
 export function PricingClient({ currency }: Props) {
   const router = useRouter();
@@ -31,7 +33,8 @@ export function PricingClient({ currency }: Props) {
   const { data, isLoading, isError } = usePricing(currency);
   const { data: subStatus } = useSubscriptionStatus();
   // null = unauthenticated or loading; 'free' | 'pro' | 'plus' etc. = logged-in user
-  const userPlan = (subStatus?.subscription?.plan?.toLowerCase() as string | null | undefined) ?? null;
+  const userPlan =
+    (subStatus?.subscription?.plan?.toLowerCase() as string | null | undefined) ?? null;
 
   const handleSelectPlan = async (slug: string) => {
     try {
@@ -135,7 +138,10 @@ export function PricingClient({ currency }: Props) {
       <div className="min-h-screen bg-[#FFF8EE] flex items-center justify-center">
         <div className="text-center">
           <p className="text-[#564240] mb-6">Could not load pricing plans. Please try again.</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-[#370003] text-white font-semibold rounded-full hover:scale-105 transition-transform">
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2.5 bg-[#370003] text-white font-semibold rounded-full hover:scale-105 transition-transform"
+          >
             Retry
           </button>
         </div>
@@ -149,17 +155,24 @@ export function PricingClient({ currency }: Props) {
       <main className="pt-28 pb-20 px-4 md:px-16 max-w-7xl mx-auto">
         <header className="text-center mb-16 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#fff0ee] text-[#370003] border border-[#E5D9C8] mb-4 shadow-sm">
-            <IconMapper name="workspace_premium" className="text-sm text-[#f6be39]" /> Transparent Pricing &amp; Plans
+            <IconMapper name="workspace_premium" className="text-sm text-[#f6be39]" /> Transparent
+            Pricing &amp; Plans
           </div>
           <h1 className="font-['Playfair_Display'] text-[36px] md:text-[52px] leading-[44px] md:leading-[60px] font-bold mb-4 text-[#370003]">
             Invest in Your Future
           </h1>
           <p className="text-[#564240] max-w-2xl mx-auto text-[18px] leading-[28px]">
-            Select the toolset that fits your career stage. Prices shown in <strong>{currency}</strong>.
+            Select the toolset that fits your career stage. Prices shown in{' '}
+            <strong>{currency}</strong>.
           </p>
         </header>
 
-        <PricingGrid plans={data.plans} currency={currency} onSelectPlan={handleSelectPlan} userPlan={userPlan} />
+        <PricingGrid
+          plans={data.plans}
+          currency={currency}
+          onSelectPlan={handleSelectPlan}
+          userPlan={userPlan}
+        />
         <ComparisonTable plans={data.plans} comparison={data.comparison} />
         <TestimonialSection testimonials={data.testimonials} />
       </main>

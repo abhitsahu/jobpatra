@@ -101,8 +101,11 @@ export function ResetPasswordForm() {
     if (success) {
       return (
         <div className="space-y-6 text-center py-4">
-          <IconMapper name="check_circle" className="text-[#2a7040] text-5xl"
-            style={{ fontVariationSettings: "'FILL' 1" }} />
+          <IconMapper
+            name="check_circle"
+            className="text-[#2a7040] text-5xl"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          />
           <header className="space-y-2">
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
               Password updated
@@ -211,9 +214,5 @@ export function ResetPasswordForm() {
     );
   };
 
-  return (
-    <AuthCardLayout {...AUTH_PAGE_CONFIGS.resetPassword}>
-      {renderContent()}
-    </AuthCardLayout>
-  );
+  return <AuthCardLayout {...AUTH_PAGE_CONFIGS.resetPassword}>{renderContent()}</AuthCardLayout>;
 }

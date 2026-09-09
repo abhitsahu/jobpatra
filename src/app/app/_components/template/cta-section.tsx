@@ -31,8 +31,8 @@ export function CtaSection({ onStartBuilding, onBrowsePlans }: CtaSectionProps) 
         </h2>
 
         <p className="font-['Hanken_Grotesk'] text-[14px] sm:text-[16px] md:text-[18px] leading-[22px] sm:leading-[26px] md:leading-[28px] text-[#564240] mb-8 sm:mb-10 max-w-xl">
-          Select a template above or let our AI guide you to the perfect format based on your industry
-          and experience level.
+          Select a template above or let our AI guide you to the perfect format based on your
+          industry and experience level.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-4 items-center justify-center w-full sm:w-auto">

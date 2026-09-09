@@ -19,14 +19,15 @@ export async function GET(req: Request) {
       limit: searchParams.get('limit') ?? undefined,
     });
 
-    const { page, limit } = parsedQuery.success
-      ? parsedQuery.data
-      : { page: 1, limit: 20 };
+    const { page, limit } = parsedQuery.success ? parsedQuery.data : { page: 1, limit: 20 };
 
     const data = await getUserHistory(userId, page, limit);
     return NextResponse.json({ success: true, data });
   } catch (err) {
     console.error('[GET /api/ats/history]', err);
-    return NextResponse.json({ success: false, message: 'Failed to fetch history' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to fetch history' },
+      { status: 500 },
+    );
   }
 }

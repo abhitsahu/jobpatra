@@ -8,7 +8,10 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { saveAtsAnalysisSchema, type SaveAtsAnalysisDTO } from '@/app/api/model/request/ats/history';
+import {
+  saveAtsAnalysisSchema,
+  type SaveAtsAnalysisDTO,
+} from '@/app/api/model/request/ats/history';
 import { saveAnalysis } from '@/app/service/ats/history.service';
 
 export async function POST(req: Request) {
@@ -25,6 +28,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, data: { id } }, { status: 201 });
   } catch (err) {
     console.error('[POST /api/ats/save]', err);
-    return NextResponse.json({ success: false, message: 'Failed to save analysis' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to save analysis' },
+      { status: 500 },
+    );
   }
 }

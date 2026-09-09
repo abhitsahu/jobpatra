@@ -72,7 +72,14 @@ function applyMiddleware(client: PrismaClient): PrismaClient {
     query: {
       invoice: {
         async update({ args, query }) {
-          const IMMUTABLE_FIELDS = ['subtotal', 'taxAmount', 'total', 'lineItems', 'status', 'invoiceNumber'];
+          const IMMUTABLE_FIELDS = [
+            'subtotal',
+            'taxAmount',
+            'total',
+            'lineItems',
+            'status',
+            'invoiceNumber',
+          ];
           const attempted = Object.keys(args.data ?? {});
           const blocked = attempted.filter((k) => IMMUTABLE_FIELDS.includes(k));
           if (blocked.length > 0) {
@@ -83,7 +90,14 @@ function applyMiddleware(client: PrismaClient): PrismaClient {
           return query(args);
         },
         async updateMany({ args, query }) {
-          const IMMUTABLE_FIELDS = ['subtotal', 'taxAmount', 'total', 'lineItems', 'status', 'invoiceNumber'];
+          const IMMUTABLE_FIELDS = [
+            'subtotal',
+            'taxAmount',
+            'total',
+            'lineItems',
+            'status',
+            'invoiceNumber',
+          ];
           const attempted = Object.keys(args.data ?? {});
           const blocked = attempted.filter((k) => IMMUTABLE_FIELDS.includes(k));
           if (blocked.length > 0) {
@@ -98,7 +112,6 @@ function applyMiddleware(client: PrismaClient): PrismaClient {
   }) as unknown as PrismaClient;
 }
 
-
 // Async IIFE to handle DNS resolution at module initialisation.
 // The singleton is preserved across Next.js hot reloads via global.__prisma.
 export const prisma: PrismaClient =
@@ -111,5 +124,3 @@ export const prisma: PrismaClient =
     }
     return extendedClient;
   })());
-
-

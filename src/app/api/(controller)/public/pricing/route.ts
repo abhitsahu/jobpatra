@@ -7,12 +7,15 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const currencyParam = searchParams.get('currency');
-    
+
     // Default to INR for India (IN), else USD
     const country = request.headers.get('x-vercel-ip-country') || 'IN';
-    const currency = currencyParam?.toUpperCase() === 'USD' || currencyParam?.toUpperCase() === 'INR'
-      ? currencyParam.toUpperCase()
-      : (country === 'IN' ? 'INR' : 'USD');
+    const currency =
+      currencyParam?.toUpperCase() === 'USD' || currencyParam?.toUpperCase() === 'INR'
+        ? currencyParam.toUpperCase()
+        : country === 'IN'
+          ? 'INR'
+          : 'USD';
 
     const data = await getPricingPage(currency);
     return NextResponse.json({ success: true, data }, { status: 200 });

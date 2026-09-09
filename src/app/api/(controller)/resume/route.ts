@@ -22,7 +22,8 @@ export async function POST(req: Request) {
       const tpl = getTemplate(templateId);
       if (tpl.isPremium) {
         const sub = await prisma.subscription.findUnique({ where: { userId: session!.user.id } });
-        const access = sub?.snapshotTemplateAccess ?? (sub?.plan?.toUpperCase() === 'FREE' ? 'FREE' : 'ALL');
+        const access =
+          sub?.snapshotTemplateAccess ?? (sub?.plan?.toUpperCase() === 'FREE' ? 'FREE' : 'ALL');
         if (access !== 'ALL') {
           return NextResponse.json(
             { success: false, message: 'This template requires an active paid subscription.' },

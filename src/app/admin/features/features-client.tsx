@@ -233,12 +233,17 @@ export function FeaturesAdminClient({ initialFeatures, plans }: Props) {
             <div className="pt-2">
               <label className={LABEL_CLS}>Plan Values (Matrix Cells)</label>
               <p className="text-xs text-[#564240] mb-3">
-                Tip: Enter <strong>check</strong> to show a checkmark icon, or <strong>—</strong> for not included, or specific text like <strong>Basic</strong>, <strong>15/mo</strong>, <strong>Unlimited</strong>.
+                Tip: Enter <strong>check</strong> to show a checkmark icon, or <strong>—</strong>{' '}
+                for not included, or specific text like <strong>Basic</strong>,{' '}
+                <strong>15/mo</strong>, <strong>Unlimited</strong>.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {plans.map((p) => (
-                  <div key={p.slug} className="p-3 bg-[#fff8f6] border border-[#ddc0bd]/50 rounded-xl">
+                  <div
+                    key={p.slug}
+                    className="p-3 bg-[#fff8f6] border border-[#ddc0bd]/50 rounded-xl"
+                  >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-bold text-[#5b060c] font-['Playfair_Display']">
                         {p.name} ({p.slug})
@@ -272,8 +277,16 @@ export function FeaturesAdminClient({ initialFeatures, plans }: Props) {
             </div>
           </div>
 
-          {error && <p className="mt-4 text-sm text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">{error}</p>}
-          {success && <p className="mt-4 text-sm text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-200">{success}</p>}
+          {error && (
+            <p className="mt-4 text-sm text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p className="mt-4 text-sm text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-200">
+              {success}
+            </p>
+          )}
 
           <div className="flex gap-3 mt-6 pt-4 border-t border-[#ddc0bd]/40">
             <button
@@ -330,7 +343,8 @@ export function FeaturesAdminClient({ initialFeatures, plans }: Props) {
 
         {sortedFeatures.length === 0 ? (
           <div className="p-8 text-center text-sm text-[#564240]">
-            No comparison features configured yet. Click <strong>+ Add Feature</strong> to add your first ledger row.
+            No comparison features configured yet. Click <strong>+ Add Feature</strong> to add your
+            first ledger row.
           </div>
         ) : (
           <ul className="divide-y divide-[#ddc0bd]/40">

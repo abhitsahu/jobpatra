@@ -6,7 +6,8 @@ import { FeedbackClient } from './feedback-client';
 
 export const metadata: Metadata = {
   title: 'Share Feedback — JobPatra',
-  description: 'Help us improve JobPatra by sharing your feedback, bug reports, and feature requests.',
+  description:
+    'Help us improve JobPatra by sharing your feedback, bug reports, and feature requests.',
 };
 
 export default async function FeedbackPage() {

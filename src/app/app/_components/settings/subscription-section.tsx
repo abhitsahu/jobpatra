@@ -103,8 +103,11 @@ export function SubscriptionSection() {
             border: '1px solid #c3e6cb',
           }}
         >
-          <IconMapper name="check_circle" className="text-[#155724] shrink-0 mt-0.5"
-            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
+          <IconMapper
+            name="check_circle"
+            className="text-[#155724] shrink-0 mt-0.5"
+            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
+          />
           <div className="flex-1">
             <p
               className="text-[14px] font-bold text-[#155724]"

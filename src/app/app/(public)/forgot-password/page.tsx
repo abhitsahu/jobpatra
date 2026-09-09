@@ -13,9 +13,7 @@ export default function ForgotPasswordPage() {
     <AuthLayout>
       <Suspense
         fallback={
-          <div className="text-center py-8 text-[#564240] font-['Hanken_Grotesk']">
-            Loading...
-          </div>
+          <div className="text-center py-8 text-[#564240] font-['Hanken_Grotesk']">Loading...</div>
         }
       >
         <ForgotPasswordForm />

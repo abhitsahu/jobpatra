@@ -12,8 +12,8 @@ export async function PUT(request: Request) {
 
   await prisma.$transaction(
     orders.map(({ id, displayOrder }) =>
-      prisma.pricingPlan.update({ where: { id }, data: { displayOrder } })
-    )
+      prisma.pricingPlan.update({ where: { id }, data: { displayOrder } }),
+    ),
   );
 
   invalidatePlanLimitsCache();

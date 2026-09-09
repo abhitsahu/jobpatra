@@ -28,5 +28,10 @@ export async function GET(request: Request) {
     prisma.subscription.count({ where }),
   ]);
 
-  return NextResponse.json({ subscriptions, total, page, totalPages: Math.ceil(total / PAGE_SIZE) });
+  return NextResponse.json({
+    subscriptions,
+    total,
+    page,
+    totalPages: Math.ceil(total / PAGE_SIZE),
+  });
 }

@@ -53,21 +53,22 @@ export function ConfirmationModal({
     };
   }, [isOpen]);
 
-  const resolvedIcon = icon || (variant === 'danger' ? 'delete' : variant === 'warning' ? 'warning' : 'help_outline');
+  const resolvedIcon =
+    icon || (variant === 'danger' ? 'delete' : variant === 'warning' ? 'warning' : 'help_outline');
 
   const iconBgClass =
     variant === 'danger'
       ? 'bg-[#ffdad6] text-[#ba1a1a]'
       : variant === 'warning'
-      ? 'bg-[#fff8c4] text-[#745a1c]'
-      : 'bg-[#fff0ed] text-[#5b060c]';
+        ? 'bg-[#fff8c4] text-[#745a1c]'
+        : 'bg-[#fff0ed] text-[#5b060c]';
 
   const confirmBtnClass =
     variant === 'danger'
       ? 'bg-[#ba1a1a] hover:bg-[#93000a] text-white shadow-xs'
       : variant === 'warning'
-      ? 'bg-[#d8be75] hover:bg-[#c9af66] text-[#2b1611] shadow-xs'
-      : 'bg-[#5b060c] hover:bg-[#7a1f1f] text-white shadow-xs';
+        ? 'bg-[#d8be75] hover:bg-[#c9af66] text-[#2b1611] shadow-xs'
+        : 'bg-[#5b060c] hover:bg-[#7a1f1f] text-white shadow-xs';
 
   return (
     <AnimatePresence>
@@ -110,7 +111,9 @@ export function ConfirmationModal({
             </button>
 
             {/* Icon Header */}
-            <div className={`w-12 h-12 rounded-full ${iconBgClass} flex items-center justify-center mb-4 shrink-0`}>
+            <div
+              className={`w-12 h-12 rounded-full ${iconBgClass} flex items-center justify-center mb-4 shrink-0`}
+            >
               <IconMapper name={resolvedIcon} className="text-[24px]" />
             </div>
 
@@ -122,9 +125,7 @@ export function ConfirmationModal({
               >
                 {title}
               </h3>
-              <div className="text-[14px] text-[#564240] leading-[22px]">
-                {description}
-              </div>
+              <div className="text-[14px] text-[#564240] leading-[22px]">{description}</div>
             </div>
 
             {/* Action Buttons */}

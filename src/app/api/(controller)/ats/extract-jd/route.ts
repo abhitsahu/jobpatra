@@ -37,7 +37,8 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: 'ATS analysis limit reached. Please upgrade your subscription to extract job descriptions from URLs.',
+          message:
+            'ATS analysis limit reached. Please upgrade your subscription to extract job descriptions from URLs.',
         },
         { status: 403 },
       );

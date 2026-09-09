@@ -27,7 +27,9 @@ export async function GET(request: Request) {
     },
   });
 
-  console.info(`[check-expired-subscriptions] Downgraded ${count} expired subscription(s) to FREE.`);
+  console.info(
+    `[check-expired-subscriptions] Downgraded ${count} expired subscription(s) to FREE.`,
+  );
 
   return NextResponse.json({ success: true, updated: count });
 }

@@ -10,11 +10,7 @@ import { UserCreditsCard } from './credits-card';
 
 export const metadata: Metadata = { title: 'User Details | JobPatra Admin' };
 
-export default async function AdminUserDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== 'ADMIN') redirect('/app/dashboard');
 
@@ -55,14 +51,18 @@ export default async function AdminUserDetailPage({
   if (!user) notFound();
 
   const fmt = (n: number, currency = 'INR') =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
 
   const isExpired =
     user.subscription?.plan !== 'FREE' &&
     user.subscription?.currentPeriodEnd != null &&
     user.subscription.currentPeriodEnd < new Date();
 
-  const planSlug = isExpired ? 'free' : (user.subscription?.plan?.toLowerCase() || 'free');
+  const planSlug = isExpired ? 'free' : user.subscription?.plan?.toLowerCase() || 'free';
   const planLimits = await getPlanLimits(planSlug);
 
   const atsRecord = user.usageTracking.find((u) => u.feature === 'ATS_ANALYSIS');
@@ -87,12 +87,21 @@ export default async function AdminUserDetailPage({
       {/* Identity Card */}
       <div className="bg-white border border-[#ddc0bd] rounded-xl p-6 flex items-start gap-5 shadow-xs">
         <div className="w-14 h-14 rounded-full bg-[#370003] text-white text-xl font-bold flex items-center justify-center font-['Playfair_Display'] shrink-0 shadow-xs border border-white">
-          {user.name?.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('') ?? 'U'}
+          {user.name
+            ?.split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((p) => p[0]?.toUpperCase())
+            .join('') ?? 'U'}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display']">{user.name ?? '—'}</h2>
-            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${user.role === 'ADMIN' ? 'bg-[#fff0ed] text-[#7a1f1f] border border-[#ddc0bd]' : 'bg-[#f3f4f6] text-[#4b5563]'}`}>
+            <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display']">
+              {user.name ?? '—'}
+            </h2>
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${user.role === 'ADMIN' ? 'bg-[#fff0ed] text-[#7a1f1f] border border-[#ddc0bd]' : 'bg-[#f3f4f6] text-[#4b5563]'}`}
+            >
               {user.role}
             </span>
             {user.subscription && user.subscription.plan !== 'FREE' && (
@@ -100,16 +109,25 @@ export default async function AdminUserDetailPage({
                 {user.subscription.plan}
               </span>
             )}
-            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${user.hasEverPaid ? 'bg-[#fef9c3] text-[#713f12] border border-[#fde68a]' : 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]'}`}>
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${user.hasEverPaid ? 'bg-[#fef9c3] text-[#713f12] border border-[#fde68a]' : 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb]'}`}
+            >
               {user.hasEverPaid ? '💳 Has Paid' : 'Never Paid'}
             </span>
           </div>
           <p className="text-sm font-medium text-[#564240] mt-1">{user.email}</p>
           {(user.jobTitle || user.industry) && (
-            <p className="text-xs text-[#564240]/80 mt-1">{[user.jobTitle, user.industry].filter(Boolean).join(' · ')}</p>
+            <p className="text-xs text-[#564240]/80 mt-1">
+              {[user.jobTitle, user.industry].filter(Boolean).join(' · ')}
+            </p>
           )}
           <p className="text-xs text-[#564240]/70 mt-1">
-            Registered on {new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+            Registered on{' '}
+            {new Date(user.createdAt).toLocaleDateString('en-IN', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
           </p>
         </div>
       </div>
@@ -117,19 +135,30 @@ export default async function AdminUserDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Subscription */}
         <div className="bg-white border border-[#ddc0bd] rounded-xl p-5 shadow-xs">
-          <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Subscription Overview</p>
+          <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">
+            Subscription Overview
+          </p>
           {user.subscription ? (
             <dl className="space-y-2.5 text-sm divide-y divide-[#ddc0bd]/40">
               {[
                 ['Plan', user.subscription.plan],
                 ['Status', user.subscription.status],
-                ['Period End', user.subscription.currentPeriodEnd
-                  ? new Date(user.subscription.currentPeriodEnd).toLocaleDateString('en-IN')
-                  : '—'],
+                [
+                  'Period End',
+                  user.subscription.currentPeriodEnd
+                    ? new Date(user.subscription.currentPeriodEnd).toLocaleDateString('en-IN')
+                    : '—',
+                ],
                 ['Billing Period', user.subscription.snapshotBillingPeriod ?? '—'],
-                ['Amount Paid', user.subscription.snapshotPriceInr != null
-                  ? fmt(user.subscription.snapshotPriceInr, user.subscription.snapshotCurrency ?? 'INR')
-                  : '—'],
+                [
+                  'Amount Paid',
+                  user.subscription.snapshotPriceInr != null
+                    ? fmt(
+                        user.subscription.snapshotPriceInr,
+                        user.subscription.snapshotCurrency ?? 'INR',
+                      )
+                    : '—',
+                ],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between gap-2 pt-2 first:pt-0">
                   <dt className="text-[#564240] font-medium">{label}</dt>
@@ -154,7 +183,9 @@ export default async function AdminUserDetailPage({
 
       {/* Resumes */}
       <div className="bg-white border border-[#ddc0bd] rounded-xl p-5 shadow-xs">
-        <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Resumes ({user.resumes.length})</p>
+        <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">
+          Resumes ({user.resumes.length})
+        </p>
         {user.resumes.length === 0 ? (
           <p className="text-sm text-[#564240]">No resumes built yet.</p>
         ) : (
@@ -162,11 +193,17 @@ export default async function AdminUserDetailPage({
             {user.resumes.map((r) => (
               <div key={r.id} className="py-3 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-[#2b1611] font-semibold">{r.title || 'Untitled Resume'}</p>
+                  <p className="text-sm text-[#2b1611] font-semibold">
+                    {r.title || 'Untitled Resume'}
+                  </p>
                   <p className="text-xs text-[#564240]">Template: {r.templateId}</p>
                 </div>
                 <p className="text-xs text-[#564240] font-medium">
-                  {new Date(r.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(r.updatedAt).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </p>
               </div>
             ))}
@@ -177,17 +214,31 @@ export default async function AdminUserDetailPage({
       {/* Payments */}
       {user.payments.length > 0 && (
         <div className="bg-white border border-[#ddc0bd] rounded-xl p-5 shadow-xs">
-          <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Payment Records</p>
+          <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">
+            Payment Records
+          </p>
           <div className="divide-y divide-[#ddc0bd]/50">
             {user.payments.map((p) => (
               <div key={p.id} className="py-3 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-[#2b1611] font-bold">{fmt(p.amount, p.currency)}</p>
-                  <p className="text-xs text-[#564240]">{new Date(p.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                  <p className="text-xs text-[#564240]">
+                    {new Date(p.createdAt).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </p>
                 </div>
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
-                  p.status === 'COMPLETED' ? 'bg-[#dcfce7] text-[#166534] border border-[#86efac]' : 'bg-[#fff0ed] text-[#564240]'
-                }`}>{p.status}</span>
+                <span
+                  className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                    p.status === 'COMPLETED'
+                      ? 'bg-[#dcfce7] text-[#166534] border border-[#86efac]'
+                      : 'bg-[#fff0ed] text-[#564240]'
+                  }`}
+                >
+                  {p.status}
+                </span>
               </div>
             ))}
           </div>

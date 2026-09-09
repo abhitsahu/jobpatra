@@ -14,8 +14,11 @@ export function LandingHero() {
         {/* Typography & CTA */}
         <div className="flex flex-col items-start gap-5 sm:gap-8">
           <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#ffe9e5] rounded-full shadow-sm">
-            <IconMapper name="auto_awesome" className="text-[#370003] text-sm"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="auto_awesome"
+              className="text-[#370003] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <span className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-widest">
               Introducing The Digital Nib
             </span>
@@ -37,7 +40,10 @@ export function LandingHero() {
               className="w-full sm:w-auto justify-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-full shadow-xl hover:scale-105 transition-transform duration-300 flex items-center gap-2 group"
             >
               Start Architecting
-              <IconMapper name="arrow_forward" className="text-sm transition-transform group-hover:translate-x-1" />
+              <IconMapper
+                name="arrow_forward"
+                className="text-sm transition-transform group-hover:translate-x-1"
+              />
             </Link>
 
             <div className="flex flex-col gap-1">
@@ -157,13 +163,19 @@ export function LandingHero() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Keywords</span>
-                <IconMapper name="check_circle" className="text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="check_circle"
+                  className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Formatting</span>
-                <IconMapper name="check_circle" className="text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="check_circle"
+                  className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Impact verbs</span>

@@ -95,23 +95,35 @@ export function AdminFeedbackClient({
           onChange={(e) => navigate(e.target.value, initialStatus, 1)}
           className="px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
         >
-          {TYPES.map((t) => <option key={t} value={t}>{t || 'All Types'}</option>)}
+          {TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t || 'All Types'}
+            </option>
+          ))}
         </select>
         <select
           defaultValue={initialStatus}
           onChange={(e) => navigate(initialType, e.target.value, 1)}
           className="px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
         >
-          {ALL_STATUSES.map((s) => <option key={s} value={s}>{s || 'All Statuses'}</option>)}
+          {ALL_STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s || 'All Statuses'}
+            </option>
+          ))}
         </select>
       </div>
 
-      <p className="text-xs font-semibold text-[#564240]">{total} feedback items{isPending ? ' — loading…' : ''}</p>
+      <p className="text-xs font-semibold text-[#564240]">
+        {total} feedback items{isPending ? ' — loading…' : ''}
+      </p>
 
       {/* List */}
       <div className="bg-white border border-[#ddc0bd] rounded-xl divide-y divide-[#ddc0bd]/50 shadow-xs overflow-hidden">
         {initialFeedbacks.length === 0 && (
-          <p className="px-5 py-8 text-sm text-[#564240] text-center">No feedback submissions found.</p>
+          <p className="px-5 py-8 text-sm text-[#564240] text-center">
+            No feedback submissions found.
+          </p>
         )}
         {initialFeedbacks.map((fb) => {
           const authorName = fb.user?.name ?? fb.name ?? 'Anonymous User';
@@ -122,16 +134,33 @@ export function AdminFeedbackClient({
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${TYPE_BADGE[fb.type] ?? ''}`}>{fb.type}</span>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[fb.status] ?? ''}`}>{fb.status}</span>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${TYPE_BADGE[fb.type] ?? ''}`}
+                    >
+                      {fb.type}
+                    </span>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[fb.status] ?? ''}`}
+                    >
+                      {fb.status}
+                    </span>
                     {fb.rating != null && (
-                      <span className="text-xs text-[#92400e] font-bold">{'★'.repeat(fb.rating)}{'☆'.repeat(5 - fb.rating)}</span>
+                      <span className="text-xs text-[#92400e] font-bold">
+                        {'★'.repeat(fb.rating)}
+                        {'☆'.repeat(5 - fb.rating)}
+                      </span>
                     )}
                   </div>
-                  <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display']">{fb.subject || '(No subject provided)'}</p>
+                  <p className="text-base font-bold text-[#2b1611] font-['Playfair_Display']">
+                    {fb.subject || '(No subject provided)'}
+                  </p>
                   <p className="text-xs text-[#564240] mt-1 font-medium">
                     {authorName} {authorEmail && `· ${authorEmail}`} ·{' '}
-                    {new Date(fb.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {new Date(fb.createdAt).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -143,9 +172,16 @@ export function AdminFeedbackClient({
                       disabled={updating === fb.id}
                       className="appearance-none pl-3 pr-7 py-1.5 text-xs font-semibold bg-white border border-[#ddc0bd] rounded-lg text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] disabled:opacity-50 shadow-2xs cursor-pointer"
                     >
-                      {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
                     </select>
-                    <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none" />
+                    <ChevronDown
+                      size={12}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none"
+                    />
                   </div>
                   <button
                     onClick={() => setExpanded(isExpanded ? null : fb.id)}

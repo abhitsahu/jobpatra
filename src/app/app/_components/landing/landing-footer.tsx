@@ -12,7 +12,10 @@ export function LandingFooter() {
           {/* Brand Col */}
           <div className="col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <Logo iconClassName="h-6 w-auto" textClassName="font-['Playfair_Display'] text-xl font-semibold text-[#370003]" />
+              <Logo
+                iconClassName="h-6 w-auto"
+                textClassName="font-['Playfair_Display'] text-xl font-semibold text-[#370003]"
+              />
             </Link>
             <p className="text-[#564240] font-['Hanken_Grotesk'] text-sm">
               Elevating professional storytelling through the digital nib.

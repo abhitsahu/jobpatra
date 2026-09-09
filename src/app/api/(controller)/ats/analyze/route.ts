@@ -100,10 +100,7 @@ export async function POST(req: Request) {
 
     // Map limits exceeded error specifically
     if (err instanceof Error && (err as any).code === 'LIMIT_EXCEEDED') {
-      return NextResponse.json(
-        { success: false, message: err.message },
-        { status: 403 }
-      );
+      return NextResponse.json({ success: false, message: err.message }, { status: 403 });
     }
 
     return _handleError(err);

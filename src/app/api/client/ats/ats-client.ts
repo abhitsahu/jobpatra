@@ -9,10 +9,7 @@
 
 import { apiFetch } from '@/app/api/client/_utils/api-client';
 import type { ATSAnalyzeRequestDTO } from '@/app/api/model/request/ats/analyze';
-import type {
-  ATSAnalyzeApiResponse,
-  ExtractJdApiResponse,
-} from '@/app/api/model/response/ats';
+import type { ATSAnalyzeApiResponse, ExtractJdApiResponse } from '@/app/api/model/response/ats';
 import type { ATSAnalyzeResponse } from '@/app/service/ai/types';
 
 export type ATSAnalyzeInput = ATSAnalyzeRequestDTO;

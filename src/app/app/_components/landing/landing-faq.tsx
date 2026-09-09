@@ -48,7 +48,10 @@ const faqs = [
 
 export function LandingFaq() {
   return (
-    <section className="w-full py-14 sm:py-24 bg-[#FFF8EE] border-t border-[#E5D9C8] relative" id="faq">
+    <section
+      className="w-full py-14 sm:py-24 bg-[#FFF8EE] border-t border-[#E5D9C8] relative"
+      id="faq"
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
           <div className="col-span-1 flex flex-col gap-4 sm:gap-6">
@@ -84,7 +87,10 @@ export function LandingFaq() {
               >
                 <summary className="flex justify-between items-center font-['Playfair_Display'] text-base sm:text-lg font-semibold text-[#370003] cursor-pointer p-4 sm:p-6 bg-[#FFF8F6] hover:bg-[#fff0ee] transition-colors outline-none list-none select-none gap-3">
                   <span>{faq.q}</span>
-                  <IconMapper name="expand_more" className="text-[#370003] transition-transform duration-300 group-open:rotate-180 shrink-0 text-xl" />
+                  <IconMapper
+                    name="expand_more"
+                    className="text-[#370003] transition-transform duration-300 group-open:rotate-180 shrink-0 text-xl"
+                  />
                 </summary>
                 <div className="p-4 sm:p-6 pt-0 font-['Hanken_Grotesk'] text-[13px] sm:text-sm text-[#564240] bg-[#FFF8F6] leading-relaxed">
                   {faq.a}

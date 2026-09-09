@@ -8,11 +8,11 @@ export function AboutClient() {
   return (
     <div className="min-h-screen bg-[#FFF8EE] text-[#2b1611] font-['Hanken_Grotesk'] pt-24 pb-20 px-4 md:px-16 selection:bg-[#370003] selection:text-white">
       <div className="max-w-5xl mx-auto space-y-24">
-
         {/* ── Section 1: Hero / Mission Statement ── */}
         <section className="text-center pt-8 md:pt-12 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#fff0ee] text-[#370003] border border-[#E5D9C8] mb-6 shadow-sm">
-            <IconMapper name="sparkles" className="text-sm text-[#370003]" /> Our Mission &amp; Vision
+            <IconMapper name="sparkles" className="text-sm text-[#370003]" /> Our Mission &amp;
+            Vision
           </div>
 
           <h1 className="font-['Playfair_Display'] text-[38px] sm:text-[48px] md:text-[62px] leading-[1.15] font-bold text-[#370003] max-w-4xl tracking-tight mb-6">
@@ -21,7 +21,8 @@ export function AboutClient() {
           </h1>
 
           <p className="text-[#564240] text-[17px] sm:text-[20px] leading-[28px] sm:leading-[32px] max-w-2xl font-normal mb-8">
-            JobPatra helps job seekers build, analyze, and optimize their resumes using AI-powered tools, so you can stand out in a crowded job market.
+            JobPatra helps job seekers build, analyze, and optimize their resumes using AI-powered
+            tools, so you can stand out in a crowded job market.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
@@ -30,7 +31,10 @@ export function AboutClient() {
               className="w-full sm:w-auto bg-[#370003] text-white font-semibold text-sm px-8 py-3.5 rounded-full hover:scale-105 transition-all shadow-md flex items-center justify-center gap-2 group"
             >
               <span>Build Your Resume</span>
-              <IconMapper name="arrow_forward" className="text-sm group-hover:translate-x-1 transition-transform" />
+              <IconMapper
+                name="arrow_forward"
+                className="text-sm group-hover:translate-x-1 transition-transform"
+              />
             </Link>
             <Link
               href="/app/ats-checker"
@@ -55,10 +59,15 @@ export function AboutClient() {
                 The Job Search Is Broken
               </h2>
               <p className="text-[#564240] text-base leading-relaxed">
-                Most resumes never reach a human recruiter. They get filtered out by <strong>ATS (Applicant Tracking Systems)</strong> before anyone even reads them.
+                Most resumes never reach a human recruiter. They get filtered out by{' '}
+                <strong>ATS (Applicant Tracking Systems)</strong> before anyone even reads them.
               </p>
               <p className="text-[#564240] text-base leading-relaxed">
-                Job seekers are left wondering: <span className="italic font-medium text-[#370003]">&ldquo;Did my resume even get seen?&rdquo;</span> Endless submissions into black-hole portals without feedback or closure.
+                Job seekers are left wondering:{' '}
+                <span className="italic font-medium text-[#370003]">
+                  &ldquo;Did my resume even get seen?&rdquo;
+                </span>{' '}
+                Endless submissions into black-hole portals without feedback or closure.
               </p>
               <div className="pt-2">
                 <div className="p-4 rounded-xl bg-white border border-[#E5D9C8] flex items-center gap-3">
@@ -87,7 +96,9 @@ export function AboutClient() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#ba1a1a] text-base font-bold">✕</span>
-                  <span>No feedback mechanism to evaluate relevance against the actual job description</span>
+                  <span>
+                    No feedback mechanism to evaluate relevance against the actual job description
+                  </span>
                 </li>
               </ul>
             </div>
@@ -101,7 +112,8 @@ export function AboutClient() {
               Build. Analyze. Improve.
             </h2>
             <p className="text-[#564240] text-base sm:text-lg">
-              A seamless, intelligent workflow engineered to maximize your interview conversion rate.
+              A seamless, intelligent workflow engineered to maximize your interview conversion
+              rate.
             </p>
           </div>
 
@@ -118,7 +130,9 @@ export function AboutClient() {
                   1. Build
                 </h3>
                 <p className="text-sm text-[#564240] leading-relaxed">
-                  Create a professional resume using our clean, intuitive builder with professionally designed templates calibrated for both human eyes and machine parsers.
+                  Create a professional resume using our clean, intuitive builder with
+                  professionally designed templates calibrated for both human eyes and machine
+                  parsers.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-[#E5D9C8]/60 text-xs font-semibold text-[#370003] flex items-center gap-1">
@@ -138,7 +152,8 @@ export function AboutClient() {
                   2. Analyze
                 </h3>
                 <p className="text-sm text-[#564240] leading-relaxed">
-                  Upload any job description and get an instant ATS score with detailed breakdowns of what&apos;s working, matched keywords, and critical gaps.
+                  Upload any job description and get an instant ATS score with detailed breakdowns
+                  of what&apos;s working, matched keywords, and critical gaps.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-[#E5D9C8]/60 text-xs font-semibold text-[#785800] flex items-center gap-1">
@@ -158,7 +173,8 @@ export function AboutClient() {
                   3. Improve
                 </h3>
                 <p className="text-sm text-[#564240] leading-relaxed">
-                  Get AI-powered suggestions that highlight exactly what to add, remove, or rewrite to maximize your ATS score and speak directly to recruiters.
+                  Get AI-powered suggestions that highlight exactly what to add, remove, or rewrite
+                  to maximize your ATS score and speak directly to recruiters.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-[#E5D9C8]/60 text-xs font-semibold text-[#370003] flex items-center gap-1">
@@ -175,7 +191,8 @@ export function AboutClient() {
               Trusted by Job Seekers
             </h2>
             <p className="text-[#564240] text-sm sm:text-base max-w-xl mx-auto">
-              Job seekers trust JobPatra to help them land their dream roles across modern tech, product, and business organizations.
+              Job seekers trust JobPatra to help them land their dream roles across modern tech,
+              product, and business organizations.
             </p>
           </div>
 
@@ -222,13 +239,18 @@ export function AboutClient() {
 
           <div className="space-y-4 text-[#564240] text-base sm:text-lg leading-relaxed max-w-3xl">
             <p>
-              JobPatra was born from a simple frustration: talented people were getting rejected by automated systems, not because they weren&apos;t qualified, but because their resumes weren&apos;t optimized for ATS filters.
+              JobPatra was born from a simple frustration: talented people were getting rejected by
+              automated systems, not because they weren&apos;t qualified, but because their resumes
+              weren&apos;t optimized for ATS filters.
             </p>
             <p>
-              We set out to build a tool that levels the playing field, giving every job seeker access to the same AI-powered insights that recruiters use.
+              We set out to build a tool that levels the playing field, giving every job seeker
+              access to the same AI-powered insights that recruiters use.
             </p>
             <p>
-              Today, JobPatra is helping job seekers across India build resumes that actually get noticed, ensuring their hard-earned experience and skills receive the fair spotlight they deserve.
+              Today, JobPatra is helping job seekers across India build resumes that actually get
+              noticed, ensuring their hard-earned experience and skills receive the fair spotlight
+              they deserve.
             </p>
           </div>
         </section>
@@ -261,7 +283,9 @@ export function AboutClient() {
               </div>
 
               <p className="text-sm text-[#564240] leading-relaxed">
-                Full-stack developer with a passion for building tools that make a difference. When I&apos;m not coding, I&apos;m helping friends and family polish their resumes. JobPatra is my way of bringing that help to everyone.
+                Full-stack developer with a passion for building tools that make a difference. When
+                I&apos;m not coding, I&apos;m helping friends and family polish their resumes.
+                JobPatra is my way of bringing that help to everyone.
               </p>
 
               <div className="pt-2 flex items-center justify-center sm:justify-start gap-3">
@@ -286,7 +310,8 @@ export function AboutClient() {
               Ready to Build Your Resume?
             </h2>
             <p className="text-[#FFF8EE]/80 text-base sm:text-lg leading-relaxed">
-              Join thousands of job seekers who are already building better resumes with JobPatra. It&apos;s free to start.
+              Join thousands of job seekers who are already building better resumes with JobPatra.
+              It&apos;s free to start.
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -305,7 +330,6 @@ export function AboutClient() {
             </div>
           </div>
         </section>
-
       </div>
     </div>
   );

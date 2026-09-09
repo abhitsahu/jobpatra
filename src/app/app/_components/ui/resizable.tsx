@@ -12,10 +12,7 @@ const ResizablePanelGroup = ({
 }: React.ComponentProps<typeof ResizablePrimitive.Group>) => (
   <ResizablePrimitive.Group
     orientation={orientation}
-    className={cn(
-      'flex h-full w-full data-[group-orientation=vertical]:flex-col',
-      className
-    )}
+    className={cn('flex h-full w-full data-[group-orientation=vertical]:flex-col', className)}
     {...props}
   />
 );
@@ -32,7 +29,7 @@ const ResizableHandle = ({
   <ResizablePrimitive.Separator
     className={cn(
       'relative flex w-[3px] items-center justify-center bg-[#ddc0bd] hover:bg-[#7a1f1f] active:bg-[#7a1f1f] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#7a1f1f] z-30 cursor-col-resize select-none data-[separator-orientation=vertical]:h-[3px] data-[separator-orientation=vertical]:w-full data-[separator-orientation=vertical]:cursor-row-resize',
-      className
+      className,
     )}
     {...props}
   >
@@ -61,9 +58,7 @@ const ssrSafeStorage: ResizablePrimitive.LayoutStorage = {
   },
 };
 
-const useDefaultLayout = (
-  props: Parameters<typeof ResizablePrimitive.useDefaultLayout>[0]
-) => {
+const useDefaultLayout = (props: Parameters<typeof ResizablePrimitive.useDefaultLayout>[0]) => {
   return ResizablePrimitive.useDefaultLayout({
     storage: ssrSafeStorage,
     ...props,

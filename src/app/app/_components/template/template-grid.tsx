@@ -13,7 +13,12 @@ interface TemplateGridProps {
   onPreview: (id: string) => void;
 }
 
-export function TemplateGrid({ templates, canAccessPremium = false, onUseTemplate, onPreview }: TemplateGridProps) {
+export function TemplateGrid({
+  templates,
+  canAccessPremium = false,
+  onUseTemplate,
+  onPreview,
+}: TemplateGridProps) {
   if (templates.length === 0) {
     return (
       <section className="max-w-7xl mx-auto px-4 md:px-16 py-16 text-center">

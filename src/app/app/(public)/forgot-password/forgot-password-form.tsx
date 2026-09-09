@@ -37,8 +37,11 @@ export function ForgotPasswordForm() {
       {submitted ? (
         <div className="space-y-6 text-center py-4">
           <header className="space-y-3">
-            <IconMapper name="mark_email_read" className="text-[#5b060c] text-5xl"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="mark_email_read"
+              className="text-[#5b060c] text-5xl"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
               Check your email
             </h3>

@@ -104,10 +104,7 @@ export function BillingClient() {
   };
 
   return (
-    <div
-      className="w-full"
-      style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-    >
+    <div className="w-full" style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>
       {/* Header */}
       <header className="mb-8 flex items-center justify-between border-b border-[#ddc0bd] pb-5">
         <div>
@@ -163,8 +160,7 @@ export function BillingClient() {
             className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
             style={{ background: '#fff0ed', border: '1px solid #ddc0bd' }}
           >
-            <IconMapper name="receipt_long" className="text-[#5b060c]"
-              style={{ fontSize: 28 }} />
+            <IconMapper name="receipt_long" className="text-[#5b060c]" style={{ fontSize: 28 }} />
           </div>
           <h2
             className="text-[20px] font-semibold text-[#5b060c] mb-2"
@@ -210,7 +206,9 @@ export function BillingClient() {
               >
                 {/* Invoice number */}
                 <div className="col-span-3">
-                  <p className="text-[14px] font-semibold text-[#2b1611]">{invoice.invoiceNumber}</p>
+                  <p className="text-[14px] font-semibold text-[#2b1611]">
+                    {invoice.invoiceNumber}
+                  </p>
                   {invoice.razorpayPaymentId && (
                     <p className="text-[11px] text-[#8a716f] mt-0.5 truncate">
                       {invoice.razorpayPaymentId}
@@ -246,7 +244,10 @@ export function BillingClient() {
                     >
                       {downloadingId === invoice.id ? (
                         <>
-                          <IconMapper name="progress_activity" className="text-[14px] animate-spin" />
+                          <IconMapper
+                            name="progress_activity"
+                            className="text-[14px] animate-spin"
+                          />
                           Downloading...
                         </>
                       ) : (

@@ -43,7 +43,10 @@ export function SearchFilter({
 
         {/* Search Input */}
         <div className="relative w-full md:w-80 shrink-0">
-          <IconMapper name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f] text-lg pointer-events-none" />
+          <IconMapper
+            name="search"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a716f] text-lg pointer-events-none"
+          />
           <input
             className="w-full bg-[#fff0ed] font-['Hanken_Grotesk'] text-[14px] leading-[20px] text-[#2b1611] py-2.5 pl-12 pr-10 rounded-full border border-[#ddc0bd] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c]/20 transition-all placeholder:text-[#8a716f]/60 shadow-xs"
             placeholder="Search collection..."

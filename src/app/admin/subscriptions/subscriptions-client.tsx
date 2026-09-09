@@ -42,19 +42,32 @@ const PLAN_BADGE: Record<string, string> = {
   ENTERPRISE: 'bg-[#e0f2fe] text-[#0369a1] border border-[#7dd3fc]',
 };
 
-export function AdminSubscriptionsClient({ initialSubs, total, page, totalPages, initialStatus }: Props) {
+export function AdminSubscriptionsClient({
+  initialSubs,
+  total,
+  page,
+  totalPages,
+  initialStatus,
+}: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const navigate = useCallback((status: string, newPage: number) => {
-    const p = new URLSearchParams();
-    if (status) p.set('status', status);
-    if (newPage > 1) p.set('page', String(newPage));
-    startTransition(() => router.push(`/admin/subscriptions?${p.toString()}`));
-  }, [router]);
+  const navigate = useCallback(
+    (status: string, newPage: number) => {
+      const p = new URLSearchParams();
+      if (status) p.set('status', status);
+      if (newPage > 1) p.set('page', String(newPage));
+      startTransition(() => router.push(`/admin/subscriptions?${p.toString()}`));
+    },
+    [router],
+  );
 
   const fmt = (n: number, currency = 'INR') =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
 
   return (
     <div className="space-y-4 font-['Hanken_Grotesk']">
@@ -64,9 +77,15 @@ export function AdminSubscriptionsClient({ initialSubs, total, page, totalPages,
           onChange={(e) => navigate(e.target.value, 1)}
           className="px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
         >
-          {STATUSES.map((s) => <option key={s} value={s}>{s || 'All Statuses'}</option>)}
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s || 'All Statuses'}
+            </option>
+          ))}
         </select>
-        <p className="py-2 text-xs font-semibold text-[#564240] self-center">{total} total subscriptions{isPending ? ' — loading…' : ''}</p>
+        <p className="py-2 text-xs font-semibold text-[#564240] self-center">
+          {total} total subscriptions{isPending ? ' — loading…' : ''}
+        </p>
       </div>
 
       <div className="bg-white border border-[#ddc0bd] rounded-xl overflow-hidden shadow-xs">
@@ -90,20 +109,28 @@ export function AdminSubscriptionsClient({ initialSubs, total, page, totalPages,
                     <p className="text-xs text-[#564240] mt-0.5">{s.user.email}</p>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${PLAN_BADGE[s.plan] ?? PLAN_BADGE.FREE}`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${PLAN_BADGE[s.plan] ?? PLAN_BADGE.FREE}`}
+                    >
                       {s.snapshotPlanName ?? s.plan}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[s.status] ?? ''}`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[s.status] ?? ''}`}
+                    >
                       {s.status}
                     </span>
                   </td>
                   <td className="px-5 py-3.5 text-[#564240] text-xs font-medium hidden md:table-cell">
-                    {s.currentPeriodEnd ? new Date(s.currentPeriodEnd).toLocaleDateString('en-IN') : '—'}
+                    {s.currentPeriodEnd
+                      ? new Date(s.currentPeriodEnd).toLocaleDateString('en-IN')
+                      : '—'}
                   </td>
                   <td className="px-5 py-3.5 text-[#2b1611] font-bold hidden lg:table-cell">
-                    {s.snapshotPriceInr != null ? fmt(s.snapshotPriceInr, s.snapshotCurrency ?? 'INR') : '—'}
+                    {s.snapshotPriceInr != null
+                      ? fmt(s.snapshotPriceInr, s.snapshotCurrency ?? 'INR')
+                      : '—'}
                   </td>
                   <td className="px-5 py-3.5">
                     <Link

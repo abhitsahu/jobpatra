@@ -11,12 +11,7 @@ interface LogoProps {
 
 export function LogoIcon({ className = 'h-7 w-auto' }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 36 36"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Outer circular container with deep burgundy fill */}
       <circle cx="18" cy="18" r="18" fill="#370003" />
       {/* Digital Nib body */}
@@ -27,19 +22,9 @@ export function LogoIcon({ className = 'h-7 w-auto' }: { className?: string }) {
       {/* Breather hole */}
       <circle cx="18" cy="18" r="2.25" fill="#370003" />
       {/* Nib slit */}
-      <path
-        d="M18 5.5V15.75"
-        stroke="#370003"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M18 5.5V15.75" stroke="#370003" strokeWidth="1.5" strokeLinecap="round" />
       {/* Wax Gold accent line */}
-      <path
-        d="M14 23.5H22"
-        stroke="#f6be39"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
+      <path d="M14 23.5H22" stroke="#f6be39" strokeWidth="1.75" strokeLinecap="round" />
     </svg>
   );
 }

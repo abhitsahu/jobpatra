@@ -40,8 +40,8 @@ export function WhyChoose() {
             AI Ready
           </h3>
           <p className="font-['Hanken_Grotesk'] text-[14px] sm:text-[15px] leading-[22px] sm:leading-[24px] text-[#564240]">
-            Integrated with our AI workshop, tailoring every line of experience to match the specific job
-            description you&apos;re targeting.
+            Integrated with our AI workshop, tailoring every line of experience to match the
+            specific job description you&apos;re targeting.
           </p>
         </div>
 
@@ -54,8 +54,8 @@ export function WhyChoose() {
             Instant Export
           </h3>
           <p className="font-['Hanken_Grotesk'] text-[14px] sm:text-[15px] leading-[22px] sm:leading-[24px] text-[#564240]">
-            High-resolution vector PDF generation ensures your resume looks as crisp on paper as it does on
-            a hiring manager&apos;s screen.
+            High-resolution vector PDF generation ensures your resume looks as crisp on paper as it
+            does on a hiring manager&apos;s screen.
           </p>
         </div>
       </div>

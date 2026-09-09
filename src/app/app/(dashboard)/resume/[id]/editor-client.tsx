@@ -49,7 +49,6 @@ const TEMPLATE_KEY_TO_EDITOR = Object.fromEntries(
 
 const DOC_WIDTH = 794;
 
-
 export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState('personalInfo');
@@ -527,7 +526,11 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       >
         <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
           {activeSection === 'personalInfo' && (
-            <PersonalInfoForm form={form} supportsPhoto={templateSupportsPhoto} resumeId={resumeId} />
+            <PersonalInfoForm
+              form={form}
+              supportsPhoto={templateSupportsPhoto}
+              resumeId={resumeId}
+            />
           )}
           {activeSection === 'summary' && <SummaryForm form={form} />}
           {activeSection === 'experience' && <ExperienceForm form={form} />}
@@ -656,7 +659,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                         const pages = doc.querySelectorAll('.pagedjs_page');
                         if (pages.length > 0) {
                           setPageCount(pages.length);
-                          setDocHeight(doc.body.scrollHeight || Math.max(1123, pages.length * 1147));
+                          setDocHeight(
+                            doc.body.scrollHeight || Math.max(1123, pages.length * 1147),
+                          );
                         }
                       } catch {}
                     }}
@@ -788,7 +793,11 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           </div>
         </div>
 
-        <PreviewSelectionToolbar iframeRef={iframeRef} zoom={Math.round(effectiveScale * 100)} form={form} />
+        <PreviewSelectionToolbar
+          iframeRef={iframeRef}
+          zoom={Math.round(effectiveScale * 100)}
+          form={form}
+        />
       </>
     );
   };
@@ -808,7 +817,10 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             <IconMapper name="arrow_back" className="text-[16px] sm:text-[18px]" />
           </button>
           <div className="flex items-center gap-1.5 min-w-0 max-w-[120px] xs:max-w-[160px] sm:max-w-[240px]">
-            <IconMapper name="description" className="text-[#7a1f1f] text-[18px] hidden xs:block shrink-0" />
+            <IconMapper
+              name="description"
+              className="text-[#7a1f1f] text-[18px] hidden xs:block shrink-0"
+            />
             <input
               id="editor-resume-title"
               type="text"
@@ -837,17 +849,26 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               </>
             ) : saveStatus === 'failed' ? (
               <>
-                <IconMapper name="cloud_off" className="text-[14px] sm:text-[16px] text-[#7a1f1f] shrink-0" />
+                <IconMapper
+                  name="cloud_off"
+                  className="text-[14px] sm:text-[16px] text-[#7a1f1f] shrink-0"
+                />
                 <span className="text-[#7a1f1f] hidden sm:inline">Save failed</span>
               </>
             ) : isDirty ? (
               <>
-                <IconMapper name="pending" className="text-[14px] sm:text-[16px] text-[#795900] shrink-0" />
+                <IconMapper
+                  name="pending"
+                  className="text-[14px] sm:text-[16px] text-[#795900] shrink-0"
+                />
                 <span className="text-[#795900] hidden sm:inline">Unsaved</span>
               </>
             ) : (
               <>
-                <IconMapper name="cloud_done" className="text-[14px] sm:text-[16px] text-emerald-600 shrink-0" />
+                <IconMapper
+                  name="cloud_done"
+                  className="text-[14px] sm:text-[16px] text-emerald-600 shrink-0"
+                />
                 <span className="text-emerald-600 hidden sm:inline">Saved</span>
               </>
             )}
@@ -863,7 +884,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             title={showMobilePreview ? 'Switch to Editor' : 'Switch to Live Preview'}
           >
             <IconMapper name={showMobilePreview ? 'edit' : 'visibility'} className="text-[16px]" />
-            <span className="hidden xs:inline text-[11px]">{showMobilePreview ? 'Edit' : 'Preview'}</span>
+            <span className="hidden xs:inline text-[11px]">
+              {showMobilePreview ? 'Edit' : 'Preview'}
+            </span>
           </button>
 
           <button
@@ -887,7 +910,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             ) : (
               <>
                 <IconMapper name="download" className="text-[16px] sm:hidden" />
-                <span><span className="hidden sm:inline">Finish & </span>Download</span>
+                <span>
+                  <span className="hidden sm:inline">Finish & </span>Download
+                </span>
               </>
             )}
           </button>

@@ -22,7 +22,11 @@ export async function getResumePhotoUploadUrl(
 /**
  * Step 2 of 2 — PUT the blob directly to S3 using the pre-signed URL.
  */
-export async function uploadBlobToS3(uploadUrl: string, blob: Blob, contentType: string): Promise<void> {
+export async function uploadBlobToS3(
+  uploadUrl: string,
+  blob: Blob,
+  contentType: string,
+): Promise<void> {
   const res = await fetch(uploadUrl, {
     method: 'PUT',
     headers: { 'Content-Type': contentType },

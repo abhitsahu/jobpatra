@@ -41,7 +41,9 @@ export function ImageEditorModal({
   const [rotate, setRotate] = useState(0);
   // SSR guard — document doesn't exist on the server
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Reset controls when modal opens
   useEffect(() => {
@@ -130,7 +132,9 @@ export function ImageEditorModal({
 
           {/* Rotate */}
           <div>
-            <p className="text-[11px] font-semibold text-[#564240] mb-1.5 uppercase tracking-wide">Rotate</p>
+            <p className="text-[11px] font-semibold text-[#564240] mb-1.5 uppercase tracking-wide">
+              Rotate
+            </p>
             <div className="flex gap-2">
               <button
                 type="button"

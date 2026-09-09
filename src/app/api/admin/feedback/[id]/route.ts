@@ -5,10 +5,7 @@ import { logAdminAction } from '@/app/api/admin/_lib/log-admin-action';
 
 const VALID_STATUSES = ['NEW', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'] as const;
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await withAdminAuth();
   if (auth instanceof NextResponse) return auth;
 
@@ -16,7 +13,7 @@ export async function PATCH(
   const body = await request.json();
   const { status } = body as { status: string };
 
-  if (!VALID_STATUSES.includes(status as typeof VALID_STATUSES[number])) {
+  if (!VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])) {
     return NextResponse.json({ success: false, message: 'Invalid status' }, { status: 400 });
   }
 

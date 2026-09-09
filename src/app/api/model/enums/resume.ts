@@ -5,7 +5,6 @@ export enum ResumeStatus {
   PROFILE = 'PROFILE',
 }
 
-
 export enum SkillCategory {
   TECHNICAL = 'TECHNICAL',
   SOFT = 'SOFT',

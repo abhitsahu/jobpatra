@@ -12,7 +12,11 @@ export async function GET() {
 export async function POST(request: Request) {
   const result = await withAdminAuth();
   if (result instanceof NextResponse) return result;
-  const body = await request.json() as { title: string; values: Record<string, string>; order?: number };
+  const body = (await request.json()) as {
+    title: string;
+    values: Record<string, string>;
+    order?: number;
+  };
   const feature = await prisma.comparisonFeature.create({
     data: { title: body.title, values: body.values, order: body.order ?? 0 },
   });
@@ -25,7 +29,11 @@ export async function PUT(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
-  const body = await request.json() as { title?: string; values?: Record<string, string>; order?: number };
+  const body = (await request.json()) as {
+    title?: string;
+    values?: Record<string, string>;
+    order?: number;
+  };
   const feature = await prisma.comparisonFeature.update({
     where: { id },
     data: {

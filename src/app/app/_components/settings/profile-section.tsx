@@ -65,7 +65,17 @@ export function ProfileSection() {
   // ── Form ─────────────────────────────────────────────────────────────────
   const form = useForm<UpdateResumeDTO>({
     defaultValues: {
-      personalInfo: { fullName: '', jobTitle: '', email: '', phone: '', location: '', website: '', linkedin: '', github: '', summary: '' },
+      personalInfo: {
+        fullName: '',
+        jobTitle: '',
+        email: '',
+        phone: '',
+        location: '',
+        website: '',
+        linkedin: '',
+        github: '',
+        summary: '',
+      },
       experiences: [],
       education: [],
       projects: [],
@@ -77,7 +87,10 @@ export function ProfileSection() {
     },
   });
 
-  const { reset, formState: { isDirty } } = form;
+  const {
+    reset,
+    formState: { isDirty },
+  } = form;
 
   // The User row owns account-level identity while the hidden PROFILE resume
   // owns detailed career data. Fall back to User values for an older/empty
@@ -102,67 +115,75 @@ export function ProfileSection() {
         github: personalInfo?.github ?? '',
         summary: personalInfo?.summary ?? '',
       },
-      experiences: profileResume?.experiences?.map((e) => ({
-        company: e.company,
-        position: e.position,
-        location: e.location ?? '',
-        startDate: e.startDate,
-        endDate: e.endDate ?? '',
-        currentlyWorking: e.currentlyWorking ?? false,
-        description: e.description ?? '',
-        highlights: e.highlights ?? [],
-        order: e.order,
-      })) ?? [],
-      education: profileResume?.education?.map((e) => ({
-        institution: e.institution,
-        degree: e.degree,
-        fieldOfStudy: e.fieldOfStudy ?? '',
-        startDate: e.startDate,
-        endDate: e.endDate ?? '',
-        result: e.result ?? '',
-        order: e.order,
-      })) ?? [],
-      projects: profileResume?.projects?.map((p) => ({
-        title: p.title,
-        field: p.field ?? '',
-        startDate: p.startDate ?? '',
-        endDate: p.endDate ?? '',
-        description: p.description ?? '',
-        technologies: p.technologies ?? [],
-        link: p.link ?? '',
-        order: p.order,
-      })) ?? [],
-      skills: profileResume?.skills?.map((s) => ({
-        name: s.name,
-        category: s.category as SkillCategory,
-        order: s.order,
-      })) ?? [],
-      certifications: profileResume?.certifications?.map((c) => ({
-        name: c.name,
-        issuer: c.issuer ?? '',
-        date: c.date ?? '',
-        url: c.url ?? '',
-        order: c.order,
-      })) ?? [],
-      achievements: profileResume?.achievements?.map((a) => ({
-        title: a.title,
-        date: a.date ?? '',
-        description: a.description ?? '',
-        order: a.order,
-      })) ?? [],
-      languages: profileResume?.languages?.map((l) => ({
-        name: l.name,
-        proficiency: l.proficiency as LanguageProficiency,
-        order: l.order,
-      })) ?? [],
-      references: profileResume?.references?.map((r) => ({
-        name: r.name,
-        designation: r.designation ?? '',
-        company: r.company ?? '',
-        email: r.email ?? '',
-        phone: r.phone ?? '',
-        order: r.order,
-      })) ?? [],
+      experiences:
+        profileResume?.experiences?.map((e) => ({
+          company: e.company,
+          position: e.position,
+          location: e.location ?? '',
+          startDate: e.startDate,
+          endDate: e.endDate ?? '',
+          currentlyWorking: e.currentlyWorking ?? false,
+          description: e.description ?? '',
+          highlights: e.highlights ?? [],
+          order: e.order,
+        })) ?? [],
+      education:
+        profileResume?.education?.map((e) => ({
+          institution: e.institution,
+          degree: e.degree,
+          fieldOfStudy: e.fieldOfStudy ?? '',
+          startDate: e.startDate,
+          endDate: e.endDate ?? '',
+          result: e.result ?? '',
+          order: e.order,
+        })) ?? [],
+      projects:
+        profileResume?.projects?.map((p) => ({
+          title: p.title,
+          field: p.field ?? '',
+          startDate: p.startDate ?? '',
+          endDate: p.endDate ?? '',
+          description: p.description ?? '',
+          technologies: p.technologies ?? [],
+          link: p.link ?? '',
+          order: p.order,
+        })) ?? [],
+      skills:
+        profileResume?.skills?.map((s) => ({
+          name: s.name,
+          category: s.category as SkillCategory,
+          order: s.order,
+        })) ?? [],
+      certifications:
+        profileResume?.certifications?.map((c) => ({
+          name: c.name,
+          issuer: c.issuer ?? '',
+          date: c.date ?? '',
+          url: c.url ?? '',
+          order: c.order,
+        })) ?? [],
+      achievements:
+        profileResume?.achievements?.map((a) => ({
+          title: a.title,
+          date: a.date ?? '',
+          description: a.description ?? '',
+          order: a.order,
+        })) ?? [],
+      languages:
+        profileResume?.languages?.map((l) => ({
+          name: l.name,
+          proficiency: l.proficiency as LanguageProficiency,
+          order: l.order,
+        })) ?? [],
+      references:
+        profileResume?.references?.map((r) => ({
+          name: r.name,
+          designation: r.designation ?? '',
+          company: r.company ?? '',
+          email: r.email ?? '',
+          phone: r.phone ?? '',
+          order: r.order,
+        })) ?? [],
     });
   }, [profileResume, profileResumeId, reset, userProfile, isDirty]);
 
@@ -221,7 +242,9 @@ export function ProfileSection() {
         <div className="flex gap-8">
           <Skeleton className="w-32 h-40 rounded-sm shrink-0" />
           <div className="flex-1 grid grid-cols-2 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-10" />)}
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="h-10" />
+            ))}
           </div>
         </div>
       </SheetCard>
@@ -276,7 +299,10 @@ export function ProfileSection() {
         {/* ── Save Footer ──────────────────────────────────────────────────── */}
         <div className="mt-8 flex items-center justify-between border-t border-[#E5D9C8] pt-6">
           {/* Status indicator */}
-          <div className="flex items-center gap-2 text-[13px]" style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>
+          <div
+            className="flex items-center gap-2 text-[13px]"
+            style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+          >
             {saveStatus === 'saving' && (
               <>
                 <span className="w-3.5 h-3.5 border-2 border-[#5b060c]/20 border-t-[#5b060c] rounded-full animate-spin" />

@@ -86,7 +86,10 @@ export function LandingFeatures() {
   return (
     <>
       {/* Core Features & Highlights Section */}
-      <section className="w-full py-14 sm:py-24 bg-[#FFF8F6] relative overflow-hidden" id="features">
+      <section
+        className="w-full py-14 sm:py-24 bg-[#FFF8F6] relative overflow-hidden"
+        id="features"
+      >
         <div className="max-w-7xl mx-auto px-4 md:px-16">
           <div className="text-center mb-12 sm:mb-20 flex flex-col items-center">
             <h2 className="font-['Playfair_Display'] text-[26px] sm:text-[36px] md:text-[48px] leading-tight md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] mb-4 sm:mb-6">
@@ -271,8 +274,7 @@ export function LandingFeatures() {
                   </div>
                   <div className="flex flex-col gap-2 relative z-10">
                     <span className="text-xs uppercase text-[#370003] font-bold tracking-wider flex items-center gap-1">
-                      <IconMapper name="auto_awesome" className="text-sm" /> After
-                      AI Optimization
+                      <IconMapper name="auto_awesome" className="text-sm" /> After AI Optimization
                     </span>
                     <div className="bg-[#5b060c]/10 border border-[#370003]/20 p-4 rounded-lg text-[#2b1611] font-['Hanken_Grotesk'] shadow-inner">
                       &ldquo;Developed and optimized RESTful APIs using Node.js, improving system
@@ -383,8 +385,8 @@ export function LandingFeatures() {
                 The Modern Artisan&apos;s Toolkit
               </h2>
               <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
-                Precision engineering meets editorial elegance. Our suite is designed to curate
-                your professional history into a compelling narrative artifact.
+                Precision engineering meets editorial elegance. Our suite is designed to curate your
+                professional history into a compelling narrative artifact.
               </p>
             </div>
           </div>
@@ -403,8 +405,8 @@ export function LandingFeatures() {
                 </h3>
                 <p className="font-['Hanken_Grotesk'] text-base text-[#564240]">
                   Construct your profile with structural integrity. Our AI contextualizes your
-                  experience, suggesting impactful phrasing and optimal layouts for readability
-                  and presence.
+                  experience, suggesting impactful phrasing and optimal layouts for readability and
+                  presence.
                 </p>
               </div>
 

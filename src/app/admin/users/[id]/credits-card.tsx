@@ -68,8 +68,10 @@ export function UserCreditsCard({
   const atsRemaining = Math.max(0, initialAtsLimit - initialAtsUsed);
   const aiRemaining = Math.max(0, initialAiLimit - initialAiUsed);
 
-  const atsPercent = initialAtsLimit > 0 ? Math.min(100, Math.round((initialAtsUsed / initialAtsLimit) * 100)) : 0;
-  const aiPercent = initialAiLimit > 0 ? Math.min(100, Math.round((initialAiUsed / initialAiLimit) * 100)) : 0;
+  const atsPercent =
+    initialAtsLimit > 0 ? Math.min(100, Math.round((initialAtsUsed / initialAtsLimit) * 100)) : 0;
+  const aiPercent =
+    initialAiLimit > 0 ? Math.min(100, Math.round((initialAiUsed / initialAiLimit) * 100)) : 0;
 
   return (
     <div className="bg-white border border-[#ddc0bd] rounded-xl p-5 shadow-xs font-['Hanken_Grotesk']">
@@ -109,8 +111,12 @@ export function UserCreditsCard({
               />
             </div>
             <div className="flex justify-between text-xs text-[#564240]">
-              <span>Used: <strong>{initialAtsUsed}</strong></span>
-              <span>Total Limit: <strong>{initialAtsLimit}</strong></span>
+              <span>
+                Used: <strong>{initialAtsUsed}</strong>
+              </span>
+              <span>
+                Total Limit: <strong>{initialAtsLimit}</strong>
+              </span>
             </div>
           </div>
 
@@ -129,8 +135,12 @@ export function UserCreditsCard({
               />
             </div>
             <div className="flex justify-between text-xs text-[#564240]">
-              <span>Used: <strong>{initialAiUsed}</strong></span>
-              <span>Total Limit: <strong>{initialAiLimit}</strong></span>
+              <span>
+                Used: <strong>{initialAiUsed}</strong>
+              </span>
+              <span>
+                Total Limit: <strong>{initialAiLimit}</strong>
+              </span>
             </div>
           </div>
         </div>
@@ -143,7 +153,9 @@ export function UserCreditsCard({
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-[#564240] mb-1">Total Limit</label>
+                <label className="block text-[11px] font-semibold text-[#564240] mb-1">
+                  Total Limit
+                </label>
                 <input
                   type="number"
                   min="0"
@@ -153,7 +165,9 @@ export function UserCreditsCard({
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-[#564240] mb-1">Scans Used</label>
+                <label className="block text-[11px] font-semibold text-[#564240] mb-1">
+                  Scans Used
+                </label>
                 <input
                   type="number"
                   min="0"
@@ -187,7 +201,9 @@ export function UserCreditsCard({
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-[#564240] mb-1">Total Limit</label>
+                <label className="block text-[11px] font-semibold text-[#564240] mb-1">
+                  Total Limit
+                </label>
                 <input
                   type="number"
                   min="0"
@@ -197,7 +213,9 @@ export function UserCreditsCard({
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-[#564240] mb-1">Suggestions Used</label>
+                <label className="block text-[11px] font-semibold text-[#564240] mb-1">
+                  Suggestions Used
+                </label>
                 <input
                   type="number"
                   min="0"

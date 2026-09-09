@@ -118,8 +118,9 @@ export function LandingNavbar() {
 
         {/* Mobile Hamburger Button */}
         <div className="flex md:hidden items-center gap-2">
-          {!isAuthPage && authChecked && (
-            isLoggedIn ? (
+          {!isAuthPage &&
+            authChecked &&
+            (isLoggedIn ? (
               <Link
                 href="/app/dashboard"
                 className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-1.5"
@@ -134,8 +135,7 @@ export function LandingNavbar() {
               >
                 Get Started
               </Link>
-            )
-          )}
+            ))}
           <button
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}

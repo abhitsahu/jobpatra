@@ -13,7 +13,13 @@ interface PreviewModalProps {
   canAccessPremium?: boolean;
 }
 
-export function PreviewModal({ isOpen, onClose, template, onUseTemplate, canAccessPremium }: PreviewModalProps) {
+export function PreviewModal({
+  isOpen,
+  onClose,
+  template,
+  onUseTemplate,
+  canAccessPremium,
+}: PreviewModalProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -26,7 +26,10 @@ export async function GET(_req: Request, { params }: RouteContext) {
     return NextResponse.json({ success: true, data: record });
   } catch (err) {
     console.error('[GET /api/ats/result/[id]]', err);
-    return NextResponse.json({ success: false, message: 'Failed to fetch analysis' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to fetch analysis' },
+      { status: 500 },
+    );
   }
 }
 
@@ -41,6 +44,9 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('[DELETE /api/ats/result/[id]]', err);
-    return NextResponse.json({ success: false, message: 'Failed to delete analysis' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to delete analysis' },
+      { status: 500 },
+    );
   }
 }

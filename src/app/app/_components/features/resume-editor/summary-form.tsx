@@ -40,9 +40,7 @@ export function SummaryForm({ form }: SummaryFormProps) {
         <AIImproveButton
           sectionType="summary"
           currentText={watch('personalInfo.summary') ?? ''}
-          onAccept={(newText) =>
-            setValue('personalInfo.summary', newText, { shouldDirty: true })
-          }
+          onAccept={(newText) => setValue('personalInfo.summary', newText, { shouldDirty: true })}
         />
       </div>
     </div>

@@ -34,7 +34,13 @@ export default function ResultPage() {
       education_score: dbRecord.educationScore,
       summary_score: dbRecord.summaryScore,
       formatting_score: dbRecord.formattingScore,
-      matched_keywords: dbRecord.matchedKeywords.map((k) => ({ keyword: k, matchType: 'EXACT', similarity: null, matched_jd_keyword: null, is_related_concept: false })),
+      matched_keywords: dbRecord.matchedKeywords.map((k) => ({
+        keyword: k,
+        matchType: 'EXACT',
+        similarity: null,
+        matched_jd_keyword: null,
+        is_related_concept: false,
+      })),
       missing_keywords: dbRecord.missingKeywords,
       related_keywords: [],
       matched_skills: dbRecord.matchedSkills,
@@ -110,7 +116,6 @@ export default function ResultPage() {
       </div>
     );
   }
-
 
   const scoreColour = (score: number) => {
     if (score >= 80) return 'text-[#1B5E20]';
@@ -210,8 +215,11 @@ export default function ResultPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-[#5b060c] pb-8 mb-8 gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <IconMapper name="description" className="text-[#5b060c]"
-                style={{ fontVariationSettings: "'FILL' 1" }} />
+              <IconMapper
+                name="description"
+                className="text-[#5b060c]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              />
               <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] tracking-[0.05em] font-semibold text-[#5b060c] uppercase">
                 Official Dossier
               </span>
@@ -423,7 +431,10 @@ export default function ResultPage() {
                             className="flex items-center justify-between text-[13px] border-b border-[#E5D9C8]/20 pb-1.5 last:border-0 last:pb-0"
                           >
                             <span className="text-[#2b1611] flex items-center gap-2">
-                              <IconMapper name="check_circle" className="text-[16px] text-green-600" />
+                              <IconMapper
+                                name="check_circle"
+                                className="text-[16px] text-green-600"
+                              />
                               {kw.keyword}
                             </span>
                             <span className="text-[9px] font-bold text-[#564240] bg-[#e5d9c8]/50 px-1.5 py-0.5 rounded">
@@ -615,7 +626,12 @@ export default function ResultPage() {
                                         }}
                                         className="flex items-center gap-1 text-[11px] font-semibold text-[#7a1f1f] hover:text-[#5c1616] transition-colors"
                                       >
-                                        <IconMapper name={copiedRecId === idx ? 'check_circle' : 'content_copy'} className="text-[16px]" />
+                                        <IconMapper
+                                          name={
+                                            copiedRecId === idx ? 'check_circle' : 'content_copy'
+                                          }
+                                          className="text-[16px]"
+                                        />
                                         {copiedRecId === idx ? 'Copied!' : 'Copy to Clipboard'}
                                       </button>
                                     </div>

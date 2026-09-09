@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   if (auth instanceof NextResponse) return auth;
 
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get('type') ?? '';   // BUG | FEATURE | GENERAL | COMPLIMENT
+  const type = searchParams.get('type') ?? ''; // BUG | FEATURE | GENERAL | COMPLIMENT
   const status = searchParams.get('status') ?? ''; // NEW | IN_PROGRESS | RESOLVED | CLOSED
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
   const skip = (page - 1) * PAGE_SIZE;
@@ -32,5 +32,11 @@ export async function GET(request: Request) {
     prisma.feedback.count({ where }),
   ]);
 
-  return NextResponse.json({ feedbacks, total, page, pageSize: PAGE_SIZE, totalPages: Math.ceil(total / PAGE_SIZE) });
+  return NextResponse.json({
+    feedbacks,
+    total,
+    page,
+    pageSize: PAGE_SIZE,
+    totalPages: Math.ceil(total / PAGE_SIZE),
+  });
 }

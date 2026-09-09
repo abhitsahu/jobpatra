@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/app/_lib/prisma';
 import { withAdminAuth } from '../_lib/with-admin-auth';
 import { invalidatePlanLimitsCache } from '@/app/service/subscription/plan-limit.service';
-import type { CreatePricingPlanRequest, UpdatePricingPlanRequest } from '@/app/api/model/request/pricing/pricing';
+import type {
+  CreatePricingPlanRequest,
+  UpdatePricingPlanRequest,
+} from '@/app/api/model/request/pricing/pricing';
 
 export async function GET() {
   const result = await withAdminAuth();

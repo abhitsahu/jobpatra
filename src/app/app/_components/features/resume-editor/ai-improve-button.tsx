@@ -189,7 +189,10 @@ export function AIImproveButton({
           title={!currentText.trim() ? 'Add some text first' : 'Improve this section with AI'}
           id={`ai-improve-btn-${sectionType}`}
         >
-          <IconMapper name="auto_fix" className="text-[16px] group-hover:rotate-12 transition-transform" />
+          <IconMapper
+            name="auto_fix"
+            className="text-[16px] group-hover:rotate-12 transition-transform"
+          />
           <span>{label}</span>
         </button>
       </div>
@@ -216,15 +219,21 @@ export function AIImproveButton({
   if (uiState === 'error') {
     return (
       <div className="mt-3 flex items-start gap-2 rounded-lg px-4 py-3 bg-[#fff0ed] border border-[#ddc0bd]/60">
-        <IconMapper name="error" className="text-[#7a1f1f] text-[18px] shrink-0 mt-0.5"
-          style={{ fontVariationSettings: "'FILL' 1" }} />
+        <IconMapper
+          name="error"
+          className="text-[#7a1f1f] text-[18px] shrink-0 mt-0.5"
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        />
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-semibold text-[#2b1611] font-['Hanken_Grotesk']">
             {errorMessage}
           </p>
           <button
             type="button"
-            onClick={() => { setUiState('idle'); setErrorMessage(''); }}
+            onClick={() => {
+              setUiState('idle');
+              setErrorMessage('');
+            }}
             className="text-[11px] text-[#7a1f1f] underline underline-offset-2 mt-1 cursor-pointer hover:opacity-70"
           >
             Try again
@@ -232,7 +241,10 @@ export function AIImproveButton({
         </div>
         <button
           type="button"
-          onClick={() => { setUiState('idle'); setErrorMessage(''); }}
+          onClick={() => {
+            setUiState('idle');
+            setErrorMessage('');
+          }}
           className="text-[#7a1f1f] hover:opacity-70 cursor-pointer shrink-0"
         >
           <IconMapper name="close" className="text-[18px]" />

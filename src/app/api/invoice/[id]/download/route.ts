@@ -30,15 +30,15 @@ export async function GET(_req: Request, { params }: Params) {
     });
 
     if (!invoice || invoice.userId !== userId) {
-      return NextResponse.json(
-        { success: false, message: 'Invoice not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ success: false, message: 'Invoice not found' }, { status: 404 });
     }
 
     if (!invoice.pdfData) {
       return NextResponse.json(
-        { success: false, message: 'Invoice PDF is still being generated. Please try again in a moment.' },
+        {
+          success: false,
+          message: 'Invoice PDF is still being generated. Please try again in a moment.',
+        },
         { status: 202 },
       );
     }

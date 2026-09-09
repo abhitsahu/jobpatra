@@ -24,8 +24,11 @@ export function AccountSection() {
           bordered={false}
         >
           <div className="flex items-center gap-2">
-            <IconMapper name="verified" className="text-green-600"
-              style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="verified"
+              className="text-green-600"
+              style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
+            />
             <span
               className="text-[13px] text-[#564240]"
               style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}

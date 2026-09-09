@@ -29,7 +29,10 @@ function loadEnv(filePath) {
     const eq = trimmed.indexOf('=');
     if (eq === -1) continue;
     const key = trimmed.slice(0, eq).trim();
-    const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
+    const val = trimmed
+      .slice(eq + 1)
+      .trim()
+      .replace(/^["']|["']$/g, '');
     if (!process.env[key]) process.env[key] = val;
   }
 }
@@ -43,7 +46,9 @@ const {
 } = process.env;
 
 if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !BUCKET || !REGION) {
-  console.error('❌  Missing AWS env vars. Check AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET, AWS_REGION.');
+  console.error(
+    '❌  Missing AWS env vars. Check AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET, AWS_REGION.',
+  );
   process.exit(1);
 }
 
@@ -65,16 +70,18 @@ async function objectExists(key) {
 }
 
 async function upload(key, body, contentType) {
-  await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }));
+  await s3.send(
+    new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }),
+  );
 }
 
 // ── Content-type map ─────────────────────────────────────────────────────────
 const CONTENT_TYPES = {
   'metadata.json': 'application/json',
-  'template.hbs':  'text/plain',
-  'style.css':     'text/css',
-  'template.png':  'image/png',
-  'template.jpg':  'image/jpeg',
+  'template.hbs': 'text/plain',
+  'style.css': 'text/css',
+  'template.png': 'image/png',
+  'template.jpg': 'image/jpeg',
 };
 
 const TEMPLATE_FILES = Object.keys(CONTENT_TYPES);
@@ -94,7 +101,9 @@ if (!existsSync(TEMPLATES_DIR)) {
  */
 function scanLocalTemplates() {
   const results = [];
-  const topLevel = readdirSync(TEMPLATES_DIR, { withFileTypes: true }).filter((d) => d.isDirectory());
+  const topLevel = readdirSync(TEMPLATES_DIR, { withFileTypes: true }).filter((d) =>
+    d.isDirectory(),
+  );
 
   for (const entry of topLevel) {
     const entryPath = join(TEMPLATES_DIR, entry.name);
@@ -106,7 +115,9 @@ function scanLocalTemplates() {
       results.push({ id: meta.id || entry.name, dir: entryPath });
     } else {
       // Category: src/templates/<category>/<id>/
-      const subDirs = readdirSync(entryPath, { withFileTypes: true }).filter((d) => d.isDirectory());
+      const subDirs = readdirSync(entryPath, { withFileTypes: true }).filter((d) =>
+        d.isDirectory(),
+      );
       for (const sub of subDirs) {
         const subPath = join(entryPath, sub.name);
         const subMeta = join(subPath, 'metadata.json');
@@ -126,7 +137,7 @@ async function seedTemplates() {
   console.log(`🔍  Found ${templates.length} template(s) locally.\n`);
 
   let uploaded = 0;
-  let skipped  = 0;
+  let skipped = 0;
 
   for (const { id, dir } of templates) {
     console.log(`📁  Template: ${id}`);

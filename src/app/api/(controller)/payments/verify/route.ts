@@ -1,5 +1,8 @@
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
-import { activateUserSubscription, failUserPayment } from '@/app/service/subscription/subscription.service';
+import {
+  activateUserSubscription,
+  failUserPayment,
+} from '@/app/service/subscription/subscription.service';
 import { VerifyPaymentRequest } from '@/app/api/model/request/payments/order';
 import { VerifyPaymentResponse } from '@/app/api/model/response/payments/order';
 import { prisma } from '@/app/_lib/prisma';
@@ -19,7 +22,13 @@ export async function POST(request: Request) {
     const { planSlug, billingPeriod } = body;
 
     // 1. Basic validation
-    if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature || !planSlug || !billingPeriod) {
+    if (
+      !razorpayOrderId ||
+      !razorpayPaymentId ||
+      !razorpaySignature ||
+      !planSlug ||
+      !billingPeriod
+    ) {
       return NextResponse.json<VerifyPaymentResponse>(
         { success: false, message: 'Missing required validation fields' },
         { status: 400 },
@@ -37,10 +46,7 @@ export async function POST(request: Request) {
     }
 
     const payload = `${razorpayOrderId}|${razorpayPaymentId}`;
-    const generatedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex');
+    const generatedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
 
     const generatedBuffer = Buffer.from(generatedSignature, 'utf-8');
     const signatureBuffer = Buffer.from(razorpaySignature, 'utf-8');
@@ -111,24 +117,24 @@ export async function POST(request: Request) {
             currentPeriodStart: subscription?.currentPeriodStart,
             currentPeriodEnd: subscription?.currentPeriodEnd,
             limits: {
-              atsScans:       subscription?.snapshotLimitAts,
-              aiSuggestions:  subscription?.snapshotLimitAi,
+              atsScans: subscription?.snapshotLimitAts,
+              aiSuggestions: subscription?.snapshotLimitAi,
               templateAccess: subscription?.snapshotTemplateAccess,
             },
           },
           invoice: invoice
             ? {
                 invoiceNumber: invoice.invoiceNumber,
-                total:         invoice.total,
-                currency:      invoice.currency,
-                status:        invoice.status,
+                total: invoice.total,
+                currency: invoice.currency,
+                status: invoice.status,
                 // pdfUrl is null until the cron job generates it asynchronously
-                pdfUrl:        invoice.pdfUrl,
-                createdAt:     invoice.createdAt,
+                pdfUrl: invoice.pdfUrl,
+                createdAt: invoice.createdAt,
               }
             : null,
           razorpay: {
-            orderId:   razorpayOrderId,
+            orderId: razorpayOrderId,
             paymentId: razorpayPaymentId,
           },
         },
@@ -142,7 +148,6 @@ export async function POST(request: Request) {
       }
       throw err;
     }
-
   } catch (err) {
     console.error('[POST /api/payments/verify]', err);
     return NextResponse.json<VerifyPaymentResponse>(

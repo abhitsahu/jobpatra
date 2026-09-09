@@ -123,11 +123,7 @@ export function PersonalInfoForm({ form, supportsPhoto = false, resumeId }: Pers
                 <IconMapper name="autorenew" className="text-3xl text-[#7a1f1f] animate-spin" />
               </div>
             ) : photoUrl ? (
-              <img
-                src={photoUrl}
-                alt="Profile photo"
-                className="w-full h-full object-cover"
-              />
+              <img src={photoUrl} alt="Profile photo" className="w-full h-full object-cover" />
             ) : (
               <IconMapper name="account_circle" className="text-4xl text-[#ddc0bd]" />
             )}
@@ -177,7 +173,8 @@ export function PersonalInfoForm({ form, supportsPhoto = false, resumeId }: Pers
               )}
             </div>
             <p className="text-[12px] text-[#564240]">
-              Supports JPG, PNG, WebP, GIF, BMP, TIFF, HEIC up to 10MB. Includes built-in crop &amp; rotate editor.
+              Supports JPG, PNG, WebP, GIF, BMP, TIFF, HEIC up to 10MB. Includes built-in crop &amp;
+              rotate editor.
             </p>
           </div>
 

@@ -32,8 +32,20 @@ const SEED_PLANS = [
     limitAtsAnalysis: 1,
     limitAiSuggestion: 1,
     features: [
-      { id: 'ff1', feature: 'Select only free templates', available: true, highlight: false, order: 0 },
-      { id: 'ff2', feature: '1 ATS Score & AI Suggestion per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'ff1',
+        feature: 'Select only free templates',
+        available: true,
+        highlight: false,
+        order: 0,
+      },
+      {
+        id: 'ff2',
+        feature: '1 ATS Score & AI Suggestion per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
   {
@@ -57,7 +69,13 @@ const SEED_PLANS = [
     limitAiSuggestion: 15,
     features: [
       { id: 'pf1', feature: 'Select all templates', available: true, highlight: true, order: 0 },
-      { id: 'pf2', feature: '15 ATS Score & AI Suggestions per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'pf2',
+        feature: '15 ATS Score & AI Suggestions per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
   {
@@ -81,7 +99,13 @@ const SEED_PLANS = [
     limitAiSuggestion: 25,
     features: [
       { id: 'ef1', feature: 'Select all templates', available: true, highlight: true, order: 0 },
-      { id: 'ef2', feature: '25 ATS Score & AI Suggestions per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'ef2',
+        feature: '25 ATS Score & AI Suggestions per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
 ];
@@ -192,7 +216,13 @@ function formatPlan(plan: {
   displayOrder: number;
   limitAtsAnalysis: number;
   limitAiSuggestion: number;
-  features: { id: string; feature: string; available: boolean; highlight: boolean; order: number }[];
+  features: {
+    id: string;
+    feature: string;
+    available: boolean;
+    highlight: boolean;
+    order: number;
+  }[];
 }): PricingPlanResponse {
   return {
     id: plan.id,

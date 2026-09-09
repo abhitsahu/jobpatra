@@ -144,8 +144,11 @@ export function WaxSeal() {
         border: '2px solid #5c4300',
       }}
     >
-      <IconMapper name="workspace_premium" className="text-white"
-        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }} />
+      <IconMapper
+        name="workspace_premium"
+        className="text-white"
+        style={{ fontSize: 24, fontVariationSettings: "'FILL' 1" }}
+      />
     </div>
   );
 }

@@ -13,12 +13,18 @@ export async function GET(_req: Request, { params }: Params) {
     const ext = path.extname(template.thumbnailPath).toLowerCase();
     const contentType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
 
-    return new Response(fileBuffer.buffer.slice(fileBuffer.byteOffset, fileBuffer.byteOffset + fileBuffer.byteLength) as ArrayBuffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable',
+    return new Response(
+      fileBuffer.buffer.slice(
+        fileBuffer.byteOffset,
+        fileBuffer.byteOffset + fileBuffer.byteLength,
+      ) as ArrayBuffer,
+      {
+        headers: {
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
       },
-    });
+    );
   } catch (err) {
     console.error('[GET /api/template/[id]/thumbnail]', err);
     return new Response('Error loading thumbnail', { status: 500 });

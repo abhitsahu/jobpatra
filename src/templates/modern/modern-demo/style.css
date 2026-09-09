@@ -5,7 +5,9 @@
 
 /* ─── Reset & Base ───────────────────────────────────────────────────────── */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -17,7 +19,15 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
   font-size: 8.5pt;
   line-height: 1.38;
   color: #334155;
@@ -168,7 +178,10 @@ body {
 }
 
 /* Sidebar items (Certs, Awards) */
-.cert-list, .awards-list, .online-list, .languages-list {
+.cert-list,
+.awards-list,
+.online-list,
+.languages-list {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -393,7 +406,9 @@ body {
 
 /* ─── Print & PDF Formatting ─────────────────────────────────────────────── */
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   break-after: avoid;
   page-break-after: avoid;
 }
@@ -402,7 +417,7 @@ h1, h2, h3 {
   size: A4;
   margin: 10mm 12mm;
   @bottom-center {
-    content: "Page " counter(page) " of " counter(pages);
+    content: 'Page ' counter(page) ' of ' counter(pages);
     font-size: 8pt;
     color: #94a3b8;
     font-family: Inter, sans-serif;

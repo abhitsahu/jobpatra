@@ -15,7 +15,9 @@ interface ApiResponse<T> {
 // Single function for the entire pricing page — plans + comparison + testimonials
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function getPricingClient(currency: 'INR' | 'USD' = 'INR'): Promise<PricingPageResponse> {
+export async function getPricingClient(
+  currency: 'INR' | 'USD' = 'INR',
+): Promise<PricingPageResponse> {
   const url = `/api/public/pricing?currency=${currency}`;
   const res = await apiFetch<ApiResponse<PricingPageResponse>>(url);
   return res.data;

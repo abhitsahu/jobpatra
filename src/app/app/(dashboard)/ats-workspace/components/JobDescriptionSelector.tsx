@@ -19,7 +19,9 @@ export function JobDescriptionSelector({
   const [urlInput, setUrlInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [meta, setMeta] = useState<{ source?: 'httpx' | 'playwright'; charCount?: number } | null>(null);
+  const [meta, setMeta] = useState<{ source?: 'httpx' | 'playwright'; charCount?: number } | null>(
+    null,
+  );
 
   const handleTabChange = (newTab: 'paste' | 'url') => {
     setTab(newTab);
@@ -59,7 +61,6 @@ export function JobDescriptionSelector({
       setLoading(false);
     }
   };
-
 
   return (
     <div className="space-y-4">
@@ -151,7 +152,9 @@ export function JobDescriptionSelector({
               <div className="p-4 bg-[#fff8ee] border border-[#ddc0bd] rounded-xl flex items-center gap-3 text-[#7a1f1f]">
                 <IconMapper name="progress_activity" className="text-[24px] animate-spin" />
                 <div className="space-y-0.5">
-                  <p className="font-['Hanken_Grotesk'] text-[13px] font-bold">Extracting Job Description...</p>
+                  <p className="font-['Hanken_Grotesk'] text-[13px] font-bold">
+                    Extracting Job Description...
+                  </p>
                   <p className="font-['Hanken_Grotesk'] text-[11px] text-[#564240]">
                     JavaScript-heavy sites like LinkedIn or Indeed may take 8–15 seconds to render.
                   </p>
@@ -236,4 +239,3 @@ export function JobDescriptionSelector({
     </div>
   );
 }
-

@@ -38,9 +38,7 @@ export function FormArraySection<T extends FieldItem>({
   getItemSubtitle,
   renderItemFields,
 }: FormArraySectionProps<T>) {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(
-    fields.length > 0 ? 0 : null
-  );
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(fields.length > 0 ? 0 : null);
 
   useEffect(() => {
     if (fields.length > 0 && expandedIndex === null) {
@@ -56,9 +54,7 @@ export function FormArraySection<T extends FieldItem>({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[20px] font-bold text-[#7a1f1f] font-['Playfair_Display']">
-          {title}
-        </h3>
+        <h3 className="text-[20px] font-bold text-[#7a1f1f] font-['Playfair_Display']">{title}</h3>
         {fields.length > 0 && (
           <button
             type="button"
@@ -130,9 +126,7 @@ export function FormArraySection<T extends FieldItem>({
                     </div>
 
                     <div>
-                      <h4 className="text-[15px] font-semibold text-[#2b1611]">
-                        {itemTitle}
-                      </h4>
+                      <h4 className="text-[15px] font-semibold text-[#2b1611]">{itemTitle}</h4>
                       {itemSubtitle && (
                         <p className="text-[13px] text-[#564240]/80 mt-0.5 font-['Hanken_Grotesk']">
                           {itemSubtitle}

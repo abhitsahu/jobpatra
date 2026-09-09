@@ -11,8 +11,6 @@ import { PreviewModal } from '../../_components/template/preview-modal';
 import type { TemplateData } from '../../_components/template/template-card';
 import { getSessionClient } from '@/app/api/client/auth/auth-client';
 
-
-
 export default function TemplatesClient() {
   const router = useRouter();
   const [templates, setTemplates] = useState<TemplateData[]>([]);

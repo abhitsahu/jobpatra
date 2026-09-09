@@ -21,8 +21,11 @@ export function LandingTestimonials() {
           {/* Testimonial 1 */}
           <div className="bg-[#FFF8EE] p-6 sm:p-8 md:p-10 relative shadow-[0_2px_10px_rgba(78,52,46,0.05)] transform sm:-rotate-1 hover:rotate-0 transition-transform duration-300 border border-[#E5D9C8]">
             <div className="absolute inset-1 border border-[#E5D9C8]/50 pointer-events-none" />
-            <IconMapper name="format_quote" className="text-[#a23c3a] opacity-30 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="format_quote"
+              className="text-[#a23c3a] opacity-30 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <div className="relative z-10 mt-5 sm:mt-6 flex flex-col h-full justify-between">
               <p className="font-['Hanken_Grotesk'] text-sm sm:text-base md:text-lg text-[#2b1611] italic mb-6 sm:mb-8 leading-relaxed">
                 &ldquo;JobPatra feels less like software and more like a high-end stationery shop
@@ -50,8 +53,11 @@ export function LandingTestimonials() {
           {/* Testimonial 2 (Elevated) */}
           <div className="bg-[#FFF8EE] p-6 sm:p-8 md:p-10 relative shadow-[0_8px_30px_rgba(78,52,46,0.08)] transform sm:rotate-2 md:-translate-y-4 hover:rotate-0 transition-transform duration-300 z-20 border border-[#E5D9C8]">
             <div className="absolute inset-1 border border-[#E5D9C8] pointer-events-none" />
-            <IconMapper name="format_quote" className="text-[#370003] opacity-40 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="format_quote"
+              className="text-[#370003] opacity-40 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <div className="relative z-10 mt-5 sm:mt-6 flex flex-col h-full justify-between">
               <p className="font-['Hanken_Grotesk'] text-base md:text-lg text-[#2b1611] italic mb-6 sm:mb-8 leading-relaxed font-normal">
                 &ldquo;The ATS analyzer is ruthlessly effective. It highlighted structural flaws
@@ -85,8 +91,11 @@ export function LandingTestimonials() {
           {/* Testimonial 3 */}
           <div className="bg-[#FFF8EE] p-6 sm:p-8 md:p-10 relative shadow-[0_2px_10px_rgba(78,52,46,0.05)] transform sm:-rotate-2 hover:rotate-0 transition-transform duration-300 border border-[#E5D9C8]">
             <div className="absolute inset-1 border border-[#E5D9C8]/50 pointer-events-none" />
-            <IconMapper name="format_quote" className="text-[#a23c3a] opacity-30 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="format_quote"
+              className="text-[#a23c3a] opacity-30 text-3xl sm:text-4xl absolute top-5 sm:top-6 left-5 sm:left-6"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <div className="relative z-10 mt-5 sm:mt-6 flex flex-col h-full justify-between">
               <p className="font-['Hanken_Grotesk'] text-sm sm:text-base md:text-lg text-[#2b1611] italic mb-6 sm:mb-8 leading-relaxed">
                 &ldquo;Generating customized cover letters for distinct roles used to take hours.

@@ -55,7 +55,8 @@ export function LeaveEditorDialog({
                 Unsaved Changes
               </h3>
               <p className="text-sm text-[#564240] leading-relaxed">
-                You have unsaved edits in your resume. Do you want to save your progress before leaving the editor?
+                You have unsaved edits in your resume. Do you want to save your progress before
+                leaving the editor?
               </p>
             </div>
           </div>

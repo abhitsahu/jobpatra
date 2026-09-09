@@ -9,7 +9,11 @@ import Link from 'next/link';
 
 import { loginSchema } from '@/app/api/model/request/auth/auth';
 import type { LoginRequest } from '@/app/api/model/request/auth/auth';
-import { loginClient, googleLoginClient, getSessionClient } from '@/app/api/client/auth/auth-client';
+import {
+  loginClient,
+  googleLoginClient,
+  getSessionClient,
+} from '@/app/api/client/auth/auth-client';
 import { AuthCardLayout, AUTH_PAGE_CONFIGS } from '../../_components/auth/auth-card-layout';
 
 export function LoginForm() {

@@ -3,7 +3,11 @@ import { IconMapper } from '@/app/_components/icons/IconMapper';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAtsHistory, useDeleteAtsAnalysis, useClearAtsHistory } from '@/app/app/_hooks/use-ats-history';
+import {
+  useAtsHistory,
+  useDeleteAtsAnalysis,
+  useClearAtsHistory,
+} from '@/app/app/_hooks/use-ats-history';
 import { ConfirmationModal } from '@/app/app/_components/common/confirmation-modal';
 import { Pagination } from '@/app/app/_components/ui/pagination';
 

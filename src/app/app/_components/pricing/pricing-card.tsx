@@ -12,17 +12,22 @@ interface PricingCardProps {
 
 export function PricingCard({ plan, currency, onSelect, userPlan }: PricingCardProps) {
   const {
-    name, slug, priceInr, priceUsd, durationDays,
-    description, buttonText, buttonVariant, isPopular, features,
+    name,
+    slug,
+    priceInr,
+    priceUsd,
+    durationDays,
+    description,
+    buttonText,
+    buttonVariant,
+    isPopular,
+    features,
   } = plan;
 
   const symbol = currency === 'USD' ? '$' : '₹';
   const price = currency === 'USD' ? priceUsd : priceInr;
-  const billingLabel = slug === 'free'
-    ? '/forever'
-    : durationDays
-    ? `/${durationDays} days`
-    : '/month';
+  const billingLabel =
+    slug === 'free' ? '/forever' : durationDays ? `/${durationDays} days` : '/month';
 
   const dynamicTemplateText =
     plan.templateAccess === 'ALL' ? 'Select all templates' : 'Select only free templates';
@@ -60,12 +65,14 @@ export function PricingCard({ plan, currency, onSelect, userPlan }: PricingCardP
   const isDisabled = isFreePlan && isOnPaidPlan;
 
   const derivedButtonText = isCurrentPlan
-    ? (isFreePlan ? '✓ Current Plan' : ' Renew Plan')
+    ? isFreePlan
+      ? '✓ Current Plan'
+      : ' Renew Plan'
     : isFreePlan && isOnPaidPlan
-    ? 'Free'
-    : !isFreePlan && isOnPaidPlan && !isCurrentPlan
-    ? `Switch to ${name}`
-    : buttonText; // DB default
+      ? 'Free'
+      : !isFreePlan && isOnPaidPlan && !isCurrentPlan
+        ? `Switch to ${name}`
+        : buttonText; // DB default
 
   const cardBg = isPopular
     ? 'bg-[#2b1611] text-white border-[#7a1f1f]'
@@ -78,13 +85,15 @@ export function PricingCard({ plan, currency, onSelect, userPlan }: PricingCardP
   const buttonCls = isDisabled
     ? 'bg-[#e5d9c8] text-[#9e8880] cursor-not-allowed border border-[#ddc0bd]'
     : isCurrentPlan && !isFreePlan
-    ? 'bg-[#e8f5e9] text-[#1b5e20] border border-[#a5d6a7] hover:bg-[#d0ead2]'
-    : buttonVariant === 'solid' || isPopular
-    ? 'bg-[#f6be39] text-[#2b1611] hover:bg-[#e5ad2a]'
-    : 'bg-transparent border border-[#5b060c] text-[#5b060c] hover:bg-[#fff0ed]';
+      ? 'bg-[#e8f5e9] text-[#1b5e20] border border-[#a5d6a7] hover:bg-[#d0ead2]'
+      : buttonVariant === 'solid' || isPopular
+        ? 'bg-[#f6be39] text-[#2b1611] hover:bg-[#e5ad2a]'
+        : 'bg-transparent border border-[#5b060c] text-[#5b060c] hover:bg-[#fff0ed]';
 
   return (
-    <div className={`relative flex flex-col rounded-2xl border p-8 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg ${cardBg}`}>
+    <div
+      className={`relative flex flex-col rounded-2xl border p-8 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg ${cardBg}`}
+    >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="bg-[#f6be39] text-[#2b1611] text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow">
@@ -100,7 +109,8 @@ export function PricingCard({ plan, currency, onSelect, userPlan }: PricingCardP
 
       <div className="flex items-baseline mb-6">
         <span className={`text-4xl font-bold font-['Playfair_Display'] ${priceColor}`}>
-          {symbol}{price}
+          {symbol}
+          {price}
         </span>
         <span className={`ml-2 text-[14px] font-semibold ${labelColor}`}>{billingLabel}</span>
       </div>

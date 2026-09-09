@@ -41,9 +41,7 @@ export function AchievementsForm({ form }: AchievementsFormProps) {
       onAdd={handleAdd}
       onRemove={remove}
       onMove={move}
-      getItemTitle={(_, index) =>
-        watch(`achievements.${index}.title`) || 'Achievement Title'
-      }
+      getItemTitle={(_, index) => watch(`achievements.${index}.title`) || 'Achievement Title'}
       getItemSubtitle={(_, index) => watch(`achievements.${index}.date`) || 'Date'}
       renderItemFields={(_, index) => {
         const errorObj = errors.achievements?.[index];

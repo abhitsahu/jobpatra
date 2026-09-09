@@ -50,6 +50,9 @@ export async function POST(req: Request) {
     return NextResponse.json(responsePayload);
   } catch (err) {
     console.error('[POST /api/upload/resume-photo]', err);
-    return NextResponse.json({ success: false, message: 'Failed to generate upload URL' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to generate upload URL' },
+      { status: 500 },
+    );
   }
 }

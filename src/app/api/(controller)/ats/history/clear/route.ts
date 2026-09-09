@@ -16,6 +16,9 @@ export async function DELETE() {
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('[DELETE /api/ats/history/clear]', err);
-    return NextResponse.json({ success: false, message: 'Failed to clear history' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Failed to clear history' },
+      { status: 500 },
+    );
   }
 }

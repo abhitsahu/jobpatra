@@ -73,12 +73,13 @@ export function Header({ onToggleSidebar }: HeaderProps = {}) {
   const userEmail = userProfile?.email || '';
 
   // Get initials for fallback avatar (e.g. "AS" for "Abhit Sahu")
-  const initials = userName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('') || 'U';
+  const initials =
+    userName
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('') || 'U';
 
   const handleLogout = async () => {
     await logoutClient('/');
@@ -155,9 +156,7 @@ export function Header({ onToggleSidebar }: HeaderProps = {}) {
                   <p className="font-['Playfair_Display'] text-sm font-bold text-[#2b1611] truncate">
                     {userName}
                   </p>
-                  <p className="text-xs text-[#564240]/80 truncate">
-                    {userEmail}
-                  </p>
+                  <p className="text-xs text-[#564240]/80 truncate">{userEmail}</p>
                 </div>
               </div>
 
