@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { getAnalysisById, deleteAnalysis } from '@/app/service/ats/history.service';
+import { logger } from '@/lib/telemetry/logger';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -25,7 +26,9 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, data: record });
   } catch (err) {
-    console.error('[GET /api/ats/result/[id]]', err);
+    logger.error('ats.result.get.unexpected_error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: 'Failed to fetch analysis' },
       { status: 500 },
@@ -43,7 +46,9 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
     await deleteAnalysis(id, userId);
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[DELETE /api/ats/result/[id]]', err);
+    logger.error('ats.result.delete.unexpected_error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: 'Failed to delete analysis' },
       { status: 500 },
