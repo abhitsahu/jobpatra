@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/app/_lib/prisma';
 import { withAdminAuth } from '../../_lib/with-admin-auth';
 import { invalidatePlanLimitsCache } from '@/app/service/subscription/plan-limit.service';
+import { invalidatePricingCache } from '@/app/service/pricing/pricing.service';
 import type { ReorderPricingPlansRequest } from '@/app/api/model/request/pricing/pricing';
 
 export async function PUT(request: Request) {
@@ -16,6 +17,7 @@ export async function PUT(request: Request) {
     ),
   );
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
+  void invalidatePricingCache();
   return NextResponse.json({ success: true });
 }

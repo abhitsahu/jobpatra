@@ -2,6 +2,16 @@ interface ApiErrorBody {
   success: false;
   message?: string;
   errors?: Record<string, string[]>;
+  retryAfter?: number;
+}
+
+export class RateLimitError extends Error {
+  retryAfter: number;
+  constructor(message: string, retryAfter: number) {
+    super(message);
+    this.name = 'RateLimitError';
+    this.retryAfter = retryAfter;
+  }
 }
 
 export type ApiFetchOptions = Omit<RequestInit, 'credentials'>;
@@ -35,6 +45,10 @@ export async function apiFetch<T>(url: string, options: ApiFetchOptions = {}): P
 
     if (errorBody?.errors) {
       console.error('[API Validation Errors]', errorBody.errors);
+    }
+
+    if (response.status === 429) {
+      throw new RateLimitError(message, errorBody?.retryAfter ?? 60);
     }
 
     throw new Error(message);

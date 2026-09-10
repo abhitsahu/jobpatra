@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
+import { useRateLimit } from '@/app/app/_hooks/use-rate-limit';
+import { RateLimitError } from '@/app/api/client/_utils/api-client';
 
 import { resetPasswordSchema } from '@/app/api/model/request/auth/auth';
 import { resetPasswordClient } from '@/app/api/client/auth/auth-client';
@@ -34,6 +36,7 @@ export function ResetPasswordForm() {
 
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const { isRateLimited, secondsLeft, triggerRateLimit } = useRateLimit();
 
   const {
     register,
@@ -67,6 +70,10 @@ export function ResetPasswordForm() {
       setSuccess(true);
       setTimeout(() => router.push('/app/login'), 2500);
     } catch (err) {
+      if (err instanceof RateLimitError) {
+        triggerRateLimit(err.retryAfter);
+        return;
+      }
       setServerError(
         err instanceof Error ? err.message : 'Something went wrong. Please try again.',
       );
@@ -188,14 +195,23 @@ export function ResetPasswordForm() {
               {serverError}
             </p>
           )}
+          {/* Rate limit notice */}
+          {isRateLimited && (
+            <p
+              className="font-['Hanken_Grotesk'] text-[14px] text-[#ba1a1a] text-center"
+              role="alert"
+            >
+              Too many attempts. Please wait {secondsLeft}s before trying again.
+            </p>
+          )}
 
           <div className="pt-4">
             <button
               className="w-full bg-[#5b060c] text-white py-4 px-6 font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.2em] font-semibold uppercase shadow-lg hover:shadow-xl hover:bg-[#7a1f1f] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
               type="submit"
-              disabled={isSubmitting || !passwordReady}
+              disabled={isSubmitting || !passwordReady || isRateLimited}
             >
-              <span>{isSubmitting ? 'Updating...' : 'Reset Password'}</span>
+              <span>{isSubmitting ? 'Updating...' : isRateLimited ? `Try again in ${secondsLeft}s` : 'Reset Password'}</span>
               <IconMapper name="arrow_forward" className="text-sm" />
             </button>
           </div>

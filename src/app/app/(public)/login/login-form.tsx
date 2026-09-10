@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useRateLimit } from '@/app/app/_hooks/use-rate-limit';
 
 import { loginSchema } from '@/app/api/model/request/auth/auth';
 import type { LoginRequest } from '@/app/api/model/request/auth/auth';
@@ -21,6 +22,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { isRateLimited, secondsLeft, triggerRateLimit } = useRateLimit();
 
   const redirectPath = searchParams.get('redirect') || searchParams.get('callbackUrl');
   const template = searchParams.get('template');
@@ -41,6 +43,17 @@ export function LoginForm() {
     try {
       const result = await loginClient(data);
       if (!result.success) {
+        // NextAuth surfaces rate-limit as an error string containing retryAfter
+        const retryMatch = result.message?.match(/(\d+)\s*seconds?/i);
+        if (
+          result.message?.toLowerCase().includes('rate limit') ||
+          result.message?.toLowerCase().includes('too many')
+        ) {
+          const seconds = retryMatch ? parseInt(retryMatch[1], 10) : 900;
+          triggerRateLimit(seconds);
+          setServerError(null);
+          return;
+        }
         setServerError(result.message);
         return;
       }
@@ -133,14 +146,23 @@ export function LoginForm() {
             {serverError}
           </p>
         )}
+        {/* Rate limit notice */}
+        {isRateLimited && (
+          <p
+            className="font-['Hanken_Grotesk'] text-[14px] text-[#ba1a1a] text-center"
+            role="alert"
+          >
+            Too many login attempts. Please wait {secondsLeft}s before trying again.
+          </p>
+        )}
 
         <div className="pt-4">
           <button
             className="w-full bg-[#5b060c] text-white py-4 px-6 font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.2em] font-semibold uppercase shadow-lg hover:shadow-xl hover:bg-[#7a1f1f] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isRateLimited}
           >
-            <span>{isSubmitting ? 'Entering...' : 'Enter Workshop'}</span>
+            <span>{isSubmitting ? 'Entering...' : isRateLimited ? `Try again in ${secondsLeft}s` : 'Enter Workshop'}</span>
             <IconMapper name="arrow_forward" className="text-sm" />
           </button>
         </div>

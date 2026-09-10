@@ -5,6 +5,8 @@ import { useSubmitFeedback } from '@/app/app/_hooks/use-feedback';
 import { IconMapper } from '@/app/_components/icons/IconMapper';
 import { FeedbackType } from '@/app/api/model/enums/feedback';
 import { toast } from 'sonner';
+import { useRateLimit } from '@/app/app/_hooks/use-rate-limit';
+import { RateLimitError } from '@/app/api/client/_utils/api-client';
 
 interface FeedbackClientProps {
   user?: {
@@ -49,6 +51,7 @@ export function FeedbackClient({ user }: FeedbackClientProps) {
   const [message, setMessage] = useState('');
 
   const submitMutation = useSubmitFeedback();
+  const { isRateLimited, secondsLeft, triggerRateLimit } = useRateLimit();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +79,11 @@ export function FeedbackClient({ user }: FeedbackClientProps) {
       setSubject('');
       setMessage('');
     } catch (err: any) {
+      if (err instanceof RateLimitError) {
+        triggerRateLimit(err.retryAfter);
+        toast.error(`Too many submissions. Please wait ${err.retryAfter}s before trying again.`);
+        return;
+      }
       toast.error(err.message || 'Failed to submit feedback. Please try again.');
     }
   };
@@ -218,13 +226,18 @@ export function FeedbackClient({ user }: FeedbackClientProps) {
           </p>
           <button
             type="submit"
-            disabled={submitMutation.isPending || message.trim().length < 3}
+            disabled={submitMutation.isPending || message.trim().length < 3 || isRateLimited}
             className="w-full sm:w-auto bg-[#370003] text-white font-semibold text-sm px-8 py-3 rounded-full hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-md cursor-pointer flex items-center justify-center gap-2"
           >
             {submitMutation.isPending ? (
               <>
                 <IconMapper name="hourglass_empty" className="animate-spin text-sm" />
                 Sending...
+              </>
+            ) : isRateLimited ? (
+              <>
+                <IconMapper name="timer" className="text-sm" />
+                Try again in {secondsLeft}s
               </>
             ) : (
               <>

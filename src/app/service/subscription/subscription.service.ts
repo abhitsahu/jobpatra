@@ -192,7 +192,7 @@ export async function activateUserSubscription({
     return subscription;
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
   triggerInvoiceCronAsync();
 
   return result;
@@ -269,6 +269,6 @@ export async function expireSubscriptionIfDue(
     return downgraded;
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
   return updated;
 }

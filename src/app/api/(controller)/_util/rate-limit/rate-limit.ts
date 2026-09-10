@@ -101,9 +101,19 @@ const routeRules: RouteRule[] = [
   { pattern: /^\/api\/resume\/ai-improve$/, key: 'aiImprove', useUserId: true },
   { pattern: /^\/api\/resume\/[^/]+\/pdf$/, key: 'pdf', useUserId: true },
 
-  // Auth — per IP (no session established yet)
-  { pattern: /^\/api\/auth\/session$/, key: 'authSession' },
-  { pattern: /^\/api\/auth\//, key: 'auth' },
+  // Auth helpers — NextAuth's internal plumbing; must NEVER be rate-limited or
+  // NextAuth breaks and redirects to /api/auth/error with a raw 429 page.
+  { pattern: /^\/api\/auth\/session$/, skip: true },
+  { pattern: /^\/api\/auth\/providers$/, skip: true },
+  { pattern: /^\/api\/auth\/csrf$/, skip: true },
+  { pattern: /^\/api\/auth\/error$/, skip: true },
+  { pattern: /^\/api\/auth\/signout$/, skip: true },
+  { pattern: /^\/api\/auth\/_log$/, skip: true },
+
+  // Actual credential sign-in attempts — this is the only brute-force target.
+  // OAuth flows (/api/auth/signin/google, etc.) are intentionally excluded:
+  // they redirect to the provider and carry no password to brute-force.
+  { pattern: /^\/api\/auth\/callback\/credentials$/, key: 'auth' },
 
   // Public auth flows — per IP
   { pattern: /^\/api\/public\/signup$/, key: 'signup' },

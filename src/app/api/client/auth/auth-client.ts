@@ -75,11 +75,23 @@ export async function resendVerificationClient(
 
 // LOGIN WITH EMAIL + PASSWORD
 export async function loginClient(loginRequest: LoginRequest): Promise<LoginResponse> {
-  const result = await signIn('credentials', {
-    email: loginRequest.email,
-    password: loginRequest.password,
-    redirect: false,
-  });
+  let result;
+  try {
+    result = await signIn('credentials', {
+      email: loginRequest.email,
+      password: loginRequest.password,
+      redirect: false,
+    });
+  } catch (err) {
+    // NextAuth throws "Failed to construct 'URL': Invalid URL" when the server
+    // returns a 429 JSON body instead of a redirect URL.
+    // Surface it as a structured rate-limit response so the form can handle it.
+    const msg = err instanceof Error ? err.message : '';
+    if (msg.includes('URL') || msg.includes('construct')) {
+      return { success: false, message: 'Rate limit exceeded. Please retry after 900 seconds.' };
+    }
+    throw err;
+  }
 
   if (!result) {
     return { success: false, message: 'Login failed. Please try again.' };

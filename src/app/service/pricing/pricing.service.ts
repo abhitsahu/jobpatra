@@ -1,4 +1,5 @@
 import { prisma } from '@/app/_lib/prisma';
+import { buildKey, getOrSet, invalidate } from '@/app/_lib/cache';
 import { Currency, TemplateAccess } from '@/app/api/model/enums/currency';
 import type {
   PricingPageResponse,
@@ -256,51 +257,65 @@ function formatPlan(plan: {
 // MAIN SERVICE FUNCTION
 // ─────────────────────────────────────────────────────────────────────────────
 
+const PRICING_CACHE_KEY = buildKey('cache', 'pricing');
+const PRICING_CACHE_TTL = 60 * 60; // 1 hour
+
 export async function getPricingPage(_currency: string = 'INR'): Promise<PricingPageResponse> {
-  try {
-    const [plans, comparison, testimonials] = await Promise.all([
-      prisma.pricingPlan.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        include: { features: { orderBy: { order: 'asc' } } },
-      }),
-      prisma.comparisonFeature.findMany({ orderBy: { order: 'asc' } }),
-      prisma.testimonial.findMany({
-        where: { isActive: true },
-        orderBy: { order: 'asc' },
-      }),
-    ]);
+  return getOrSet(
+    PRICING_CACHE_KEY,
+    async () => {
+      try {
+        const [plans, comparison, testimonials] = await Promise.all([
+          prisma.pricingPlan.findMany({
+            where: { isActive: true },
+            orderBy: { displayOrder: 'asc' },
+            include: { features: { orderBy: { order: 'asc' } } },
+          }),
+          prisma.comparisonFeature.findMany({ orderBy: { order: 'asc' } }),
+          prisma.testimonial.findMany({
+            where: { isActive: true },
+            orderBy: { order: 'asc' },
+          }),
+        ]);
 
-    if (plans.length === 0) {
-      await seedPricingData();
-      return getPricingPage(_currency);
-    }
+        if (plans.length === 0) {
+          await seedPricingData();
+          return getPricingPage(_currency);
+        }
 
-    return {
-      plans: plans.map(formatPlan),
-      comparison: comparison.map((c) => ({
-        id: c.id,
-        title: c.title,
-        values: c.values as Record<string, string>,
-        order: c.order,
-      })),
-      testimonials: testimonials.map((t) => ({
-        id: t.id,
-        name: t.name,
-        designation: t.designation,
-        company: t.company,
-        image: t.image,
-        review: t.review,
-        rating: t.rating,
-        order: t.order,
-      })),
-    };
-  } catch (err) {
-    console.warn('[pricing.service] DB unavailable, using static fallback:', err);
-    return {
-      plans: SEED_PLANS.map(formatPlan),
-      comparison: SEED_COMPARISON,
-      testimonials: SEED_TESTIMONIALS,
-    };
-  }
+        return {
+          plans: plans.map(formatPlan),
+          comparison: comparison.map((c) => ({
+            id: c.id,
+            title: c.title,
+            values: c.values as Record<string, string>,
+            order: c.order,
+          })),
+          testimonials: testimonials.map((t) => ({
+            id: t.id,
+            name: t.name,
+            designation: t.designation,
+            company: t.company,
+            image: t.image,
+            review: t.review,
+            rating: t.rating,
+            order: t.order,
+          })),
+        };
+      } catch (err) {
+        console.warn('[pricing.service] DB unavailable, using static fallback:', err);
+        return {
+          plans: SEED_PLANS.map(formatPlan),
+          comparison: SEED_COMPARISON,
+          testimonials: SEED_TESTIMONIALS,
+        };
+      }
+    },
+    PRICING_CACHE_TTL,
+  );
+}
+
+/** Delete the pricing cache — call after any admin mutation to plans, features, or testimonials. */
+export async function invalidatePricingCache(): Promise<void> {
+  await invalidate(PRICING_CACHE_KEY);
 }
