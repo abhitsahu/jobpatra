@@ -46,7 +46,7 @@
     "pg": "^8.22.0",
     "puppeteer": "^25.2.1",
     "react": "19.2.3",
-    "react-avatar-editor": "^15.1.0",
+    "react-avatar-editor": "^16.0.0",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.80.0",
     "react-resizable-panels": "^4.12.3",
