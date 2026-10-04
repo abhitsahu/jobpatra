@@ -19,7 +19,9 @@ export function JobDescriptionSelector({
   const [urlInput, setUrlInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [meta, setMeta] = useState<{ source?: 'httpx' | 'playwright'; charCount?: number } | null>(null);
+  const [meta, setMeta] = useState<{ source?: 'httpx' | 'playwright'; charCount?: number } | null>(
+    null,
+  );
 
   const handleTabChange = (newTab: 'paste' | 'url') => {
     setTab(newTab);
@@ -60,7 +62,6 @@ export function JobDescriptionSelector({
     }
   };
 
-
   return (
     <div className="space-y-4">
       {/* Segmented Tab Controls */}
@@ -68,9 +69,9 @@ export function JobDescriptionSelector({
         <button
           type="button"
           onClick={() => handleTabChange('paste')}
-          className={`flex-1 py-2 font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             tab === 'paste'
-              ? 'bg-[#7a1f1f] text-white shadow-sm'
+              ? 'bg-[#5b060c] text-white shadow-xs'
               : 'text-[#564240] hover:bg-[#fff0ed]'
           }`}
         >
@@ -80,9 +81,9 @@ export function JobDescriptionSelector({
         <button
           type="button"
           onClick={() => handleTabChange('url')}
-          className={`flex-1 py-2 font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             tab === 'url'
-              ? 'bg-[#7a1f1f] text-white shadow-sm'
+              ? 'bg-[#5b060c] text-white shadow-xs'
               : 'text-[#564240] hover:bg-[#fff0ed]'
           }`}
         >
@@ -100,7 +101,7 @@ export function JobDescriptionSelector({
               onChange={(e) => handleTextChange(e.target.value)}
               placeholder="Paste the target job description details here..."
               rows={8}
-              className="w-full p-4 bg-white/60 border border-[#ddc0bd] rounded-xl font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] focus:ring-1 focus:ring-[#7a1f1f] placeholder-[#564240]/40 resize-none h-[220px]"
+              className="w-full p-4 bg-white/60 border border-[#ddc0bd] rounded-xl font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#5b060c] focus:ring-1 focus:ring-[#5b060c] placeholder-[#564240]/40 resize-none h-[220px]"
             />
             <div className="absolute bottom-3 right-3 text-[11px] text-[#564240]/50 font-['Hanken_Grotesk']">
               {jobDescriptionText.length} characters
@@ -117,7 +118,7 @@ export function JobDescriptionSelector({
               >
                 Target Job Posting URL
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2.5">
                 <input
                   type="url"
                   id="job-url"
@@ -125,12 +126,12 @@ export function JobDescriptionSelector({
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://careers.company.com/jobs/senior-software-engineer"
                   disabled={loading}
-                  className="flex-1 px-4 py-2.5 bg-white/60 border border-[#ddc0bd] rounded-lg font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] disabled:opacity-60"
+                  className="flex-1 px-4 py-2.5 bg-white/60 border border-[#ddc0bd] rounded-xl font-['Hanken_Grotesk'] text-[13px] text-[#2b1611] focus:outline-none focus:border-[#5b060c] disabled:opacity-60"
                 />
                 <button
                   type="submit"
                   disabled={!urlInput.trim() || loading}
-                  className="px-5 bg-[#7a1f1f] hover:bg-[#5b060c] disabled:opacity-50 text-white font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-1.5 shrink-0"
+                  className="px-5 py-2.5 bg-[#5b060c] hover:bg-[#7a1f1f] disabled:opacity-50 text-white font-['Hanken_Grotesk'] text-[12px] font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -151,7 +152,9 @@ export function JobDescriptionSelector({
               <div className="p-4 bg-[#fff8ee] border border-[#ddc0bd] rounded-xl flex items-center gap-3 text-[#7a1f1f]">
                 <IconMapper name="progress_activity" className="text-[24px] animate-spin" />
                 <div className="space-y-0.5">
-                  <p className="font-['Hanken_Grotesk'] text-[13px] font-bold">Extracting Job Description...</p>
+                  <p className="font-['Hanken_Grotesk'] text-[13px] font-bold">
+                    Extracting Job Description...
+                  </p>
                   <p className="font-['Hanken_Grotesk'] text-[11px] text-[#564240]">
                     JavaScript-heavy sites like LinkedIn or Indeed may take 8–15 seconds to render.
                   </p>
@@ -236,4 +239,3 @@ export function JobDescriptionSelector({
     </div>
   );
 }
-

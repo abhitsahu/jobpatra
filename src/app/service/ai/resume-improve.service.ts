@@ -11,14 +11,11 @@ import type {
   AIImproveSectionType,
   AIImproveRequestDTO,
 } from '@/app/api/model/request/resume/ai-improve';
+import type { ApiFetchOptions } from '@/app/api/client/_utils/api-client';
 
 export type SectionType = AIImproveSectionType;
-
-export interface ResumeImproveParams {
-  sectionType: SectionType;
-  currentText: string;
-  resumeContext?: string;
-}
+export type ResumeImproveParams = AIImproveRequestDTO;
+export type { AIImproveRequestDTO, ApiFetchOptions };
 
 /**
  * Send an improvement request and return the raw streaming ``Response``.
@@ -30,18 +27,27 @@ export interface ResumeImproveParams {
  *
  * @throws Error if the HTTP response is not ok (non-2xx).
  */
-export async function streamResumeImprovement(params: ResumeImproveParams): Promise<Response> {
+export async function streamResumeImprovement(
+  params: ResumeImproveParams,
+  options: ApiFetchOptions = {},
+): Promise<Response> {
+  const { headers: callerHeaders, ...restOptions } = options;
   const response = await fetch('/api/resume/ai-improve', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    cache: 'no-store',
+    headers: {
+      'Content-Type': 'application/json',
+      ...callerHeaders,
+    },
     body: JSON.stringify(params),
+    ...restOptions,
   });
 
   if (!response.ok) {
     // Parse JSON error body if possible
     const body = await response.json().catch(() => null);
-    const message =
-      body?.message ?? `AI improvement request failed with status ${response.status}`;
+    const message = body?.message ?? `AI improvement request failed with status ${response.status}`;
     const error = new Error(message) as Error & { status: number; remaining?: number };
     error.status = response.status;
     error.remaining = body?.remaining;

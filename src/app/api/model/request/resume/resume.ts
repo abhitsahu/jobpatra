@@ -8,6 +8,7 @@ import { ResumeStatus, SkillCategory, LanguageProficiency } from '@/app/api/mode
 
 export const personalInfoSchema = z.object({
   fullName: z.string().max(100).optional().default(''),
+  photoUrl: z.string().optional().or(z.literal('')),
   jobTitle: z.string().max(100).optional(),
   email: z.string().max(200).optional().default(''),
   phone: z.string().max(30).optional(),
@@ -165,7 +166,7 @@ export type UpdateResumeDTO = z.infer<typeof updateResumeSchema>;
 
 export const listResumesQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(50).default(10),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   status: z.nativeEnum(ResumeStatus).optional(),
 });
 

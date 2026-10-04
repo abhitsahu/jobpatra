@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/app/_lib/prisma';
 import { withAdminAuth } from '../_lib/with-admin-auth';
 import { invalidatePlanLimitsCache } from '@/app/service/subscription/plan-limit.service';
-import type { CreatePricingPlanRequest, UpdatePricingPlanRequest } from '@/app/api/model/request/pricing/pricing';
+import { invalidatePricingCache } from '@/app/service/pricing/pricing.service';
+import type {
+  CreatePricingPlanRequest,
+  UpdatePricingPlanRequest,
+} from '@/app/api/model/request/pricing/pricing';
 
 export async function GET() {
   const result = await withAdminAuth();
@@ -48,7 +52,8 @@ export async function POST(request: Request) {
     include: { features: true },
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
+  void invalidatePricingCache();
   return NextResponse.json({ success: true, data: plan }, { status: 201 });
 }
 
@@ -94,7 +99,8 @@ export async function PUT(request: Request) {
     include: { features: { orderBy: { order: 'asc' } } },
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
+  void invalidatePricingCache();
   return NextResponse.json({ success: true, data: plan });
 }
 
@@ -107,6 +113,7 @@ export async function DELETE(request: Request) {
   if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
 
   await prisma.pricingPlan.delete({ where: { id } });
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
+  void invalidatePricingCache();
   return NextResponse.json({ success: true });
 }

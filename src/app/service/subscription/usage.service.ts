@@ -1,16 +1,20 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
+import { SubscriptionPlan, UsageFeature } from '@/app/api/model/enums/subscription';
+import type { UsageTrackingRow } from '@/app/api/model/response/subscription';
 import { getPlanLimits } from './plan-limit.service';
 
+export { UsageFeature, SubscriptionPlan };
+export type { UsageTrackingRow };
+
 // Only ATS and AI are metered — resume and PDF limits removed
-const RESETTABLE_FEATURES = ['ATS_ANALYSIS', 'AI_SUGGESTION'];
+const RESETTABLE_FEATURES: string[] = [UsageFeature.ATS_ANALYSIS, UsageFeature.AI_SUGGESTION];
 
 type UsageClient = Prisma.TransactionClient | PrismaClient;
-type UsageTrackingRow = { used: number; limit: number | null; lastResetDate: Date | null };
 
 export async function checkAndIncrementUsage(
   tx: UsageClient,
   userId: string,
-  feature: string,
+  feature: UsageFeature | string,
   incrementBy = 1,
 ) {
   const subscription = await tx.subscription.findUnique({
@@ -18,17 +22,17 @@ export async function checkAndIncrementUsage(
   });
 
   const isExpired =
-    subscription?.plan !== 'FREE' &&
+    subscription?.plan !== SubscriptionPlan.FREE &&
     subscription?.currentPeriodEnd != null &&
     subscription.currentPeriodEnd < new Date();
 
   // Resolve limit: stacked `limit` column wins; fall back to plan default
-  const planSlug = isExpired ? 'FREE' : (subscription?.plan?.toLowerCase() || 'free');
+  const planSlug = isExpired ? SubscriptionPlan.FREE : subscription?.plan?.toLowerCase() || 'free';
   const planLimits = await getPlanLimits(planSlug, tx);
 
   const featureLimitMap: Record<string, keyof typeof planLimits> = {
-    ATS_ANALYSIS:  'limitAtsAnalysis',
-    AI_SUGGESTION: 'limitAiSuggestion',
+    [UsageFeature.ATS_ANALYSIS]: 'limitAtsAnalysis',
+    [UsageFeature.AI_SUGGESTION]: 'limitAiSuggestion',
   };
   const limitKey = featureLimitMap[feature];
   const defaultLimit = limitKey ? (planLimits[limitKey] as number) : -1;
@@ -91,7 +95,7 @@ export async function checkAndIncrementUsage(
 export async function decrementUsage(
   tx: UsageClient,
   userId: string,
-  feature: string,
+  feature: UsageFeature | string,
   decrementBy = 1,
 ) {
   const now = new Date();
@@ -116,7 +120,11 @@ export async function decrementUsage(
   });
 }
 
-export async function getOrSeedUsage(tx: UsageClient, userId: string, feature: string) {
+export async function getOrSeedUsage(
+  tx: UsageClient,
+  userId: string,
+  feature: UsageFeature | string,
+) {
   const subscription = await tx.subscription.findUnique({
     where: { userId },
   });
@@ -124,8 +132,8 @@ export async function getOrSeedUsage(tx: UsageClient, userId: string, feature: s
   const planLimits = await getPlanLimits(planSlug, tx);
 
   const featureLimitMap: Record<string, keyof typeof planLimits> = {
-    ATS_ANALYSIS:  'limitAtsAnalysis',
-    AI_SUGGESTION: 'limitAiSuggestion',
+    [UsageFeature.ATS_ANALYSIS]: 'limitAtsAnalysis',
+    [UsageFeature.AI_SUGGESTION]: 'limitAiSuggestion',
   };
   const limitKey = featureLimitMap[feature];
   const defaultLimit = limitKey ? (planLimits[limitKey] as number) : -1;

@@ -111,8 +111,11 @@ export function SectionStepper({ active, onChange, form, templateSections }: Sec
               )}
             >
               {isCompleted && (
-                <IconMapper name="check_circle" className="text-sm text-[#7a1f1f]"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="check_circle"
+                  className="text-sm text-[#7a1f1f]"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
               )}
               <span>{s.label}</span>
             </button>

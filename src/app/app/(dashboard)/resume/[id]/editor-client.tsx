@@ -48,7 +48,6 @@ const TEMPLATE_KEY_TO_EDITOR = Object.fromEntries(
 );
 
 const DOC_WIDTH = 794;
-const DOC_HEIGHT = 1123;
 
 export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps) {
   const router = useRouter();
@@ -56,6 +55,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'failed'>('saved');
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [zoom, setZoom] = useState(100);
+  // Measured from iframe after paged.js layout
+  const [docHeight, setDocHeight] = useState(1171);
+  const [pageCount, setPageCount] = useState(1);
   const [showAiWorkspace, setShowAiWorkspace] = useState(true);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [isLeaveSaving, setIsLeaveSaving] = useState(false);
@@ -71,6 +73,22 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Listen for pagination events from the preview iframe running paged.js
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'PAGED_DONE') {
+        if (typeof e.data.count === 'number' && e.data.count > 0) {
+          setPageCount(e.data.count);
+        }
+        if (typeof e.data.height === 'number' && e.data.height > 0) {
+          setDocHeight(e.data.height);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   useEffect(() => {
@@ -114,6 +132,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
       title: '',
       personalInfo: {
         fullName: '',
+        photoUrl: '',
         jobTitle: '',
         email: '',
         phone: '',
@@ -144,6 +163,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   // Order and presence come 100% from the `sections` array in metadata.json.
   // No hardcoded list lives here — TEMPLATE_KEY_TO_EDITOR is just a translator.
   const templateRawSections = (templateData as { sections?: string[] } | null)?.sections ?? [];
+  const templateSupportsPhoto = Boolean((templateData as { hasPhoto?: boolean } | null)?.hasPhoto);
   const visibleSectionsKeys = templateRawSections
     .map((k) => TEMPLATE_KEY_TO_EDITOR[k])
     .filter(Boolean) as string[];
@@ -169,6 +189,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
         title: resume.title ?? '',
         personalInfo: {
           fullName: resume.personalInfo?.fullName ?? '',
+          photoUrl: resume.personalInfo?.photoUrl ?? '',
           jobTitle: resume.personalInfo?.jobTitle ?? '',
           email: resume.personalInfo?.email ?? '',
           phone: resume.personalInfo?.phone ?? '',
@@ -349,25 +370,97 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
     });
   };
 
-  // ── Compute preview HTML and mobile scale unconditionally before any early returns ──
+  // ── Compute preview HTML with paged.js pagination unconditionally before any early returns ──
   const displayHtml = useMemo(() => {
     if (!previewHtml) return '';
     const overrideStyle = `
       <style>
+        @page {
+          size: A4;
+          margin: 10mm;
+        }
         html, body {
           margin: 0 !important;
           padding: 0 !important;
-          background: #ffffff !important;
+          background: #525659 !important;
           width: 100% !important;
           overflow-x: hidden !important;
         }
+        /* Hide unpaginated content until Paged.js lays it out to prevent flash */
+        body:not(.pagedjs-ready) .container {
+          opacity: 0;
+        }
         .container {
-          margin: 0 auto !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
           box-shadow: none !important;
-          width: 794px !important;
-          min-height: 1123px !important;
+        }
+        .pagedjs_pages {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 24px;
+          padding: 24px 0;
+          background: transparent;
+        }
+        .pagedjs_page {
+          background: #ffffff;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+          position: relative;
+        }
+        .pagedjs_margin-bottom, .pagedjs_margin-top, .pagedjs_margin-left, .pagedjs_margin-right {
+          pointer-events: none;
+        }
+        .page-badge {
+          position: absolute;
+          top: 14px;
+          right: 20px;
+          font-size: 11px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          font-weight: 500;
+          color: rgba(0, 0, 0, 0.35);
+          letter-spacing: 0.05em;
+          pointer-events: none;
+          z-index: 10;
         }
       </style>
+      <script src="/paged.polyfill.min.js"></script>
+      <script>
+        (function() {
+          class RenderHandler extends Paged.Handler {
+            afterRendered(pages) {
+              document.body.classList.add('pagedjs-ready');
+              if (pages.length > 1) {
+                pages.forEach(function(p, idx) {
+                  var badge = document.createElement('div');
+                  badge.className = 'page-badge';
+                  badge.textContent = (idx + 1) + ' / ' + pages.length;
+                  p.element.appendChild(badge);
+                });
+              }
+              window.parent.postMessage({
+                type: 'PAGED_DONE',
+                count: pages.length,
+                height: document.body.scrollHeight
+              }, '*');
+            }
+          }
+          Paged.registerHandlers(RenderHandler);
+          setTimeout(function() {
+            document.body.classList.add('pagedjs-ready');
+            if (!document.querySelector('.pagedjs_page')) {
+              var c = document.querySelector('.container');
+              var h = c ? c.getBoundingClientRect().height : 1123;
+              window.parent.postMessage({
+                type: 'PAGED_DONE',
+                count: Math.ceil(h / 1123),
+                height: h
+              }, '*');
+            }
+          }, 2500);
+        })();
+      </script>
     `;
     return previewHtml.includes('</head>')
       ? previewHtml.replace('</head>', `${overrideStyle}</head>`)
@@ -381,7 +474,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
   const effectiveScale = fitScale * (zoom / 100);
 
   const scaledWidth = Math.round(DOC_WIDTH * effectiveScale);
-  const scaledHeight = Math.round(DOC_HEIGHT * effectiveScale);
+  const scaledHeight = Math.round(docHeight * effectiveScale);
 
   if (isLoading) {
     return (
@@ -432,7 +525,13 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
-          {activeSection === 'personalInfo' && <PersonalInfoForm form={form} />}
+          {activeSection === 'personalInfo' && (
+            <PersonalInfoForm
+              form={form}
+              supportsPhoto={templateSupportsPhoto}
+              resumeId={resumeId}
+            />
+          )}
           {activeSection === 'summary' && <SummaryForm form={form} />}
           {activeSection === 'experience' && <ExperienceForm form={form} />}
           {activeSection === 'education' && <EducationForm form={form} />}
@@ -495,12 +594,15 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                 {zoom}%
               </span>
               <button
-                onClick={() => setZoom((prev) => Math.min(150, prev + 10))}
+                onClick={() => setZoom((prev) => Math.min(200, prev + 10))}
                 className="p-1.5 hover:bg-[#fff0ed] rounded-lg transition-colors text-[#564240] hover:text-[#7a1f1f] cursor-pointer"
                 title="Zoom In"
               >
                 <IconMapper name="add" className="text-base" />
               </button>
+              <span className="text-[10px] font-semibold text-[#564240]/50 px-1 font-['Hanken_Grotesk'] tabular-nums">
+                {pageCount}pg
+              </span>
               <div className="w-px h-4 bg-[#ddc0bd] mx-1"></div>
               <button
                 onClick={handleDownloadPdf}
@@ -512,36 +614,65 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             </div>
           </div>
 
-          {/* Desktop Simulated Resume Paper Box Container */}
+          {/* Desktop Fit-to-Width Scaled Sheet */}
           <div
-            className="flex-1 w-full flex items-center justify-center p-8 overflow-y-auto no-scrollbar"
+            ref={previewContainerRef}
+            className="flex-1 w-full flex flex-col items-center p-6 overflow-y-auto no-scrollbar bg-[#525659]"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             <div
-              style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center center' }}
-              className="w-full max-w-[560px] aspect-[1/1.414] bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 relative z-10 flex flex-col overflow-hidden transition-transform duration-200"
+              style={{
+                width: `${scaledWidth}px`,
+                height: `${scaledHeight}px`,
+              }}
+              className="relative shrink-0 my-4 transition-all duration-200"
             >
-              {isPreviewLoading && (
-                <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
-                </div>
-              )}
+              {/* Scaled document — z-index 1 so overlay divs render above */}
+              <div
+                style={{
+                  width: `${DOC_WIDTH}px`,
+                  height: `${docHeight}px`,
+                  transform: `scale(${effectiveScale})`,
+                  transformOrigin: 'top left',
+                  zIndex: 1,
+                }}
+                className="absolute top-0 left-0 bg-white flex flex-col overflow-hidden"
+              >
+                {isPreviewLoading && (
+                  <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 border-[#7a1f1f]/20 border-t-[#7a1f1f] rounded-full animate-spin" />
+                  </div>
+                )}
 
-              {/* Resume Preview Document Iframe */}
-              {previewHtml ? (
-                <iframe
-                  id="resume-preview-iframe"
-                  ref={iframeRef}
-                  srcDoc={previewHtml}
-                  className="w-full h-full border-none bg-white"
-                  title="Resume Preview"
-                />
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
-                  <IconMapper name="find_in_page" className="text-4xl block mb-2" />
-                  <p className="text-[14px]">Loading live preview...</p>
-                </div>
-              )}
+                {/* Resume Preview Document Iframe */}
+                {displayHtml ? (
+                  <iframe
+                    id="resume-preview-iframe"
+                    ref={iframeRef}
+                    srcDoc={displayHtml}
+                    className="w-full h-full border-none bg-transparent"
+                    title="Resume Preview"
+                    onLoad={() => {
+                      try {
+                        const doc = iframeRef.current?.contentDocument;
+                        if (!doc) return;
+                        const pages = doc.querySelectorAll('.pagedjs_page');
+                        if (pages.length > 0) {
+                          setPageCount(pages.length);
+                          setDocHeight(
+                            doc.body.scrollHeight || Math.max(1123, pages.length * 1147),
+                          );
+                        }
+                      } catch {}
+                    }}
+                  />
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
+                    <IconMapper name="find_in_page" className="text-4xl block mb-2" />
+                    <p className="text-[14px]">Loading live preview...</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -606,7 +737,7 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
         {/* Mobile Fit-to-Width Scaled Sheet */}
         <div
           ref={previewContainerRef}
-          className="flex-1 w-full flex flex-col items-center p-2 overflow-y-auto overflow-x-auto no-scrollbar"
+          className="flex-1 w-full flex flex-col items-center p-2 overflow-y-auto overflow-x-auto no-scrollbar bg-[#525659]"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <div
@@ -614,16 +745,18 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               width: `${scaledWidth}px`,
               height: `${scaledHeight}px`,
             }}
-            className="relative shrink-0 my-auto transition-all duration-200"
+            className="relative shrink-0 my-4 transition-all duration-200"
           >
+            {/* Scaled document */}
             <div
               style={{
                 width: `${DOC_WIDTH}px`,
-                height: `${DOC_HEIGHT}px`,
+                height: `${docHeight}px`,
                 transform: `scale(${effectiveScale})`,
                 transformOrigin: 'top left',
+                zIndex: 1,
               }}
-              className="absolute top-0 left-0 bg-white shadow-[0_10px_40px_-10px_rgba(78,52,46,0.15)] rounded border border-[#ddc0bd]/40 flex flex-col overflow-hidden"
+              className="absolute top-0 left-0 bg-white flex flex-col overflow-hidden"
             >
               {isPreviewLoading && (
                 <div className="absolute inset-0 bg-[#fff8f6]/40 backdrop-blur-[1px] z-50 flex items-center justify-center">
@@ -636,8 +769,19 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
                   id="resume-preview-iframe"
                   ref={iframeRef}
                   srcDoc={displayHtml}
-                  className="w-full h-full border-none bg-white"
+                  className="w-full h-full border-none bg-transparent"
                   title="Resume Preview"
+                  onLoad={() => {
+                    try {
+                      const doc = iframeRef.current?.contentDocument;
+                      if (!doc) return;
+                      const pages = doc.querySelectorAll('.pagedjs_page');
+                      if (pages.length > 0) {
+                        setPageCount(pages.length);
+                        setDocHeight(doc.body.scrollHeight || Math.max(1123, pages.length * 1147));
+                      }
+                    } catch {}
+                  }}
                 />
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-[#564240] p-8 text-center bg-[#fff8f6]">
@@ -649,7 +793,11 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
           </div>
         </div>
 
-        <PreviewSelectionToolbar iframeRef={iframeRef} zoom={Math.round(effectiveScale * 100)} form={form} />
+        <PreviewSelectionToolbar
+          iframeRef={iframeRef}
+          zoom={Math.round(effectiveScale * 100)}
+          form={form}
+        />
       </>
     );
   };
@@ -669,7 +817,10 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             <IconMapper name="arrow_back" className="text-[16px] sm:text-[18px]" />
           </button>
           <div className="flex items-center gap-1.5 min-w-0 max-w-[120px] xs:max-w-[160px] sm:max-w-[240px]">
-            <IconMapper name="description" className="text-[#7a1f1f] text-[18px] hidden xs:block shrink-0" />
+            <IconMapper
+              name="description"
+              className="text-[#7a1f1f] text-[18px] hidden xs:block shrink-0"
+            />
             <input
               id="editor-resume-title"
               type="text"
@@ -698,17 +849,26 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
               </>
             ) : saveStatus === 'failed' ? (
               <>
-                <IconMapper name="cloud_off" className="text-[14px] sm:text-[16px] text-[#7a1f1f] shrink-0" />
+                <IconMapper
+                  name="cloud_off"
+                  className="text-[14px] sm:text-[16px] text-[#7a1f1f] shrink-0"
+                />
                 <span className="text-[#7a1f1f] hidden sm:inline">Save failed</span>
               </>
             ) : isDirty ? (
               <>
-                <IconMapper name="pending" className="text-[14px] sm:text-[16px] text-[#795900] shrink-0" />
+                <IconMapper
+                  name="pending"
+                  className="text-[14px] sm:text-[16px] text-[#795900] shrink-0"
+                />
                 <span className="text-[#795900] hidden sm:inline">Unsaved</span>
               </>
             ) : (
               <>
-                <IconMapper name="cloud_done" className="text-[14px] sm:text-[16px] text-emerald-600 shrink-0" />
+                <IconMapper
+                  name="cloud_done"
+                  className="text-[14px] sm:text-[16px] text-emerald-600 shrink-0"
+                />
                 <span className="text-emerald-600 hidden sm:inline">Saved</span>
               </>
             )}
@@ -724,7 +884,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             title={showMobilePreview ? 'Switch to Editor' : 'Switch to Live Preview'}
           >
             <IconMapper name={showMobilePreview ? 'edit' : 'visibility'} className="text-[16px]" />
-            <span className="hidden xs:inline text-[11px]">{showMobilePreview ? 'Edit' : 'Preview'}</span>
+            <span className="hidden xs:inline text-[11px]">
+              {showMobilePreview ? 'Edit' : 'Preview'}
+            </span>
           </button>
 
           <button
@@ -748,7 +910,9 @@ export default function ResumeEditorClient({ resumeId }: ResumeEditorClientProps
             ) : (
               <>
                 <IconMapper name="download" className="text-[16px] sm:hidden" />
-                <span><span className="hidden sm:inline">Finish & </span>Download</span>
+                <span>
+                  <span className="hidden sm:inline">Finish & </span>Download
+                </span>
               </>
             )}
           </button>

@@ -30,19 +30,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Paper Texture Overlay */}
       <div className="fixed inset-0 auth-paper-texture pointer-events-none z-50"></div>
       <Toaster position="top-right" richColors />
-      {!isResumeEditor && (
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      )}
+      {!isResumeEditor && <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       <main
         className={`${
           !isResumeEditor ? 'md:ml-20 lg:ml-56' : ''
         } flex-1 flex flex-col h-full overflow-hidden relative z-10 transition-all duration-300`}
       >
-        <Header onToggleSidebar={() => setSidebarOpen((prev) => !prev)} isSidebarOpen={sidebarOpen} />
+        <Header
+          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+          isSidebarOpen={sidebarOpen}
+        />
         {isResumeEditor ? (
-          <div className="flex-1 overflow-hidden flex flex-col w-full h-full">
-            {children}
-          </div>
+          <div className="flex-1 overflow-hidden flex flex-col w-full h-full">{children}</div>
         ) : (
           <div className="flex-1 overflow-y-auto w-full no-scrollbar">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 w-full">

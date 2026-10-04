@@ -63,17 +63,26 @@ export function TermsClient() {
 
         {/* Legal Document Content */}
         <div className="bg-white border border-[#E5D9C8] rounded-3xl p-6 sm:p-12 shadow-sm space-y-12 text-[#564240] leading-relaxed text-[15px] sm:text-[16px]">
-
           {/* Section 1: Agreement to Terms */}
           <section id="agreement-to-terms" className="space-y-4 scroll-mt-28">
             <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#370003] border-b border-[#E5D9C8] pb-2">
               1. Agreement to Terms
             </h2>
             <p>
-              These Terms of Service (&ldquo;Terms&rdquo;) constitute a legally binding agreement between you (&ldquo;User,&rdquo; &ldquo;you,&rdquo; or &ldquo;your&rdquo;) and <strong>JobPatra</strong> (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) concerning your access to and use of the JobPatra website (<Link href="/" className="text-[#370003] font-semibold underline">jobpatra.in</Link>), applications, and associated services.
+              These Terms of Service (&ldquo;Terms&rdquo;) constitute a legally binding agreement
+              between you (&ldquo;User,&rdquo; &ldquo;you,&rdquo; or &ldquo;your&rdquo;) and{' '}
+              <strong>JobPatra</strong> (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;)
+              concerning your access to and use of the JobPatra website (
+              <Link href="/" className="text-[#370003] font-semibold underline">
+                jobpatra.in
+              </Link>
+              ), applications, and associated services.
             </p>
             <p>
-              By creating an account, accessing, or using JobPatra, you acknowledge that you have read, understood, and agreed to be bound by these Terms and our Privacy Policy. If you do not agree with all of these Terms, you are expressly prohibited from using the service and must discontinue use immediately.
+              By creating an account, accessing, or using JobPatra, you acknowledge that you have
+              read, understood, and agreed to be bound by these Terms and our Privacy Policy. If you
+              do not agree with all of these Terms, you are expressly prohibited from using the
+              service and must discontinue use immediately.
             </p>
           </section>
 
@@ -82,14 +91,23 @@ export function TermsClient() {
             <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#370003] border-b border-[#E5D9C8] pb-2">
               2. Eligibility
             </h2>
-            <p>
-              By accessing JobPatra, you represent and warrant that:
-            </p>
+            <p>By accessing JobPatra, you represent and warrant that:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>You are at least 18 years of age (or have reached the age of legal majority in your jurisdiction).</li>
-              <li>You possess the legal capacity and authority to enter into these binding Terms.</li>
-              <li>All registration information and credentials you submit are truthful, accurate, and current.</li>
-              <li>Your use of the service will not violate any applicable local, state, national, or international law or regulation.</li>
+              <li>
+                You are at least 18 years of age (or have reached the age of legal majority in your
+                jurisdiction).
+              </li>
+              <li>
+                You possess the legal capacity and authority to enter into these binding Terms.
+              </li>
+              <li>
+                All registration information and credentials you submit are truthful, accurate, and
+                current.
+              </li>
+              <li>
+                Your use of the service will not violate any applicable local, state, national, or
+                international law or regulation.
+              </li>
             </ul>
           </section>
 
@@ -99,15 +117,26 @@ export function TermsClient() {
               3. User Accounts &amp; Security
             </h2>
             <p>
-              To access resume creation, cloud saving, and ATS scoring capabilities, you may need to register an account. You agree to:
+              To access resume creation, cloud saving, and ATS scoring capabilities, you may need to
+              register an account. You agree to:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Maintain the confidentiality of your account credentials and password.</li>
               <li>Accept sole responsibility for all activities occurring under your account.</li>
-              <li>Notify JobPatra immediately at <a href="mailto:support@jobpatra.in" className="text-[#370003] font-semibold underline">support@jobpatra.in</a> upon discovering any unauthorized use or security breach.</li>
+              <li>
+                Notify JobPatra immediately at{' '}
+                <a
+                  href="mailto:support@jobpatra.in"
+                  className="text-[#370003] font-semibold underline"
+                >
+                  support@jobpatra.in
+                </a>{' '}
+                upon discovering any unauthorized use or security breach.
+              </li>
             </ul>
             <p>
-              JobPatra reserves the right to terminate accounts, reclaim usernames, or cancel subscriptions if fraudulent activity is identified.
+              JobPatra reserves the right to terminate accounts, reclaim usernames, or cancel
+              subscriptions if fraudulent activity is identified.
             </p>
           </section>
 
@@ -117,16 +146,29 @@ export function TermsClient() {
               4. Service Description
             </h2>
             <p>
-              JobPatra is an AI Career Workshop platform providing digital tools to aid professional presentation, including:
+              JobPatra is an AI Career Workshop platform providing digital tools to aid professional
+              presentation, including:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Resume Builder:</strong> Drag-and-drop structural section builder with pre-styled artisan PDF templates.</li>
-              <li><strong>ATS Analyzer:</strong> Keyword matching algorithms comparing uploaded documents against provided job descriptions.</li>
-              <li><strong>AI Writing Assistance:</strong> Contextual bullet-point rewrites and professional impact phrasing suggestions.</li>
-              <li><strong>Export Tools:</strong> High-resolution vector PDF export options.</li>
+              <li>
+                <strong>Resume Builder:</strong> Drag-and-drop structural section builder with
+                pre-styled artisan PDF templates.
+              </li>
+              <li>
+                <strong>ATS Analyzer:</strong> Keyword matching algorithms comparing uploaded
+                documents against provided job descriptions.
+              </li>
+              <li>
+                <strong>AI Writing Assistance:</strong> Contextual bullet-point rewrites and
+                professional impact phrasing suggestions.
+              </li>
+              <li>
+                <strong>Export Tools:</strong> High-resolution vector PDF export options.
+              </li>
             </ul>
             <p>
-              We continuously improve our platform; features, quota limits, and template styles may be updated, refined, or expanded periodically.
+              We continuously improve our platform; features, quota limits, and template styles may
+              be updated, refined, or expanded periodically.
             </p>
           </section>
 
@@ -136,13 +178,19 @@ export function TermsClient() {
               5. User Content &amp; Ownership
             </h2>
             <div className="bg-[#fff0ee] border-l-4 border-[#370003] p-4 rounded-r-lg text-sm text-[#370003] font-medium mb-4">
-              <strong>Your Content Belongs to You:</strong> You retain 100% full legal ownership of all resume text, biographical details, employment histories, and documents you upload or create on JobPatra.
+              <strong>Your Content Belongs to You:</strong> You retain 100% full legal ownership of
+              all resume text, biographical details, employment histories, and documents you upload
+              or create on JobPatra.
             </div>
             <p>
-              By submitting content to JobPatra, you grant us a worldwide, non-exclusive, royalty-free, limited license solely to host, process, format, parse, and display your content for the express purpose of providing the service to you.
+              By submitting content to JobPatra, you grant us a worldwide, non-exclusive,
+              royalty-free, limited license solely to host, process, format, parse, and display your
+              content for the express purpose of providing the service to you.
             </p>
             <p>
-              You represent and warrant that your content does not violate intellectual property rights, disclose unauthorized corporate trade secrets, or contain defamatory or fraudulent assertions.
+              You represent and warrant that your content does not violate intellectual property
+              rights, disclose unauthorized corporate trade secrets, or contain defamatory or
+              fraudulent assertions.
             </p>
           </section>
 
@@ -153,11 +201,20 @@ export function TermsClient() {
             </h2>
             <p>You agree not to engage in any prohibited activities, including:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Attempting to reverse-engineer, decompile, or disassemble any part of the platform&apos;s source code.</li>
-              <li>Automated scraping, crawling, or data harvesting without express written consent.</li>
+              <li>
+                Attempting to reverse-engineer, decompile, or disassemble any part of the
+                platform&apos;s source code.
+              </li>
+              <li>
+                Automated scraping, crawling, or data harvesting without express written consent.
+              </li>
               <li>Bypassing rate limits, CAPTCHAs, or authentication checks.</li>
-              <li>Using the platform to generate misleading, deceptive, or malicious documentation.</li>
-              <li>Submitting abusive, hateful, or illegal materials to the AI processing endpoints.</li>
+              <li>
+                Using the platform to generate misleading, deceptive, or malicious documentation.
+              </li>
+              <li>
+                Submitting abusive, hateful, or illegal materials to the AI processing endpoints.
+              </li>
               <li>Sharing or reselling access to individual user accounts to third parties.</li>
             </ul>
           </section>
@@ -168,13 +225,37 @@ export function TermsClient() {
               7. Payment &amp; Subscription Terms
             </h2>
             <p>
-              JobPatra offers free and premium paid subscription tiers. Paid plans unlock increased monthly AI suggestion limits, unlimited ATS scans, and access to premium templates.
+              JobPatra offers free and premium paid subscription tiers. Paid plans unlock increased
+              monthly AI suggestion limits, unlimited ATS scans, and access to premium templates.
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Billing &amp; Gateway:</strong> Payments are securely processed through Razorpay. All fees are denominated in Indian Rupees (INR) or designated local currencies and include applicable GST.</li>
-              <li><strong>Renewal:</strong> Recurring subscriptions renew automatically on your scheduled billing date unless cancelled prior to the renewal event.</li>
-              <li><strong>Cancellation:</strong> You can cancel your subscription renewal at any time via your Billing Settings. Following cancellation, your premium features remain active through the end of the paid term.</li>
-              <li><strong>Refund Policy:</strong> Due to the instant provisioning of compute and AI credits, subscription charges are generally non-refundable once an analysis or download quota has been consumed. If you experience technical defects, please contact <a href="mailto:support@jobpatra.in" className="text-[#370003] font-semibold underline">support@jobpatra.in</a> within 7 days of payment.</li>
+              <li>
+                <strong>Billing &amp; Gateway:</strong> Payments are securely processed through
+                Razorpay. All fees are denominated in Indian Rupees (INR) or designated local
+                currencies and include applicable GST.
+              </li>
+              <li>
+                <strong>Renewal:</strong> Recurring subscriptions renew automatically on your
+                scheduled billing date unless cancelled prior to the renewal event.
+              </li>
+              <li>
+                <strong>Cancellation:</strong> You can cancel your subscription renewal at any time
+                via your Billing Settings. Following cancellation, your premium features remain
+                active through the end of the paid term.
+              </li>
+              <li>
+                <strong>Refund Policy:</strong> Due to the instant provisioning of compute and AI
+                credits, subscription charges are generally non-refundable once an analysis or
+                download quota has been consumed. If you experience technical defects, please
+                contact{' '}
+                <a
+                  href="mailto:support@jobpatra.in"
+                  className="text-[#370003] font-semibold underline"
+                >
+                  support@jobpatra.in
+                </a>{' '}
+                within 7 days of payment.
+              </li>
             </ul>
           </section>
 
@@ -184,10 +265,14 @@ export function TermsClient() {
               8. JobPatra Intellectual Property
             </h2>
             <p>
-              All platform features, underlying codebases, proprietary layout algorithms, graphic designs, logos, typography arrangements, and template code are the exclusive intellectual property of JobPatra.
+              All platform features, underlying codebases, proprietary layout algorithms, graphic
+              designs, logos, typography arrangements, and template code are the exclusive
+              intellectual property of JobPatra.
             </p>
             <p>
-              You receive a revocable, non-exclusive license to export personal resumes formatted through the service. You may not extract or republish JobPatra templates as standalone commercial design assets.
+              You receive a revocable, non-exclusive license to export personal resumes formatted
+              through the service. You may not extract or republish JobPatra templates as standalone
+              commercial design assets.
             </p>
           </section>
 
@@ -197,10 +282,19 @@ export function TermsClient() {
               9. Account Termination
             </h2>
             <p>
-              You may terminate your account at any time by utilizing the account deletion controls in Settings or by submitting a written request to <a href="mailto:support@jobpatra.in" className="text-[#370003] font-semibold underline">support@jobpatra.in</a>.
+              You may terminate your account at any time by utilizing the account deletion controls
+              in Settings or by submitting a written request to{' '}
+              <a
+                href="mailto:support@jobpatra.in"
+                className="text-[#370003] font-semibold underline"
+              >
+                support@jobpatra.in
+              </a>
+              .
             </p>
             <p>
-              JobPatra may immediately suspend or terminate your access without prior notice if you breach these Terms, abuse AI services, or engage in unlawful activities.
+              JobPatra may immediately suspend or terminate your access without prior notice if you
+              breach these Terms, abuse AI services, or engage in unlawful activities.
             </p>
           </section>
 
@@ -210,12 +304,20 @@ export function TermsClient() {
               10. Disclaimer of Warranties
             </h2>
             <p>
-              The JobPatra platform and all related tools are provided strictly on an <strong>&ldquo;AS IS&rdquo;</strong> and <strong>&ldquo;AS AVAILABLE&rdquo;</strong> basis without warranties of any kind, whether express or implied.
+              The JobPatra platform and all related tools are provided strictly on an{' '}
+              <strong>&ldquo;AS IS&rdquo;</strong> and <strong>&ldquo;AS AVAILABLE&rdquo;</strong>{' '}
+              basis without warranties of any kind, whether express or implied.
             </p>
             <div className="p-4 rounded-xl bg-[#FFF8F6] border border-[#E5D9C8] space-y-2 text-sm text-[#564240]">
-              <p><strong>Important Career Notice:</strong></p>
               <p>
-                JobPatra provides optimization tools designed to assist in career preparation. We make <strong>no guarantee</strong> that using JobPatra, achieving high ATS scores, or implementing AI rewrite suggestions will result in job offers, recruiter interviews, or employment hiring outcomes. Recruitment decisions depend solely on independent third-party employers.
+                <strong>Important Career Notice:</strong>
+              </p>
+              <p>
+                JobPatra provides optimization tools designed to assist in career preparation. We
+                make <strong>no guarantee</strong> that using JobPatra, achieving high ATS scores,
+                or implementing AI rewrite suggestions will result in job offers, recruiter
+                interviews, or employment hiring outcomes. Recruitment decisions depend solely on
+                independent third-party employers.
               </p>
             </div>
           </section>
@@ -226,10 +328,15 @@ export function TermsClient() {
               11. Limitation of Liability
             </h2>
             <p>
-              To the maximum extent permitted by applicable law, JobPatra, its founder, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages—including loss of employment opportunities, profits, or data—arising out of your access or inability to access the service.
+              To the maximum extent permitted by applicable law, JobPatra, its founder, and
+              affiliates shall not be liable for any indirect, incidental, special, consequential,
+              or punitive damages—including loss of employment opportunities, profits, or
+              data—arising out of your access or inability to access the service.
             </p>
             <p>
-              Our total cumulative liability for any claim arising under these Terms shall not exceed the amount paid by you to JobPatra during the twelve (12) months preceding the event giving rise to liability.
+              Our total cumulative liability for any claim arising under these Terms shall not
+              exceed the amount paid by you to JobPatra during the twelve (12) months preceding the
+              event giving rise to liability.
             </p>
           </section>
 
@@ -239,10 +346,20 @@ export function TermsClient() {
               12. Dispute Resolution &amp; Governing Law
             </h2>
             <p>
-              These Terms shall be governed by and construed in accordance with the laws of <strong>India</strong>, without regard to conflict of law principles.
+              These Terms shall be governed by and construed in accordance with the laws of{' '}
+              <strong>India</strong>, without regard to conflict of law principles.
             </p>
             <p>
-              In the event of any disagreement or claim, the parties agree to first seek informal amicable resolution by contacting <a href="mailto:support@jobpatra.in" className="text-[#370003] font-semibold underline">support@jobpatra.in</a>. If unresolved, any formal dispute shall be subject to the exclusive jurisdiction of the competent courts in India.
+              In the event of any disagreement or claim, the parties agree to first seek informal
+              amicable resolution by contacting{' '}
+              <a
+                href="mailto:support@jobpatra.in"
+                className="text-[#370003] font-semibold underline"
+              >
+                support@jobpatra.in
+              </a>
+              . If unresolved, any formal dispute shall be subject to the exclusive jurisdiction of
+              the competent courts in India.
             </p>
           </section>
 
@@ -252,7 +369,10 @@ export function TermsClient() {
               13. Changes to Terms
             </h2>
             <p>
-              We reserve the right to revise or modify these Terms at any time. When updates are published, the effective date will be revised accordingly. Your continued use of the platform following the posting of revised Terms confirms your acceptance of the changes.
+              We reserve the right to revise or modify these Terms at any time. When updates are
+              published, the effective date will be revised accordingly. Your continued use of the
+              platform following the posting of revised Terms confirms your acceptance of the
+              changes.
             </p>
           </section>
 
@@ -262,7 +382,9 @@ export function TermsClient() {
               14. Severability
             </h2>
             <p>
-              If any provision or portion of these Terms is determined to be unlawful, void, or unenforceable, that provision shall be deemed severable and shall not affect the validity and enforceability of any remaining provisions.
+              If any provision or portion of these Terms is determined to be unlawful, void, or
+              unenforceable, that provision shall be deemed severable and shall not affect the
+              validity and enforceability of any remaining provisions.
             </p>
           </section>
 
@@ -272,7 +394,9 @@ export function TermsClient() {
               15. Entire Agreement
             </h2>
             <p>
-              These Terms, together with our Privacy Policy, constitute the complete and exclusive legal agreement between you and JobPatra regarding your use of the service, superseding any prior verbal or written understandings.
+              These Terms, together with our Privacy Policy, constitute the complete and exclusive
+              legal agreement between you and JobPatra regarding your use of the service,
+              superseding any prior verbal or written understandings.
             </p>
           </section>
 
@@ -282,19 +406,28 @@ export function TermsClient() {
               16. Contact Us
             </h2>
             <p>
-              For legal notices, billing inquiries, or questions concerning these Terms, please contact:
+              For legal notices, billing inquiries, or questions concerning these Terms, please
+              contact:
             </p>
             <div className="p-6 rounded-2xl bg-[#FFF8F6] border border-[#E5D9C8] space-y-2">
               <p className="font-bold text-[#370003]">JobPatra Legal &amp; Operations</p>
               <p className="text-sm">
-                Email: <a href="mailto:support@jobpatra.in" className="text-[#370003] font-semibold underline">support@jobpatra.in</a>
+                Email:{' '}
+                <a
+                  href="mailto:support@jobpatra.in"
+                  className="text-[#370003] font-semibold underline"
+                >
+                  support@jobpatra.in
+                </a>
               </p>
               <p className="text-sm">
-                Inquiry Form: <Link href="/app/contact" className="text-[#370003] font-semibold underline">Contact &amp; Feedback</Link>
+                Inquiry Form:{' '}
+                <Link href="/app/contact" className="text-[#370003] font-semibold underline">
+                  Contact &amp; Feedback
+                </Link>
               </p>
             </div>
           </section>
-
         </div>
 
         {/* Bottom Navigation Summary */}
@@ -323,7 +456,6 @@ export function TermsClient() {
             </Link>
           </div>
         </div>
-
       </div>
     </div>
   );

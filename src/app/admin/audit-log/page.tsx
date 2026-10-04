@@ -42,27 +42,42 @@ export default async function AdminAuditLogPage({
 
   return (
     <div className="space-y-4 font-['Hanken_Grotesk']">
-      <p className="text-xs font-semibold text-[#564240]">{total} recorded administrative actions</p>
+      <p className="text-xs font-semibold text-[#564240]">
+        {total} recorded administrative actions
+      </p>
       <div className="bg-white border border-[#ddc0bd] rounded-xl divide-y divide-[#ddc0bd]/50 shadow-xs overflow-hidden">
         {logs.length === 0 && (
-          <p className="px-5 py-8 text-sm text-[#564240] text-center">No audit trail entries found.</p>
+          <p className="px-5 py-8 text-sm text-[#564240] text-center">
+            No audit trail entries found.
+          </p>
         )}
         {logs.map((log) => (
-          <div key={log.id} className="px-5 py-4 flex items-start gap-4 hover:bg-[#fff8f6]/50 transition-colors">
+          <div
+            key={log.id}
+            className="px-5 py-4 flex items-start gap-4 hover:bg-[#fff8f6]/50 transition-colors"
+          >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap mb-1.5">
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${ACTION_BADGE[log.action] ?? 'bg-[#fff0ed] text-[#564240]'}`}>
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${ACTION_BADGE[log.action] ?? 'bg-[#fff0ed] text-[#564240]'}`}
+                >
                   {log.action}
                 </span>
                 {log.target && (
-                  <span className="text-[11px] text-[#7a1f1f] font-mono font-medium">Target: {log.target}</span>
+                  <span className="text-[11px] text-[#7a1f1f] font-mono font-medium">
+                    Target: {log.target}
+                  </span>
                 )}
               </div>
               <p className="text-xs text-[#564240] font-medium">
-                Admin: <strong className="text-[#2b1611]">{log.admin.name ?? log.admin.email}</strong> ·{' '}
+                Admin:{' '}
+                <strong className="text-[#2b1611]">{log.admin.name ?? log.admin.email}</strong> ·{' '}
                 {new Date(log.createdAt).toLocaleString('en-IN', {
-                  day: 'numeric', month: 'short', year: 'numeric',
-                  hour: '2-digit', minute: '2-digit',
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </p>
               {log.details && Object.keys(log.details as object).length > 0 && (

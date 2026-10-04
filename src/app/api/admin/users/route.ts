@@ -48,7 +48,13 @@ export async function GET(request: Request) {
     prisma.user.count({ where }),
   ]);
 
-  return NextResponse.json({ users, total, page, pageSize: PAGE_SIZE, totalPages: Math.ceil(total / PAGE_SIZE) });
+  return NextResponse.json({
+    users,
+    total,
+    page,
+    pageSize: PAGE_SIZE,
+    totalPages: Math.ceil(total / PAGE_SIZE),
+  });
 }
 
 export async function DELETE(request: Request) {
@@ -57,12 +63,19 @@ export async function DELETE(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('id');
-  if (!userId) return NextResponse.json({ success: false, message: 'Missing user ID' }, { status: 400 });
+  if (!userId)
+    return NextResponse.json({ success: false, message: 'Missing user ID' }, { status: 400 });
 
   await prisma.user.delete({ where: { id: userId } });
 
   const { logAdminAction } = await import('@/app/api/admin/_lib/log-admin-action');
-  await logAdminAction({ adminId: auth.session.user.id, action: 'DELETE_USER', target: userId, details: {}, request });
+  await logAdminAction({
+    adminId: auth.session.user.id,
+    action: 'DELETE_USER',
+    target: userId,
+    details: {},
+    request,
+  });
 
   return NextResponse.json({ success: true });
 }

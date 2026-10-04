@@ -135,7 +135,10 @@ function _handleError(err: unknown): NextResponse {
         );
       case 503:
         return NextResponse.json(
-          { success: false, message: 'AI service is currently unavailable. Please try again later.' },
+          {
+            success: false,
+            message: 'AI service is currently unavailable. Please try again later.',
+          },
           { status: 503 },
         );
       default:

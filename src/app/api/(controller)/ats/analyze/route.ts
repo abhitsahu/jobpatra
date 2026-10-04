@@ -19,11 +19,7 @@ import { validateRequest } from '@/app/api/(controller)/_util/validate';
 import { atsAnalyzeSchema } from '@/app/api/model/request/ats/analyze';
 import { analyzeATS, analyzeATSStream } from '@/app/service/ai/ats.service';
 import { AIServiceError } from '@/app/service/ai/client';
-
-// ---------------------------------------------------------------------------
-// Route handler
-// ---------------------------------------------------------------------------
-
+import { logger } from '@/lib/telemetry/logger';
 import { prisma } from '@/app/_lib/prisma';
 import { checkAndIncrementUsage, decrementUsage } from '@/app/service/subscription/usage.service';
 
@@ -93,17 +89,18 @@ export async function POST(req: Request) {
         await prisma.$transaction(async (tx) => {
           await decrementUsage(tx, userId, 'ATS_ANALYSIS');
         });
+        logger.warn('ats.analyze.usage_refunded', { userId });
       } catch (refundErr) {
-        console.error('Failed to refund ATS usage:', refundErr);
+        logger.error('ats.analyze.usage_refund_failed', {
+          userId,
+          error: refundErr instanceof Error ? refundErr.message : String(refundErr),
+        });
       }
     }
 
     // Map limits exceeded error specifically
     if (err instanceof Error && (err as any).code === 'LIMIT_EXCEEDED') {
-      return NextResponse.json(
-        { success: false, message: err.message },
-        { status: 403 }
-      );
+      return NextResponse.json({ success: false, message: err.message }, { status: 403 });
     }
 
     return _handleError(err);
@@ -116,9 +113,12 @@ export async function POST(req: Request) {
 
 function _handleError(err: unknown): NextResponse {
   if (err instanceof AIServiceError) {
-    console.error(
-      `[POST /api/ats/analyze] [${err.requestId.slice(0, 8)}] AI error: ${err.status} ${err.code} — ${err.message}`,
-    );
+    logger.error('ats.analyze.ai_error', {
+      requestId: err.requestId.slice(0, 8),
+      status: err.status,
+      code: err.code,
+      message: err.message,
+    });
 
     // Map Python status codes to user-facing responses
     switch (err.status) {
@@ -154,6 +154,8 @@ function _handleError(err: unknown): NextResponse {
   }
 
   // Unexpected error — never expose stack traces
-  console.error('[POST /api/ats/analyze] Unexpected error:', err);
+  logger.error('ats.analyze.unexpected_error', {
+    error: err instanceof Error ? err.message : String(err),
+  });
   return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
 }

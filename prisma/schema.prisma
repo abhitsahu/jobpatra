@@ -60,6 +60,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
   @@map("accounts")
 }
 
@@ -126,6 +127,7 @@ model PersonalInfo {
   id       String  @id @default(cuid())
   resumeId String  @unique
   fullName String
+  photoUrl String? @db.Text
   jobTitle String?
   email    String
   phone    String?
@@ -309,6 +311,7 @@ model ATSAnalysis {
 
   @@index([userId])
   @@index([userId, analysisDate])
+  @@index([resumeId])
   @@map("ats_analyses")
 }
 
@@ -510,7 +513,7 @@ model Invoice {
   createdAt DateTime @default(now())
   // No updatedAt — invoices are immutable
 
-  @@index([userId])
+  @@index([userId, createdAt])
   @@map("invoices")
 }
 
@@ -560,8 +563,7 @@ model Feedback {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([status])
-  @@index([createdAt])
+  @@index([status, createdAt])
   @@map("feedbacks")
 }
 

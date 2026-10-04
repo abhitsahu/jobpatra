@@ -1,4 +1,5 @@
 import { prisma } from '@/app/_lib/prisma';
+import { buildKey, getOrSet, invalidate } from '@/app/_lib/cache';
 import { Currency, TemplateAccess } from '@/app/api/model/enums/currency';
 import type {
   PricingPageResponse,
@@ -32,8 +33,20 @@ const SEED_PLANS = [
     limitAtsAnalysis: 1,
     limitAiSuggestion: 1,
     features: [
-      { id: 'ff1', feature: 'Select only free templates', available: true, highlight: false, order: 0 },
-      { id: 'ff2', feature: '1 ATS Score & AI Suggestion per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'ff1',
+        feature: 'Select only free templates',
+        available: true,
+        highlight: false,
+        order: 0,
+      },
+      {
+        id: 'ff2',
+        feature: '1 ATS Score & AI Suggestion per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
   {
@@ -57,7 +70,13 @@ const SEED_PLANS = [
     limitAiSuggestion: 15,
     features: [
       { id: 'pf1', feature: 'Select all templates', available: true, highlight: true, order: 0 },
-      { id: 'pf2', feature: '15 ATS Score & AI Suggestions per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'pf2',
+        feature: '15 ATS Score & AI Suggestions per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
   {
@@ -81,7 +100,13 @@ const SEED_PLANS = [
     limitAiSuggestion: 25,
     features: [
       { id: 'ef1', feature: 'Select all templates', available: true, highlight: true, order: 0 },
-      { id: 'ef2', feature: '25 ATS Score & AI Suggestions per month', available: true, highlight: false, order: 1 },
+      {
+        id: 'ef2',
+        feature: '25 ATS Score & AI Suggestions per month',
+        available: true,
+        highlight: false,
+        order: 1,
+      },
     ],
   },
 ];
@@ -192,7 +217,13 @@ function formatPlan(plan: {
   displayOrder: number;
   limitAtsAnalysis: number;
   limitAiSuggestion: number;
-  features: { id: string; feature: string; available: boolean; highlight: boolean; order: number }[];
+  features: {
+    id: string;
+    feature: string;
+    available: boolean;
+    highlight: boolean;
+    order: number;
+  }[];
 }): PricingPlanResponse {
   return {
     id: plan.id,
@@ -226,51 +257,65 @@ function formatPlan(plan: {
 // MAIN SERVICE FUNCTION
 // ─────────────────────────────────────────────────────────────────────────────
 
+const PRICING_CACHE_KEY = buildKey('cache', 'pricing');
+const PRICING_CACHE_TTL = 60 * 60; // 1 hour
+
 export async function getPricingPage(_currency: string = 'INR'): Promise<PricingPageResponse> {
-  try {
-    const [plans, comparison, testimonials] = await Promise.all([
-      prisma.pricingPlan.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        include: { features: { orderBy: { order: 'asc' } } },
-      }),
-      prisma.comparisonFeature.findMany({ orderBy: { order: 'asc' } }),
-      prisma.testimonial.findMany({
-        where: { isActive: true },
-        orderBy: { order: 'asc' },
-      }),
-    ]);
+  return getOrSet(
+    PRICING_CACHE_KEY,
+    async () => {
+      try {
+        const [plans, comparison, testimonials] = await Promise.all([
+          prisma.pricingPlan.findMany({
+            where: { isActive: true },
+            orderBy: { displayOrder: 'asc' },
+            include: { features: { orderBy: { order: 'asc' } } },
+          }),
+          prisma.comparisonFeature.findMany({ orderBy: { order: 'asc' } }),
+          prisma.testimonial.findMany({
+            where: { isActive: true },
+            orderBy: { order: 'asc' },
+          }),
+        ]);
 
-    if (plans.length === 0) {
-      await seedPricingData();
-      return getPricingPage(_currency);
-    }
+        if (plans.length === 0) {
+          await seedPricingData();
+          return getPricingPage(_currency);
+        }
 
-    return {
-      plans: plans.map(formatPlan),
-      comparison: comparison.map((c) => ({
-        id: c.id,
-        title: c.title,
-        values: c.values as Record<string, string>,
-        order: c.order,
-      })),
-      testimonials: testimonials.map((t) => ({
-        id: t.id,
-        name: t.name,
-        designation: t.designation,
-        company: t.company,
-        image: t.image,
-        review: t.review,
-        rating: t.rating,
-        order: t.order,
-      })),
-    };
-  } catch (err) {
-    console.warn('[pricing.service] DB unavailable, using static fallback:', err);
-    return {
-      plans: SEED_PLANS.map(formatPlan),
-      comparison: SEED_COMPARISON,
-      testimonials: SEED_TESTIMONIALS,
-    };
-  }
+        return {
+          plans: plans.map(formatPlan),
+          comparison: comparison.map((c) => ({
+            id: c.id,
+            title: c.title,
+            values: c.values as Record<string, string>,
+            order: c.order,
+          })),
+          testimonials: testimonials.map((t) => ({
+            id: t.id,
+            name: t.name,
+            designation: t.designation,
+            company: t.company,
+            image: t.image,
+            review: t.review,
+            rating: t.rating,
+            order: t.order,
+          })),
+        };
+      } catch (err) {
+        console.warn('[pricing.service] DB unavailable, using static fallback:', err);
+        return {
+          plans: SEED_PLANS.map(formatPlan),
+          comparison: SEED_COMPARISON,
+          testimonials: SEED_TESTIMONIALS,
+        };
+      }
+    },
+    PRICING_CACHE_TTL,
+  );
+}
+
+/** Delete the pricing cache — call after any admin mutation to plans, features, or testimonials. */
+export async function invalidatePricingCache(): Promise<void> {
+  await invalidate(PRICING_CACHE_KEY);
 }

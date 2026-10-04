@@ -54,7 +54,13 @@ const EMPTY_FORM = {
   limitAiSuggestion: 1,
   isPopular: false,
   displayOrder: 0,
-  features: [] as Array<{ id?: string; feature: string; available: boolean; highlight: boolean; order: number }>,
+  features: [] as Array<{
+    id?: string;
+    feature: string;
+    available: boolean;
+    highlight: boolean;
+    order: number;
+  }>,
 };
 
 type FormState = typeof EMPTY_FORM;
@@ -63,7 +69,10 @@ const INPUT_CLS =
   'w-full bg-[#fff8f6] border border-[#ddc0bd] rounded-lg px-3 py-2 text-sm text-[#2b1611] placeholder:text-[#cba89d] focus:outline-none focus:ring-2 focus:ring-[#5b060c]/30 transition';
 const LABEL_CLS = 'block text-xs font-semibold text-[#564240] mb-1 uppercase tracking-wide';
 
-export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: PricingAdminClientProps) {
+export function PricingAdminClient({
+  initialPlans,
+  comparisonFeatures = [],
+}: PricingAdminClientProps) {
   const [plans, setPlans] = useState<Plan[]>(initialPlans);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [newFeatureText, setNewFeatureText] = useState('');
@@ -151,18 +160,14 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
   const handleToggleFeatureAvailable = (index: number) => {
     setForm((prev) => ({
       ...prev,
-      features: prev.features.map((f, i) =>
-        i === index ? { ...f, available: !f.available } : f
-      ),
+      features: prev.features.map((f, i) => (i === index ? { ...f, available: !f.available } : f)),
     }));
   };
 
   const handleToggleFeatureHighlight = (index: number) => {
     setForm((prev) => ({
       ...prev,
-      features: prev.features.map((f, i) =>
-        i === index ? { ...f, highlight: !f.highlight } : f
-      ),
+      features: prev.features.map((f, i) => (i === index ? { ...f, highlight: !f.highlight } : f)),
     }));
   };
 
@@ -297,7 +302,12 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
             {comparisonFeatures.length > 0 ? (
               <>
                 {comparisonFeatures.length} features configured:{' '}
-                <strong>{comparisonFeatures.slice(0, 3).map((f) => f.title).join(', ')}</strong>
+                <strong>
+                  {comparisonFeatures
+                    .slice(0, 3)
+                    .map((f) => f.title)
+                    .join(', ')}
+                </strong>
                 {comparisonFeatures.length > 3 ? ` (+${comparisonFeatures.length - 3} more)` : ''}
               </>
             ) : (
@@ -323,7 +333,9 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                 {editingId ? 'Edit Plan' : 'Create New Plan'}
               </h2>
               <p className="text-xs text-[#564240] mt-0.5">
-                {editingId ? 'Modify existing subscription tier settings' : 'Add a new pricing tier to the catalogue'}
+                {editingId
+                  ? 'Modify existing subscription tier settings'
+                  : 'Add a new pricing tier to the catalogue'}
               </p>
             </div>
             <button
@@ -381,7 +393,9 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                 }
               >
                 <option value={TemplateAccess.FREE}>FREE — Free templates only (Restricted)</option>
-                <option value={TemplateAccess.ALL}>ALL — All templates unlocked (Full catalog)</option>
+                <option value={TemplateAccess.ALL}>
+                  ALL — All templates unlocked (Full catalog)
+                </option>
               </select>
             </div>
             <div>
@@ -416,7 +430,10 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                 onChange={(e) => setForm({ ...form, isPopular: e.target.checked })}
                 className="accent-[#5b060c] w-4 h-4 cursor-pointer"
               />
-              <label htmlFor="isPopular" className="text-sm font-medium text-[#2b1611] cursor-pointer">
+              <label
+                htmlFor="isPopular"
+                className="text-sm font-medium text-[#2b1611] cursor-pointer"
+              >
                 Mark as Most Popular (Highlighted Card)
               </label>
             </div>
@@ -461,7 +478,8 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
             {/* Features List */}
             {form.features.length === 0 ? (
               <p className="text-xs text-[#564240] italic bg-[#fff8f6] p-3 rounded-lg border border-[#ddc0bd]/40">
-                No custom features added yet. (Template access and quota limits are automatically calculated and displayed).
+                No custom features added yet. (Template access and quota limits are automatically
+                calculated and displayed).
               </p>
             ) : (
               <ul className="space-y-2">
@@ -472,7 +490,9 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <span className="text-xs font-bold text-[#7a1f1f] w-5">#{idx + 1}</span>
-                      <span className={`text-xs text-[#2b1611] truncate ${feat.highlight ? 'font-bold' : ''}`}>
+                      <span
+                        className={`text-xs text-[#2b1611] truncate ${feat.highlight ? 'font-bold' : ''}`}
+                      >
                         {feat.feature}
                       </span>
                     </div>
@@ -510,8 +530,16 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
             )}
           </div>
 
-          {error && <p className="mt-4 text-sm text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">{error}</p>}
-          {success && <p className="mt-4 text-sm text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-200">{success}</p>}
+          {error && (
+            <p className="mt-4 text-sm text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p className="mt-4 text-sm text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-200">
+              {success}
+            </p>
+          )}
 
           <div className="flex gap-3 mt-6 pt-4 border-t border-[#ddc0bd]/40">
             <button
@@ -591,7 +619,9 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                     {' · '}Templates: <strong>{plan.templateAccess}</strong>
                   </p>
                   <p className="text-xs text-[#564240] mt-0.5">
-                    ATS Quota: <strong>{plan.limitAtsAnalysis}</strong> · AI Quota: <strong>{plan.limitAiSuggestion}</strong> · Order: <strong>{plan.displayOrder}</strong>
+                    ATS Quota: <strong>{plan.limitAtsAnalysis}</strong> · AI Quota:{' '}
+                    <strong>{plan.limitAiSuggestion}</strong> · Order:{' '}
+                    <strong>{plan.displayOrder}</strong>
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
@@ -612,9 +642,7 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                     ↓
                   </button>
                   <button
-                    onClick={() =>
-                      setExpandedPlanId(expandedPlanId === plan.id ? null : plan.id)
-                    }
+                    onClick={() => setExpandedPlanId(expandedPlanId === plan.id ? null : plan.id)}
                     className="px-3 py-1.5 text-xs font-semibold border border-[#ddc0bd] rounded-lg hover:bg-[#fff0ed] transition cursor-pointer"
                   >
                     {expandedPlanId === plan.id ? 'Hide' : 'Features'}
@@ -649,7 +677,11 @@ export function PricingAdminClient({ initialPlans, comparisonFeatures = [] }: Pr
                     <ul className="space-y-1">
                       {plan.features.map((f) => (
                         <li key={f.id} className="flex items-center gap-2 text-xs text-[#2b1611]">
-                          <span className={f.available ? 'text-green-600 font-bold' : 'text-red-400 font-bold'}>
+                          <span
+                            className={
+                              f.available ? 'text-green-600 font-bold' : 'text-red-400 font-bold'
+                            }
+                          >
                             {f.available ? '✓' : '✗'}
                           </span>
                           <span>{f.feature}</span>

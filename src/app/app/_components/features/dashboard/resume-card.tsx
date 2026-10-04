@@ -74,7 +74,11 @@ export function ResumeCard({ resume, onPreview }: ResumeCardProps) {
           </h4>
           <p className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] leading-[15px] sm:leading-[16px] text-[#564240]/80 mt-1">
             Template: {resume.templateId} • Edited {formatDate(resume.updatedAt)} • Status:{' '}
-            <span className={resume.status === 'COMPLETE' ? 'text-[#1b5e20] font-semibold' : 'text-[#795900]'}>
+            <span
+              className={
+                resume.status === 'COMPLETE' ? 'text-[#1b5e20] font-semibold' : 'text-[#795900]'
+              }
+            >
               {resume.status}
             </span>
           </p>

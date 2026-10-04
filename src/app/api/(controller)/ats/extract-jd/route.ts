@@ -19,6 +19,7 @@ import { extractJdFromUrl } from '@/app/service/ai/ats.service';
 import { AIServiceError } from '@/app/service/ai/client';
 import { prisma } from '@/app/_lib/prisma';
 import { getOrSeedUsage } from '@/app/service/subscription/usage.service';
+import { logger } from '@/lib/telemetry/logger';
 
 export async function POST(req: Request) {
   try {
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: 'ATS analysis limit reached. Please upgrade your subscription to extract job descriptions from URLs.',
+          message:
+            'ATS analysis limit reached. Please upgrade your subscription to extract job descriptions from URLs.',
         },
         { status: 403 },
       );
@@ -62,9 +64,12 @@ export async function POST(req: Request) {
     );
   } catch (err: unknown) {
     if (err instanceof AIServiceError) {
-      console.error(
-        `[POST /api/ats/extract-jd] [${err.requestId.slice(0, 8)}] AI error: ${err.status} ${err.code} — ${err.message}`,
-      );
+      logger.error('ats.extract_jd.ai_error', {
+        requestId: err.requestId.slice(0, 8),
+        status: err.status,
+        code: err.code,
+        message: err.message,
+      });
 
       if (err.status === 422) {
         return NextResponse.json(
@@ -85,7 +90,9 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error('[POST /api/ats/extract-jd] Unexpected error:', err);
+    logger.error('ats.extract_jd.unexpected_error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: 'An internal error occurred during extraction.' },
       { status: 500 },

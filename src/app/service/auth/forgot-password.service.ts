@@ -1,6 +1,10 @@
 import { prisma } from '@/app/_lib/prisma';
+import type { ForgotPasswordRequest } from '@/app/api/model/request/auth/auth';
+import type { AuthResponse } from '@/app/api/model/response/auth';
 import { generateToken, generateExpiration } from './token.service';
 import { sendPasswordResetEmail } from './email.service';
+
+export type { ForgotPasswordRequest, AuthResponse };
 
 /**
  * Forgot password service — generates a reset token and sends email.
@@ -19,7 +23,8 @@ import { sendPasswordResetEmail } from './email.service';
  * - Existing tokens are deleted before creating a new one,
  *   ensuring only the latest token is valid.
  */
-export async function forgotPassword(email: string): Promise<void> {
+export async function forgotPassword(emailOrInput: string | ForgotPasswordRequest): Promise<void> {
+  const email = typeof emailOrInput === 'string' ? emailOrInput : emailOrInput.email;
   // 1. Find user
   const user = await prisma.user.findUnique({
     where: { email },

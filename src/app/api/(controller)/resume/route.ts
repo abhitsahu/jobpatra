@@ -4,6 +4,8 @@ import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { createResumeSchema, listResumesQuerySchema } from '@/app/api/model/request/resume/resume';
 import { createResume, listResumes } from '@/app/service/resume/resume.service';
 import { toResumeDetail } from '@/app/api/model/response/resume';
+import { getTemplate } from '@/app/service/resume/template.service';
+import { prisma } from '@/app/_lib/prisma';
 
 // POST /api/resume — create a new resume
 export async function POST(req: Request) {
@@ -13,6 +15,25 @@ export async function POST(req: Request) {
 
     const result = await validateRequest(req, createResumeSchema);
     if (result.error) return result.error;
+
+    // Premium template guard — check at the trust boundary before any DB write
+    const templateId = result.data.templateId ?? 'classic-demo';
+    try {
+      const tpl = getTemplate(templateId);
+      if (tpl.isPremium) {
+        const sub = await prisma.subscription.findUnique({ where: { userId: session!.user.id } });
+        const access =
+          sub?.snapshotTemplateAccess ?? (sub?.plan?.toUpperCase() === 'FREE' ? 'FREE' : 'ALL');
+        if (access !== 'ALL') {
+          return NextResponse.json(
+            { success: false, message: 'This template requires an active paid subscription.' },
+            { status: 403 },
+          );
+        }
+      }
+    } catch {
+      // Unknown template — let createResume handle it (it falls back to classic-demo)
+    }
 
     const resume = await createResume(session!.user.id, result.data);
 

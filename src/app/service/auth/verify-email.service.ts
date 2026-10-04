@@ -1,4 +1,8 @@
 import { prisma } from '@/app/_lib/prisma';
+import type { VerifyEmailRequest } from '@/app/api/model/request/auth/auth';
+import type { UserResponse, AuthResponse } from '@/app/api/model/response/auth';
+
+export type { VerifyEmailRequest, UserResponse, AuthResponse };
 
 /**
  * Verify email service — consumes a VerificationToken.
@@ -14,7 +18,8 @@ import { prisma } from '@/app/_lib/prisma';
  * - Expired tokens are rejected
  * - No user information is leaked if token is invalid
  */
-export async function verifyEmail(token: string) {
+export async function verifyEmail(input: string | VerifyEmailRequest) {
+  const token = typeof input === 'string' ? input : input.token;
   // 1. Find the token
   const verificationToken = await prisma.verificationToken.findUnique({
     where: { token },

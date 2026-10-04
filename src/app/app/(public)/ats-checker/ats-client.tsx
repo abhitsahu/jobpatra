@@ -45,13 +45,15 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
         {/* ── Hero Section ──────────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-4 md:px-16 text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#fff0ee] text-[#370003] border border-[#E5D9C8] mb-6 shadow-sm">
-            <IconMapper name="fact_check" className="text-sm text-[#370003]" /> Instant Resume ATS Audit
+            <IconMapper name="fact_check" className="text-sm text-[#370003]" /> Instant Resume ATS
+            Audit
           </div>
           <h1 className="font-['Playfair_Display'] text-[36px] md:text-[52px] leading-[44px] md:leading-[60px] font-bold text-[#370003] mb-6">
             ATS Compatibility Checker
           </h1>
           <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] max-w-2xl mx-auto mb-8">
-            Scan your resume against real recruitment filters in seconds. Get an instant score, keyword gap analysis, and AI-powered recommendations to land more interviews.
+            Scan your resume against real recruitment filters in seconds. Get an instant score,
+            keyword gap analysis, and AI-powered recommendations to land more interviews.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
@@ -139,7 +141,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                   </h3>
                 </div>
                 <p className="font-['Hanken_Grotesk'] text-[14px] leading-relaxed text-[#564240]">
-                  Strong use of action verbs and quantified achievements. Sentence structure aligns well with senior roles, with readability in the top 10%.
+                  Strong use of action verbs and quantified achievements. Sentence structure aligns
+                  well with senior roles, with readability in the top 10%.
                 </p>
               </div>
 
@@ -151,7 +154,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                   </h3>
                 </div>
                 <p className="font-['Hanken_Grotesk'] text-[14px] leading-relaxed text-[#564240]">
-                  Clean linear hierarchy detected. Recommended: avoid nested multi-column tables to ensure legacy recruiters scan your data error-free.
+                  Clean linear hierarchy detected. Recommended: avoid nested multi-column tables to
+                  ensure legacy recruiters scan your data error-free.
                 </p>
               </div>
             </div>
@@ -233,7 +237,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
               Decipher the ATS Gatekeeper
             </h2>
             <p className="font-['Hanken_Grotesk'] text-[18px] text-[#564240]">
-              JobPatra AI dissects your resume using the exact parsing parameters used by enterprise recruiters.
+              JobPatra AI dissects your resume using the exact parsing parameters used by enterprise
+              recruiters.
             </p>
           </div>
 
@@ -246,7 +251,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 ATS Compatibility Score
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Understand how recruitment algorithms rate your resume instantly with clear, actionable benchmarks.
+                Understand how recruitment algorithms rate your resume instantly with clear,
+                actionable benchmarks.
               </p>
             </div>
 
@@ -258,7 +264,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 Keyword Gap Analysis
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Compare your resume skillset directly against target job descriptions to identify missing terms.
+                Compare your resume skillset directly against target job descriptions to identify
+                missing terms.
               </p>
             </div>
 
@@ -270,7 +277,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 Formatting Inspection
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Detect complex elements (tables, charts, layout bars) that prevent machine parsers from reading your data.
+                Detect complex elements (tables, charts, layout bars) that prevent machine parsers
+                from reading your data.
               </p>
             </div>
 
@@ -282,7 +290,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 AI Sentence Rewriter
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Receive intelligent sentence-by-sentence recommendations to improve impact and wording.
+                Receive intelligent sentence-by-sentence recommendations to improve impact and
+                wording.
               </p>
             </div>
 
@@ -294,7 +303,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 Full Resume Parsing
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Verify exactly how an ATS extracts text and maps your headings to ensure complete accuracy.
+                Verify exactly how an ATS extracts text and maps your headings to ensure complete
+                accuracy.
               </p>
             </div>
 
@@ -306,7 +316,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 Industry Benchmarking
               </h3>
               <p className="font-['Hanken_Grotesk'] text-[15px] leading-relaxed text-[#564240]">
-                Compare your metrics against successful applicants in tech, product, and leadership roles.
+                Compare your metrics against successful applicants in tech, product, and leadership
+                roles.
               </p>
             </div>
           </div>
@@ -482,7 +493,8 @@ export function AtsPageClient({ isLoggedIn }: AtsPageClientProps) {
                 Ready to Optimize Your Resume?
               </h2>
               <p className="font-['Hanken_Grotesk'] text-[16px] md:text-[18px] text-white/90 mb-8 max-w-2xl mx-auto">
-                Analyze your resume parameters against standard HR logic. Build a document recruiters can parse effortlessly.
+                Analyze your resume parameters against standard HR logic. Build a document
+                recruiters can parse effortlessly.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <button

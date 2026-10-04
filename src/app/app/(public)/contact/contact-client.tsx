@@ -48,8 +48,7 @@ export function ContactClient() {
   const submitMutation = useSubmitFeedback();
 
   // Cloudflare Turnstile site key (falls back to Cloudflare's always-pass test key in dev/staging)
-  const siteKey =
-    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +116,8 @@ export function ContactClient() {
             Contact &amp; Feedback
           </h1>
           <p className="text-[#564240] text-[16px] md:text-[18px] leading-[26px] max-w-2xl">
-            Have a question, encountered an issue, or want to suggest a new feature? Send us a message and our team will get back to you promptly.
+            Have a question, encountered an issue, or want to suggest a new feature? Send us a
+            message and our team will get back to you promptly.
           </p>
         </div>
 
@@ -150,7 +150,8 @@ export function ContactClient() {
                 Swift Responses
               </h3>
               <p className="text-xs text-[#564240] leading-relaxed">
-                We review every bug report and user inquiry, typically responding within 24–48 hours.
+                We review every bug report and user inquiry, typically responding within 24–48
+                hours.
               </p>
             </div>
 
@@ -162,7 +163,8 @@ export function ContactClient() {
                 </span>
               </div>
               <p className="text-xs text-white/90 leading-relaxed">
-                Over 70% of our recent resume templates and ATS score enhancements originated directly from user feedback.
+                Over 70% of our recent resume templates and ATS score enhancements originated
+                directly from user feedback.
               </p>
             </div>
           </div>
@@ -243,10 +245,12 @@ export function ContactClient() {
               </div>
 
               {/* Rating (Stars) — Only for GENERAL and COMPLIMENT */}
-              {(selectedType === FeedbackType.GENERAL || selectedType === FeedbackType.COMPLIMENT) && (
+              {(selectedType === FeedbackType.GENERAL ||
+                selectedType === FeedbackType.COMPLIMENT) && (
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#370003] mb-1.5">
-                    Experience Rating <span className="text-xs font-normal text-[#8a716f] lowercase">(optional)</span>
+                    Experience Rating{' '}
+                    <span className="text-xs font-normal text-[#8a716f] lowercase">(optional)</span>
                   </label>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => {
@@ -287,7 +291,8 @@ export function ContactClient() {
                   htmlFor="contact-subject"
                   className="block text-xs font-bold uppercase tracking-wider text-[#370003] mb-1.5"
                 >
-                  Subject <span className="text-xs font-normal text-[#8a716f] lowercase">(optional)</span>
+                  Subject{' '}
+                  <span className="text-xs font-normal text-[#8a716f] lowercase">(optional)</span>
                 </label>
                 <input
                   id="contact-subject"
@@ -309,9 +314,7 @@ export function ContactClient() {
                   >
                     Your Message <span className="text-[#ba1a1a]">*</span>
                   </label>
-                  <span className="text-xs text-[#8a716f]">
-                    {message.length} characters
-                  </span>
+                  <span className="text-xs text-[#8a716f]">{message.length} characters</span>
                 </div>
                 <textarea
                   id="contact-message"
@@ -345,7 +348,13 @@ export function ContactClient() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={submitMutation.isPending || !turnstileToken || !name.trim() || !email.trim() || message.trim().length < 3}
+                  disabled={
+                    submitMutation.isPending ||
+                    !turnstileToken ||
+                    !name.trim() ||
+                    !email.trim() ||
+                    message.trim().length < 3
+                  }
                   className="w-full bg-[#370003] text-white font-semibold text-sm py-3.5 rounded-full hover:scale-[1.01] transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-md cursor-pointer flex items-center justify-center gap-2"
                 >
                   {submitMutation.isPending ? (

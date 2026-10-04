@@ -1,4 +1,10 @@
 import { Resend } from 'resend';
+import { Currency } from '@/app/api/model/enums/currency';
+import { BillingPeriod } from '@/app/api/model/enums/subscription';
+import type { SendInvoiceEmailParams } from '@/app/api/model/request/payments/invoice';
+
+export { Currency, BillingPeriod };
+export type { SendInvoiceEmailParams };
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@jobpatra.in';
@@ -81,18 +87,7 @@ export async function sendInvoiceEmail({
   periodStart,
   periodEnd,
   invoiceId,
-}: {
-  email: string;
-  userName: string | null;
-  invoiceNumber: string;
-  planName: string;
-  amount: number;
-  currency: string;
-  billingPeriod: string;
-  periodStart: Date;
-  periodEnd: Date;
-  invoiceId: string;
-}): Promise<void> {
+}: SendInvoiceEmailParams): Promise<void> {
   const downloadUrl = `${APP_URL}/api/invoice/${invoiceId}/download`;
 
   const fmt = (n: number) =>
@@ -183,4 +178,3 @@ export async function sendInvoiceEmail({
     `,
   });
 }
-

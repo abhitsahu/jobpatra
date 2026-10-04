@@ -4,7 +4,6 @@ import { IconMapper } from '@/app/_components/icons/IconMapper';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import type { ATSAnalyzeResponse } from '@/app/app/services/ats.service';
-import { HistoryPanel } from '../../components/HistoryPanel';
 import { useAtsResult } from '@/app/app/_hooks/use-ats-history';
 
 export default function ResultPage() {
@@ -19,10 +18,7 @@ export default function ResultPage() {
 
   const [result, setResult] = useState<ATSAnalyzeResponse | null>(null);
   const [resumeName, setResumeName] = useState('');
-  const [jdText, setJdText] = useState('');
-  const [activeTab, setActiveTab] = useState<
-    'overview' | 'resume' | 'jd' | 'ats' | 'suggestions' | 'history'
-  >('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'ats' | 'suggestions'>('overview');
   const [expandedRecs, setExpandedRecs] = useState<Record<number, boolean>>({});
   const [copiedRecId, setCopiedRecId] = useState<number | null>(null);
 
@@ -38,7 +34,13 @@ export default function ResultPage() {
       education_score: dbRecord.educationScore,
       summary_score: dbRecord.summaryScore,
       formatting_score: dbRecord.formattingScore,
-      matched_keywords: dbRecord.matchedKeywords.map((k) => ({ keyword: k, matchType: 'EXACT', similarity: null, matched_jd_keyword: null, is_related_concept: false })),
+      matched_keywords: dbRecord.matchedKeywords.map((k) => ({
+        keyword: k,
+        matchType: 'EXACT',
+        similarity: null,
+        matched_jd_keyword: null,
+        is_related_concept: false,
+      })),
       missing_keywords: dbRecord.missingKeywords,
       related_keywords: [],
       matched_skills: dbRecord.matchedSkills,
@@ -61,8 +63,6 @@ export default function ResultPage() {
     setResult(r);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setResumeName(dbRecord.resumeName);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setJdText(dbRecord.jobDescription);
   }, [dbRecord]);
 
   // ── Legacy localStorage fallback ─────────────────────────────────────────
@@ -89,10 +89,6 @@ export default function ResultPage() {
         console.error('Failed to parse history list', err);
       }
     }
-
-    const pendingJdText = sessionStorage.getItem('jobpatra_ats_pending_jd_text') || '';
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setJdText(pendingJdText);
   }, [analysisId, isLegacyId]);
 
   if (dbLoading && !isLegacyId) {
@@ -121,12 +117,56 @@ export default function ResultPage() {
     );
   }
 
-
   const scoreColour = (score: number) => {
     if (score >= 80) return 'text-[#1B5E20]';
     if (score >= 60) return 'text-[#795900]';
     return 'text-[#ba1a1a]';
   };
+
+  const overallScore = Math.round(result.overall_score);
+
+  const getScoreRating = (s: number) => {
+    if (s >= 80) {
+      return {
+        label: 'Excellent Match',
+        dotColor: '#2d6a4f',
+        bgLight: 'bg-[#2d6a4f]/10',
+        textColor: 'text-[#2d6a4f]',
+        borderColor: 'border-[#2d6a4f]/25',
+        barColor: 'bg-[#2d6a4f]',
+      };
+    }
+    if (s >= 60) {
+      return {
+        label: 'Good Match',
+        dotColor: '#795900',
+        bgLight: 'bg-[#795900]/10',
+        textColor: 'text-[#795900]',
+        borderColor: 'border-[#795900]/25',
+        barColor: 'bg-[#795900]',
+      };
+    }
+    if (s >= 40) {
+      return {
+        label: 'Average Match',
+        dotColor: '#b45309',
+        bgLight: 'bg-[#d97706]/10',
+        textColor: 'text-[#b45309]',
+        borderColor: 'border-[#b45309]/25',
+        barColor: 'bg-[#d97706]',
+      };
+    }
+    return {
+      label: 'Needs Improvement',
+      dotColor: '#ba1a1a',
+      bgLight: 'bg-[#ba1a1a]/10',
+      textColor: 'text-[#ba1a1a]',
+      borderColor: 'border-[#ba1a1a]/25',
+      barColor: 'bg-[#ba1a1a]',
+    };
+  };
+
+  const scoreRating = getScoreRating(overallScore);
 
   const subScores = [
     { label: 'Keywords & Lexicon', value: result.keyword_score },
@@ -175,8 +215,11 @@ export default function ResultPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-[#5b060c] pb-8 mb-8 gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <IconMapper name="description" className="text-[#5b060c]"
-                style={{ fontVariationSettings: "'FILL' 1" }} />
+              <IconMapper
+                name="description"
+                className="text-[#5b060c]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              />
               <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] tracking-[0.05em] font-semibold text-[#5b060c] uppercase">
                 Official Dossier
               </span>
@@ -189,25 +232,37 @@ export default function ResultPage() {
             </p>
           </div>
 
-          {/* Stamp Style Score */}
-          <div className="relative w-32 h-36 bg-[#ffdad2] border-2 border-[#ffb3ae] flex flex-col items-center justify-center p-2 shadow-sm shrink-0 self-start md:self-auto">
-            <div className="absolute -top-1 -left-1 w-full h-full border border-[#5b060c] opacity-20 pointer-events-none"></div>
-            <span className="font-['Hanken_Grotesk'] text-[11px] font-bold text-[#795900] uppercase tracking-tighter mb-1">
+          {/* Theme-Harmonized Match Rating Card */}
+          <div className="bg-white/80 border border-[#E5D9C8] rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col items-center justify-center min-w-[220px] sm:min-w-[260px] shrink-0 self-stretch md:self-auto backdrop-blur-xs">
+            <span className="font-['Hanken_Grotesk'] text-[11px] font-bold text-[#564240] uppercase tracking-[0.12em] mb-1">
               Match Rating
             </span>
-            <div className="font-['Playfair_Display'] text-[36px] leading-[44px] text-[#5b060c] font-bold">
-              {Math.round(result.overall_score)}
-              <span className="text-[20px]">%</span>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-[9px] text-[#8a716f] font-bold border border-[#8a716f] px-1.5 py-0.5 rounded transform rotate-12 uppercase tracking-wider">
-                COMPATIBLE
-              </div>
-            </div>
-            <div className="mt-2 text-center">
-              <span className="font-['Hanken_Grotesk'] text-[10px] text-[#564240] uppercase tracking-wider">
-                JobPatra AI
+            <div className="flex items-baseline gap-1 my-0.5">
+              <span className="font-['Playfair_Display'] text-[46px] sm:text-[54px] leading-none font-bold text-[#5b060c]">
+                {overallScore}
               </span>
+              <span className="font-['Playfair_Display'] text-[24px] sm:text-[28px] font-bold text-[#5b060c]/70">
+                %
+              </span>
+            </div>
+
+            {/* Pill Status Badge */}
+            <div
+              className={`mt-2 mb-3.5 px-3 py-1 rounded-full font-['Hanken_Grotesk'] text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border flex items-center gap-1.5 ${scoreRating.bgLight} ${scoreRating.textColor} ${scoreRating.borderColor}`}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ backgroundColor: scoreRating.dotColor }}
+              />
+              {scoreRating.label}
+            </div>
+
+            {/* Visual Progress Bar */}
+            <div className="w-full bg-[#E5D9C8]/60 h-2 rounded-full overflow-hidden border border-[#E5D9C8]/40">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${scoreRating.barColor}`}
+                style={{ width: `${Math.min(100, Math.max(0, overallScore))}%` }}
+              />
             </div>
           </div>
         </div>
@@ -218,14 +273,11 @@ export default function ResultPage() {
             { id: 'overview' as const, label: 'Executive Summary', icon: 'summarize' },
             { id: 'ats' as const, label: 'Lexicon Matching', icon: 'analytics' },
             { id: 'suggestions' as const, label: 'AI Recommendations', icon: 'lightbulb' },
-            { id: 'resume' as const, label: 'Parsed Resume', icon: 'history_edu' },
-            { id: 'jd' as const, label: 'Job Description', icon: 'link' },
-            { id: 'history' as const, label: 'History Log', icon: 'history' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-3 px-4 font-bold text-[12px] uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 shrink-0 ${
+              className={`py-3 px-4 font-bold text-[12px] uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-[#7a1f1f] text-[#7a1f1f]'
                   : 'border-transparent text-[#564240] hover:text-[#7a1f1f] hover:border-[#ddc0bd]'
@@ -379,7 +431,10 @@ export default function ResultPage() {
                             className="flex items-center justify-between text-[13px] border-b border-[#E5D9C8]/20 pb-1.5 last:border-0 last:pb-0"
                           >
                             <span className="text-[#2b1611] flex items-center gap-2">
-                              <IconMapper name="check_circle" className="text-[16px] text-green-600" />
+                              <IconMapper
+                                name="check_circle"
+                                className="text-[16px] text-green-600"
+                              />
                               {kw.keyword}
                             </span>
                             <span className="text-[9px] font-bold text-[#564240] bg-[#e5d9c8]/50 px-1.5 py-0.5 rounded">
@@ -571,7 +626,12 @@ export default function ResultPage() {
                                         }}
                                         className="flex items-center gap-1 text-[11px] font-semibold text-[#7a1f1f] hover:text-[#5c1616] transition-colors"
                                       >
-                                        <IconMapper name={copiedRecId === idx ? 'check_circle' : 'content_copy'} className="text-[16px]" />
+                                        <IconMapper
+                                          name={
+                                            copiedRecId === idx ? 'check_circle' : 'content_copy'
+                                          }
+                                          className="text-[16px]"
+                                        />
                                         {copiedRecId === idx ? 'Copied!' : 'Copy to Clipboard'}
                                       </button>
                                     </div>
@@ -631,53 +691,6 @@ export default function ResultPage() {
                   <p>No suggestions required. The document has achieved premium compatibilities.</p>
                 </div>
               )}
-            </div>
-          )}
-
-          {/* Parsed Resume Tab */}
-          {activeTab === 'resume' && (
-            <div className="space-y-4">
-              <h3 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611] border-b border-[#E5D9C8] pb-2">
-                Linearized Parsing Result
-              </h3>
-              <p className="text-[12px] text-[#564240] italic leading-normal mb-2">
-                This shows the plain text sequence exactly as parsed by ATS screening machines.
-                Ensure sections and text order flow logically.
-              </p>
-              <div className="bg-white border border-[#E5D9C8] rounded-xl p-6 font-mono text-[11px] leading-relaxed text-[#2b1611] overflow-x-auto whitespace-pre-wrap max-h-[500px]">
-                {/* Fallback to simulated or loaded text */}
-                {sessionStorage.getItem('jobpatra_ats_pending_resume_text') ||
-                  'No plain text representation found.'}
-              </div>
-            </div>
-          )}
-
-          {/* Job Description Tab */}
-          {activeTab === 'jd' && (
-            <div className="space-y-4">
-              <h3 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611] border-b border-[#E5D9C8] pb-2">
-                Target Role Criteria Details
-              </h3>
-              <p className="text-[12px] text-[#564240] italic leading-normal mb-2">
-                This lists the target job criteria description parsed for keywords.
-              </p>
-              <div className="bg-white border border-[#E5D9C8] rounded-xl p-6 font-mono text-[11px] leading-relaxed text-[#2b1611] overflow-x-auto whitespace-pre-wrap max-h-[500px]">
-                {jdText ||
-                  sessionStorage.getItem('jobpatra_ats_pending_jd_text') ||
-                  'No target criteria representation found.'}
-              </div>
-            </div>
-          )}
-
-          {/* History Tab */}
-          {activeTab === 'history' && (
-            <div className="space-y-4">
-              <h3 className="font-['Playfair_Display'] text-[18px] font-bold text-[#2b1611] border-b border-[#E5D9C8] pb-2">
-                Analysis Logs Archive
-              </h3>
-              <div className="max-w-md">
-                <HistoryPanel />
-              </div>
             </div>
           )}
         </div>

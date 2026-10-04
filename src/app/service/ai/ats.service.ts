@@ -20,19 +20,16 @@
 
 import { aiRequest, aiRequestStream, type AIClientOptions } from '@/app/service/ai/client';
 import type { ATSAnalyzeRequestBody, ATSAnalyzeResponse } from '@/app/service/ai/types';
+import type { ATSAnalyzeRequestDTO, ExtractJdRequestDTO } from '@/app/api/model/request/ats';
+import type { ExtractJdApiResponse } from '@/app/api/model/response/ats';
+import type { ATSAnalyzeInput, ExtractJdClientResponse } from '@/app/api/client/ats/ats-client';
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
-export interface AnalyzeATSParams {
-  /** Resume as raw text. */
-  resumeText?: string;
-  resumeFileName?: string;
-  resumeFileBytes?: string;
-  /** Job description as raw text. */
-  jobDescriptionText: string;
-}
+export type AnalyzeATSParams = ATSAnalyzeRequestDTO;
+export type { ATSAnalyzeInput, ExtractJdClientResponse, ATSAnalyzeRequestDTO, ExtractJdRequestDTO };
 
 export interface AnalyzeATSResult {
   /** The full ATS report from the AI service. */
@@ -108,7 +105,7 @@ export async function analyzeATSStream(
 
 export interface ExtractJdResult {
   text: string;
-  source: 'httpx' | 'playwright';
+  source: ExtractJdApiResponse['source'];
   char_count: number;
   url: string;
 }
@@ -117,15 +114,15 @@ export interface ExtractJdResult {
  * Extract job description text from a public URL using 2-tier AI backend scraping.
  */
 export async function extractJdFromUrl(
-  url: string,
+  url: string | ExtractJdRequestDTO,
   options?: AIClientOptions,
 ): Promise<{ result: ExtractJdResult; requestId: string }> {
+  const targetUrl = typeof url === 'string' ? url : url.url;
   const { data, requestId } = await aiRequest<ExtractJdResult>(
     '/v1/jd/extract',
-    { method: 'POST', body: { url } },
+    { method: 'POST', body: { url: targetUrl } },
     { timeoutMs: 35_000, ...options }, // Playwright Tier 2 can take up to 25s
   );
 
   return { result: data, requestId };
 }
-

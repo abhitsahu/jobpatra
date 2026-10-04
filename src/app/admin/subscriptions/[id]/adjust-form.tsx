@@ -50,11 +50,15 @@ export function SubscriptionAdjustForm({
 
   return (
     <div className="bg-white border border-[#ddc0bd] rounded-xl p-6 shadow-xs font-['Hanken_Grotesk']">
-      <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Manual Adjustment</h2>
+      <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">
+        Manual Adjustment
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">Plan</label>
+            <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">
+              Plan
+            </label>
             <select
               value={plan}
               onChange={(e) => setPlan(e.target.value)}
@@ -68,18 +72,26 @@ export function SubscriptionAdjustForm({
             </select>
           </div>
           <div>
-            <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">Status</label>
+            <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">
+              Status
+            </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="w-full px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs cursor-pointer"
             >
-              {availableStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+              {availableStatuses.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
           </div>
         </div>
         <div>
-          <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">Period End Date</label>
+          <label className="block text-xs text-[#564240] mb-1.5 font-bold uppercase tracking-wider">
+            Period End Date
+          </label>
           <input
             type="date"
             value={periodEnd}
@@ -95,7 +107,9 @@ export function SubscriptionAdjustForm({
           {saving ? 'Applying…' : 'Apply Changes'}
         </button>
       </form>
-      <p className="text-xs text-[#564240] mt-3 font-medium">⚠️ This administrative action is recorded in the Audit Log.</p>
+      <p className="text-xs text-[#564240] mt-3 font-medium">
+        ⚠️ This administrative action is recorded in the Audit Log.
+      </p>
     </div>
   );
 }

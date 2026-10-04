@@ -9,6 +9,10 @@
  *   const buffer = await generatePdf(html);
  *   // stream or upload buffer
  */
+import type { ResumePdfResponse } from '@/app/api/model/response/resume';
+
+export type { ResumePdfResponse };
+
 export async function generatePdf(html: string): Promise<Buffer> {
   // Dynamic import keeps Puppeteer out of the main bundle
   const puppeteer = await import('puppeteer');
@@ -26,10 +30,10 @@ export async function generatePdf(html: string): Promise<Buffer> {
       format: 'A4',
       printBackground: true,
       margin: {
-        top: '0',
-        right: '0',
-        bottom: '0',
-        left: '0',
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm',
       },
     });
 

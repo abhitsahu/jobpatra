@@ -1,9 +1,19 @@
 import { prisma } from '@/app/_lib/prisma';
-import { BillingPeriod } from '@/app/api/model/enums/subscription';
+import {
+  SubscriptionPlan,
+  SubscriptionStatus,
+  BillingPeriod,
+  PaymentStatus,
+  UsageFeature,
+} from '@/app/api/model/enums/subscription';
+import type { ActivateSubscriptionDTO } from '@/app/api/model/request/payments/order';
 import { invalidatePlanLimitsCache, getPlanLimits } from './plan-limit.service';
 import { getPricingPage } from '@/app/service/pricing/pricing.service';
 import { createInvoice } from './invoice.service';
 import type { Subscription } from '@prisma/client';
+
+export { SubscriptionPlan, SubscriptionStatus, BillingPeriod, PaymentStatus, UsageFeature };
+export type { ActivateSubscriptionDTO };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ACTIVATE / UPGRADE SUBSCRIPTION
@@ -17,18 +27,10 @@ export async function activateUserSubscription({
   razorpayPaymentId,
   amount,
   currency,
-}: {
-  userId: string;
-  planSlug: string;
-  billingPeriod: BillingPeriod;
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  amount: number;
-  currency: string;
-}) {
+}: ActivateSubscriptionDTO) {
   const normalizedPlan = planSlug.toUpperCase();
   const now = new Date();
-  const isFree = normalizedPlan === 'FREE';
+  const isFree = normalizedPlan === SubscriptionPlan.FREE;
 
   // ── Block FREE downgrade when user has an active paid subscription ─────────
   const existingSubscription = await prisma.subscription.findUnique({
@@ -37,8 +39,8 @@ export async function activateUserSubscription({
   });
 
   const isPaidActive =
-    existingSubscription?.plan !== 'FREE' &&
-    existingSubscription?.status === 'ACTIVE' &&
+    existingSubscription?.plan !== SubscriptionPlan.FREE &&
+    existingSubscription?.status === SubscriptionStatus.ACTIVE &&
     existingSubscription?.currentPeriodEnd &&
     existingSubscription.currentPeriodEnd > now;
 
@@ -89,21 +91,28 @@ export async function activateUserSubscription({
     const existingPayment = await tx.payment.findUnique({
       where: { razorpayOrderId },
     });
-    if (existingPayment?.status === 'COMPLETED') {
+    if (existingPayment?.status === PaymentStatus.COMPLETED) {
       throw new Error('PAYMENT_ALREADY_COMPLETED');
     }
 
     const payment = await tx.payment.upsert({
       where: { razorpayOrderId },
-      update: { razorpayPaymentId, status: 'COMPLETED', amount, currency },
-      create: { userId, razorpayOrderId, razorpayPaymentId, amount, currency, status: 'COMPLETED' },
+      update: { razorpayPaymentId, status: PaymentStatus.COMPLETED, amount, currency },
+      create: {
+        userId,
+        razorpayOrderId,
+        razorpayPaymentId,
+        amount,
+        currency,
+        status: PaymentStatus.COMPLETED,
+      },
     });
 
     const subscription = await tx.subscription.upsert({
       where: { userId },
       update: {
         plan: normalizedPlan,
-        status: 'ACTIVE',
+        status: SubscriptionStatus.ACTIVE,
         paymentProvider: 'razorpay',
         paymentId: razorpayPaymentId,
         razorpaySubscriptionId: razorpayOrderId,
@@ -116,7 +125,7 @@ export async function activateUserSubscription({
       create: {
         userId,
         plan: normalizedPlan,
-        status: 'ACTIVE',
+        status: SubscriptionStatus.ACTIVE,
         paymentProvider: 'razorpay',
         paymentId: razorpayPaymentId,
         razorpaySubscriptionId: razorpayOrderId,
@@ -143,8 +152,8 @@ export async function activateUserSubscription({
 
     if (shouldSeedCredits) {
       const METERED_FEATURES: { feature: string; planLimit: number }[] = [
-        { feature: 'ATS_ANALYSIS', planLimit: planLimits.limitAtsAnalysis },
-        { feature: 'AI_SUGGESTION', planLimit: planLimits.limitAiSuggestion },
+        { feature: UsageFeature.ATS_ANALYSIS, planLimit: planLimits.limitAtsAnalysis },
+        { feature: UsageFeature.AI_SUGGESTION, planLimit: planLimits.limitAiSuggestion },
       ];
 
       for (const { feature, planLimit } of METERED_FEATURES) {
@@ -183,7 +192,7 @@ export async function activateUserSubscription({
     return subscription;
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
   triggerInvoiceCronAsync();
 
   return result;
@@ -201,7 +210,6 @@ function triggerInvoiceCronAsync() {
   });
 }
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // FAIL PAYMENT
 // ─────────────────────────────────────────────────────────────────────────────
@@ -209,7 +217,7 @@ function triggerInvoiceCronAsync() {
 export async function failUserPayment(razorpayOrderId: string) {
   return prisma.payment.updateMany({
     where: { razorpayOrderId },
-    data: { status: 'FAILED' },
+    data: { status: PaymentStatus.FAILED },
   });
 }
 
@@ -229,10 +237,10 @@ export async function expireSubscriptionIfDue(
   userId: string,
   subscription: Subscription,
 ): Promise<Subscription> {
-  if (subscription.plan === 'FREE' || !subscription.currentPeriodEnd) {
+  if (subscription.plan === SubscriptionPlan.FREE || !subscription.currentPeriodEnd) {
     return subscription;
   }
-  if (subscription.status === 'EXPIRED') {
+  if (subscription.status === SubscriptionStatus.EXPIRED) {
     return subscription;
   }
 
@@ -249,8 +257,8 @@ export async function expireSubscriptionIfDue(
     const downgraded = await tx.subscription.update({
       where: { userId },
       data: {
-        plan: 'FREE',
-        status: 'EXPIRED',
+        plan: SubscriptionPlan.FREE,
+        status: SubscriptionStatus.EXPIRED,
         currentPeriodEnd: null,
         cancelAtPeriodEnd: false,
       },
@@ -261,6 +269,6 @@ export async function expireSubscriptionIfDue(
     return downgraded;
   });
 
-  invalidatePlanLimitsCache();
+  void invalidatePlanLimitsCache();
   return updated;
 }

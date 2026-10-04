@@ -8,8 +8,12 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { validateRequest } from '@/app/api/(controller)/_util/validate';
-import { saveAtsAnalysisSchema, type SaveAtsAnalysisDTO } from '@/app/api/model/request/ats/history';
+import {
+  saveAtsAnalysisSchema,
+  type SaveAtsAnalysisDTO,
+} from '@/app/api/model/request/ats/history';
 import { saveAnalysis } from '@/app/service/ats/history.service';
+import { logger } from '@/lib/telemetry/logger';
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +28,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, data: { id } }, { status: 201 });
   } catch (err) {
-    console.error('[POST /api/ats/save]', err);
-    return NextResponse.json({ success: false, message: 'Failed to save analysis' }, { status: 500 });
+    logger.error('ats.save.unexpected_error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return NextResponse.json(
+      { success: false, message: 'Failed to save analysis' },
+      { status: 500 },
+    );
   }
 }
+

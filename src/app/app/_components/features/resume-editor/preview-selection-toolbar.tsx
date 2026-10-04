@@ -26,8 +26,7 @@ import { parseSSEChunk } from '@/app/app/_util/parse-sse';
 
 type FieldMatch = { path: string; sectionType: SectionType; label: string };
 
-const norm = (s: string | undefined | null) =>
-  (s ?? '').replace(/\s+/g, ' ').trim();
+const norm = (s: string | undefined | null) => (s ?? '').replace(/\s+/g, ' ').trim();
 
 function findFormField(values: UpdateResumeDTO, selectedText: string): FieldMatch | null {
   const needle = norm(selectedText);
@@ -40,7 +39,11 @@ function findFormField(values: UpdateResumeDTO, selectedText: string): FieldMatc
   for (let i = 0; i < exps.length; i++) {
     if (norm(exps[i]?.description).includes(needle)) {
       const title = exps[i]?.position || `Role ${i + 1}`;
-      return { path: `experiences.${i}.description`, sectionType: 'experience', label: `Experience (${title})` };
+      return {
+        path: `experiences.${i}.description`,
+        sectionType: 'experience',
+        label: `Experience (${title})`,
+      };
     }
   }
 
@@ -48,14 +51,22 @@ function findFormField(values: UpdateResumeDTO, selectedText: string): FieldMatc
   for (let i = 0; i < projs.length; i++) {
     if (norm(projs[i]?.description).includes(needle)) {
       const title = projs[i]?.title || `Project ${i + 1}`;
-      return { path: `projects.${i}.description`, sectionType: 'projects', label: `Project (${title})` };
+      return {
+        path: `projects.${i}.description`,
+        sectionType: 'projects',
+        label: `Project (${title})`,
+      };
     }
   }
 
   const achvs = values.achievements ?? [];
   for (let i = 0; i < achvs.length; i++) {
     if (norm(achvs[i]?.description).includes(needle)) {
-      return { path: `achievements.${i}.description`, sectionType: 'objective', label: 'Achievement' };
+      return {
+        path: `achievements.${i}.description`,
+        sectionType: 'objective',
+        label: 'Achievement',
+      };
     }
   }
 
@@ -102,7 +113,9 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
 
   const abortRef = useRef<AbortController | null>(null);
   const uiStateRef = useRef<UIState>('idle');
-  useEffect(() => { uiStateRef.current = uiState; }, [uiState]);
+  useEffect(() => {
+    uiStateRef.current = uiState;
+  }, [uiState]);
 
   // ── Reset all state ─────────────────────────────────────────────────────
   const resetAll = useCallback(() => {
@@ -208,8 +221,16 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
         if (lastDouble !== -1) buffer = buffer.slice(lastDouble + 2);
 
         for (const ev of events) {
-          if (ev.isDone) { reader.cancel(); return; }
-          if (ev.error) { reader.cancel(); setErrorMsg(ev.error); setUiState('error'); return; }
+          if (ev.isDone) {
+            reader.cancel();
+            return;
+          }
+          if (ev.error) {
+            reader.cancel();
+            setErrorMsg(ev.error);
+            setUiState('error');
+            return;
+          }
           if (ev.token) setStreamedText((p) => p + ev.token);
         }
       }
@@ -274,8 +295,11 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             }}
             title="Improve selected text with AI"
           >
-            <IconMapper name="auto_fix" className="text-[16px]"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="auto_fix"
+              className="text-[16px]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <span>AI Improve Selection</span>
             {matchedField && (
               <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-medium tracking-normal normal-case opacity-90">
@@ -322,8 +346,11 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             className="flex items-center gap-2 px-4 py-3 border-b border-[#ddc0bd]/40"
             style={{ background: '#fff0ed' }}
           >
-            <IconMapper name="auto_fix" className="text-[#7a1f1f] text-[18px]"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
+            <IconMapper
+              name="auto_fix"
+              className="text-[#7a1f1f] text-[18px]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
             <span className="text-[12px] font-bold text-[#7a1f1f] uppercase tracking-wider font-['Hanken_Grotesk']">
               AI Improvement
             </span>
@@ -351,8 +378,11 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
           {uiState === 'error' ? (
             <div className="p-4">
               <div className="flex items-start gap-2.5">
-                <IconMapper name="error" className="text-[#7a1f1f] text-[20px] shrink-0 mt-0.5"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="error"
+                  className="text-[#7a1f1f] text-[20px] shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-[12px] font-semibold text-[#2b1611] font-['Hanken_Grotesk'] leading-snug">
                     {errorMsg}
@@ -360,7 +390,10 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
                   <div className="flex items-center gap-3 mt-3">
                     <button
                       type="button"
-                      onClick={() => { setUiState('idle'); setErrorMsg(''); }}
+                      onClick={() => {
+                        setUiState('idle');
+                        setErrorMsg('');
+                      }}
                       className="text-[12px] font-bold text-[#7a1f1f] underline underline-offset-2 cursor-pointer hover:opacity-80"
                     >
                       Try again
@@ -403,7 +436,7 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
                   style={{ background: '#7a1f1f' }}
                 >
                   <IconMapper name="check" className="text-[15px]" />
-                  {accepted ? 'Applied!' : (matchedField ? 'Apply to resume' : 'Copy to clipboard')}
+                  {accepted ? 'Applied!' : matchedField ? 'Apply to resume' : 'Copy to clipboard'}
                 </button>
                 <button
                   type="button"
@@ -428,7 +461,11 @@ export function PreviewSelectionToolbar({ iframeRef, form }: PreviewSelectionToo
             boxShadow: '0 8px 24px rgba(26,122,63,0.35)',
           }}
         >
-          <IconMapper name="check_circle" className="text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }} />
+          <IconMapper
+            name="check_circle"
+            className="text-[16px]"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          />
           <span>Applied to resume!</span>
         </div>
       )}

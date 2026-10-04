@@ -3,6 +3,9 @@ import { prisma } from '@/app/_lib/prisma';
 import { generateToken, generateExpiration } from './token.service';
 import { sendVerificationEmail } from './email.service';
 import type { SignupRequest } from '@/app/api/model/request/auth/auth';
+import type { UserResponse, SignupResponse } from '@/app/api/model/response/auth';
+
+export type { SignupRequest, UserResponse, SignupResponse };
 
 /**
  * Signup service — handles email/password registration.

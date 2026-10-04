@@ -9,7 +9,10 @@ export async function PUT(request: Request) {
   try {
     const body = (await request.json()) as { orders: Array<{ id: string; order: number }> };
     if (!Array.isArray(body.orders)) {
-      return NextResponse.json({ success: false, message: 'Invalid orders array' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: 'Invalid orders array' },
+        { status: 400 },
+      );
     }
 
     await prisma.$transaction(
@@ -17,8 +20,8 @@ export async function PUT(request: Request) {
         prisma.comparisonFeature.update({
           where: { id: item.id },
           data: { order: item.order },
-        })
-      )
+        }),
+      ),
     );
 
     return NextResponse.json({ success: true });

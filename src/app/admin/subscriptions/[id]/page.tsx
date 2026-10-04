@@ -68,18 +68,32 @@ export default async function SubscriptionDetailPage({
       </Link>
 
       <div className="bg-white border border-[#ddc0bd] rounded-xl p-6 shadow-xs">
-        <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">Subscription Overview</h2>
+        <h2 className="text-xl font-bold text-[#2b1611] font-['Playfair_Display'] mb-4">
+          Subscription Overview
+        </h2>
         <dl className="space-y-3 text-sm divide-y divide-[#ddc0bd]/40">
           {[
             ['Subscriber', `${sub.user.name ?? '—'} (${sub.user.email})`],
             ['Current Plan', sub.snapshotPlanName ?? sub.plan],
             ['Status', sub.status],
             ['Billing Interval', sub.snapshotBillingPeriod ?? '—'],
-            ['Amount Paid', sub.snapshotPriceInr != null
-              ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: sub.snapshotCurrency ?? 'INR', maximumFractionDigits: 0 }).format(sub.snapshotPriceInr)
-              : '—'],
+            [
+              'Amount Paid',
+              sub.snapshotPriceInr != null
+                ? new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: sub.snapshotCurrency ?? 'INR',
+                    maximumFractionDigits: 0,
+                  }).format(sub.snapshotPriceInr)
+                : '—',
+            ],
             ['Period Started', new Date(sub.currentPeriodStart).toLocaleDateString('en-IN')],
-            ['Period Ending', sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString('en-IN') : '—'],
+            [
+              'Period Ending',
+              sub.currentPeriodEnd
+                ? new Date(sub.currentPeriodEnd).toLocaleDateString('en-IN')
+                : '—',
+            ],
             ['Created Date', new Date(sub.createdAt).toLocaleDateString('en-IN')],
           ].map(([label, value]) => (
             <div key={label} className="flex justify-between gap-2 pt-2 first:pt-0">

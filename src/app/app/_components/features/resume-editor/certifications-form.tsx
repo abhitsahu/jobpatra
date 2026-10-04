@@ -42,9 +42,7 @@ export function CertificationsForm({ form }: CertificationsFormProps) {
       onAdd={handleAdd}
       onRemove={remove}
       onMove={move}
-      getItemTitle={(_, index) =>
-        watch(`certifications.${index}.name`) || 'Certification Name'
-      }
+      getItemTitle={(_, index) => watch(`certifications.${index}.name`) || 'Certification Name'}
       getItemSubtitle={(_, index) => {
         const issuer = watch(`certifications.${index}.issuer`) || 'Issuer';
         const date = watch(`certifications.${index}.date`) || 'Date';

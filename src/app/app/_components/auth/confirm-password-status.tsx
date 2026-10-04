@@ -20,11 +20,14 @@ export function ConfirmPasswordStatus({ password, confirmPassword }: ConfirmPass
       aria-live="polite"
       aria-atomic="true"
     >
-      <IconMapper name={match ? 'check_circle' : 'cancel'} style={{
+      <IconMapper
+        name={match ? 'check_circle' : 'cancel'}
+        style={{
           fontSize: '15px',
           fontVariationSettings: match ? "'FILL' 1" : "'FILL' 0",
         }}
-        aria-hidden="true" />
+        aria-hidden="true"
+      />
       {match ? 'Passwords match' : 'Passwords do not match'}
     </p>
   );

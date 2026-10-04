@@ -119,23 +119,9 @@ export async function downloadPdfClient(id: string, filename?: string): Promise<
 // TEMPLATES
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface Template {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  description: string;
-  previewImage: string;
-  atsFriendly: boolean;
-  isPremium: boolean;
-  usageCount: number;
-  sections: string[];
-}
+import type { Template, TemplatesResponse } from '@/app/api/model/response/template';
 
-export interface TemplatesResponse {
-  categories: string[];
-  templates: Template[];
-}
+export type { Template, TemplatesResponse };
 
 export async function listTemplatesClient(): Promise<TemplatesResponse> {
   const res = await apiFetch<{ success: boolean; data: TemplatesResponse }>('/api/template');

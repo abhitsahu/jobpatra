@@ -6,7 +6,6 @@ import { feedbackSchema, type FeedbackRequestDTO } from '@/app/api/model/request
 import { prisma } from '@/app/_lib/prisma';
 import { sendFeedbackEmails } from '@/app/service/feedback/feedback-email.service';
 import { verifyTurnstileToken } from '@/app/api/(controller)/_util/turnstile';
-import { checkRateLimit, getClientIp } from '@/app/api/(controller)/_util/rate-limiter';
 
 export async function POST(req: Request) {
   try {
@@ -28,16 +27,12 @@ export async function POST(req: Request) {
       userEmail = session.user.email || '';
     } else {
       // ── Unauthenticated Public Flow ───────────────────────────────────────
-      const rawIp = getClientIp(req);
+      const rawIp =
+        req.headers.get('cf-connecting-ip') ||
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        undefined;
 
-      // 1. IP Rate Limiting (1 submission per 30s)
-      const rateLimitError = checkRateLimit(`feedback:${rawIp}`, {
-        maxRequests: 2,
-        windowSeconds: 30,
-      });
-      if (rateLimitError) return rateLimitError;
-
-      // 2. Validate required unauthenticated fields
+      // 1. Validate required unauthenticated fields
       if (!data.email || !data.email.trim()) {
         return NextResponse.json(
           { success: false, message: 'Please provide a valid email address.' },

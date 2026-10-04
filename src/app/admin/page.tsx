@@ -62,9 +62,9 @@ export default async function AdminPage() {
   const chartData = userGrowthRaw.map((r) => ({
     date: new Date(r.day).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
     users: Number(r.count),
-    revenue: revenueByDay.find(
-      (rv) => new Date(rv.day).toDateString() === new Date(r.day).toDateString()
-    )?.revenue ?? 0,
+    revenue:
+      revenueByDay.find((rv) => new Date(rv.day).toDateString() === new Date(r.day).toDateString())
+        ?.revenue ?? 0,
   }));
 
   const recentActivity = recentPayments.map((p) => ({
@@ -75,5 +75,7 @@ export default async function AdminPage() {
     createdAt: p.createdAt.toISOString(),
   }));
 
-  return <AdminDashboardClient stats={stats} chartData={chartData} recentActivity={recentActivity} />;
+  return (
+    <AdminDashboardClient stats={stats} chartData={chartData} recentActivity={recentActivity} />
+  );
 }

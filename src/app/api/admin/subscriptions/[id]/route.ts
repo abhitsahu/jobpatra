@@ -3,10 +3,7 @@ import { prisma } from '@/app/_lib/prisma';
 import { withAdminAuth } from '@/app/api/admin/_lib/with-admin-auth';
 import { logAdminAction } from '@/app/api/admin/_lib/log-admin-action';
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await withAdminAuth();
   if (auth instanceof NextResponse) return auth;
 
@@ -24,15 +21,12 @@ export async function GET(
   return NextResponse.json({ subscription });
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await withAdminAuth();
   if (auth instanceof NextResponse) return auth;
 
   const { id } = await params;
-  const body = await request.json() as {
+  const body = (await request.json()) as {
     plan?: string;
     status?: string;
     currentPeriodEnd?: string;

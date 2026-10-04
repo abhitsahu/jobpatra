@@ -5,6 +5,7 @@
 import { NextResponse } from 'next/server';
 import { requireAuth } from '@/app/api/(controller)/_util/auth-guard';
 import { clearAllHistory } from '@/app/service/ats/history.service';
+import { logger } from '@/lib/telemetry/logger';
 
 export async function DELETE() {
   try {
@@ -15,7 +16,12 @@ export async function DELETE() {
     await clearAllHistory(userId);
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[DELETE /api/ats/history/clear]', err);
-    return NextResponse.json({ success: false, message: 'Failed to clear history' }, { status: 500 });
+    logger.error('ats.history.clear.unexpected_error', {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return NextResponse.json(
+      { success: false, message: 'Failed to clear history' },
+      { status: 500 },
+    );
   }
 }

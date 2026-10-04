@@ -124,7 +124,10 @@ export default function SettingsClient({ session }: { session: Session }) {
                 </option>
               ))}
             </select>
-            <IconMapper name="expand_more" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none" />
+            <IconMapper
+              name="expand_more"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#564240] pointer-events-none"
+            />
           </div>
 
           {/* Horizontal scroll pill tabs for quick touch access on mobile */}
@@ -142,7 +145,7 @@ export default function SettingsClient({ session }: { session: Session }) {
                     'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0',
                     isActive
                       ? 'bg-[#5b060c] text-white'
-                      : 'bg-white text-[#564240] border border-[#ddc0bd]'
+                      : 'bg-white text-[#564240] border border-[#ddc0bd]',
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >
@@ -171,7 +174,7 @@ export default function SettingsClient({ session }: { session: Session }) {
                     'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-semibold transition-all text-left cursor-pointer',
                     isActive
                       ? 'bg-[#5b060c] text-white shadow-sm'
-                      : 'text-[#564240] hover:bg-[#ffe9e4]'
+                      : 'text-[#564240] hover:bg-[#ffe9e4]',
                   )}
                   style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                 >

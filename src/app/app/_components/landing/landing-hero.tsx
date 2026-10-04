@@ -5,63 +5,69 @@ import Link from 'next/link';
 
 export function LandingHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-[#FFF8F6] pt-12 pb-32">
+    <section className="relative w-full overflow-hidden bg-[#FFF8F6] pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-32">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#5b060c]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#fed174]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-16 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-16 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         {/* Typography & CTA */}
-        <div className="flex flex-col items-start gap-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ffe9e5] rounded-full shadow-sm">
-            <IconMapper name="auto_awesome" className="text-[#370003] text-sm"
-              style={{ fontVariationSettings: "'FILL' 1" }} />
-            <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-widest">
+        <div className="flex flex-col items-start gap-5 sm:gap-8">
+          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#ffe9e5] rounded-full shadow-sm">
+            <IconMapper
+              name="auto_awesome"
+              className="text-[#370003] text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            />
+            <span className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] leading-[16px] font-semibold text-[#564240] uppercase tracking-widest">
               Introducing The Digital Nib
             </span>
           </div>
 
-          <h1 className="font-['Playfair_Display'] text-[36px] md:text-[48px] md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] max-w-2xl">
+          <h1 className="font-['Playfair_Display'] text-[28px] sm:text-[36px] md:text-[48px] leading-[36px] sm:leading-[44px] md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] max-w-2xl">
             Craft Your Career Letter With AI
           </h1>
 
-          <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] max-w-xl">
+          <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240] max-w-xl">
             Elevate your professional narrative. JobPatra merges the heritage of tactile
             storytelling with advanced AI to architect resumes and cover letters that pass the
             gatekeepers and resonate with decision-makers.
           </p>
 
-          <div className="flex items-center gap-6 mt-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mt-2 sm:mt-4 w-full sm:w-auto">
             <Link
               href="/app/signup"
-              className="bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-8 py-4 rounded-full shadow-xl hover:scale-105 transition-transform duration-300 flex items-center gap-2 group"
+              className="w-full sm:w-auto justify-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-full shadow-xl hover:scale-105 transition-transform duration-300 flex items-center gap-2 group"
             >
               Start Architecting
-              <IconMapper name="arrow_forward" className="text-sm transition-transform group-hover:translate-x-1" />
+              <IconMapper
+                name="arrow_forward"
+                className="text-sm transition-transform group-hover:translate-x-1"
+              />
             </Link>
 
             <div className="flex flex-col gap-1">
               <div className="flex -space-x-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-30"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-30"
                   alt="Professional woman"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuD04HIz-aC3QXXzLqVE5j1X9G4dzaENdDv5_2Bj4u760oBfvnEsulO-kZed3ypsbpqLcs-E77nVuQUMqesoG0lczY1EOypj79Gr00XNux9qbLiQ3dnQYht00o_f1VzSLuAd8v3O72FfQ5x7fq6ul3FR6Q9GepvAgeuRU7vqnEm2bpJdOVSbNJ3waw4A4CWLafPWBzz1tyiaUs1BtFFamZqR-nPsAwgJowrAf2joCCnHcvaPo9YtFzLg8w"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-20"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-20"
                   alt="Professional man"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa5mUyXaw2gHuIREoLSR1WdEQAldLul9d6JqG0765GDmV4mujcR-UWdUQbQ1gVlJXYkZgWCHfRXRKW7tng5r5GQ0BaTGbcTzhWDixCzAl_QT3lDTKcvNoxRQ_zThdVcPh5vrlwNUe37OqsssADb3mVo1fIiOHnk4kixBx9aq3sTdBCo5YoJVFWn5bzzIluZqGdDVHkENiI9Gz3bEllOmzXqLFxjDbZDHXxXH-isdFtXyhb3iSH-nopdA"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  className="w-10 h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-10"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFF8F6] object-cover shadow-sm z-10"
                   alt="Executive"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkdddeZJs2ZXHJqVbS0cIlBE0RrijJhKLqBLlil6o9zkOedtMY1hk2Sai0WfrGZhq_R3XTsvHpopBCysHs-1saljVBBW6KZ2iN58g07H7H9YPIp1jT-aVFK9iA0Ad8iUtvwUGLwYyqBiRTovql0tg21VTcOIB1ggH7_2iyDeqq3F04YeC9LGu7XhQ-iOQ7pmB6wZ8QMbjotnUhMQ54lgyI9igDvqobsW-xDAQrWfLM8G2K0iB4pileTg"
                 />
               </div>
-              <span className="font-['Hanken_Grotesk'] text-[12px] leading-[16px] font-medium text-[#564240]">
+              <span className="font-['Hanken_Grotesk'] text-[11px] sm:text-[12px] leading-[16px] font-medium text-[#564240]">
                 Join 10,000+ professionals
               </span>
             </div>
@@ -69,7 +75,7 @@ export function LandingHero() {
         </div>
 
         {/* Layered UI Visualization */}
-        <div className="relative h-[550px] md:h-[600px] w-full flex items-center justify-center [perspective:1200px]">
+        <div className="relative h-[480px] sm:h-[550px] md:h-[600px] w-full flex items-center justify-center [perspective:1200px] scale-[0.82] sm:scale-95 md:scale-100 origin-center transition-transform">
           {/* Base Ledger Background */}
           <div className="absolute inset-0 bg-[#FFF8EE] rounded-2xl shadow-[0_8px_32px_rgba(78,52,46,0.08)] transform [rotateX(12deg)] [rotateY(-10deg)] scale-95 opacity-50 overflow-hidden">
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#E5D9C8_1px,transparent_1px)] [background-size:16px_16px]" />
@@ -157,13 +163,19 @@ export function LandingHero() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Keywords</span>
-                <IconMapper name="check_circle" className="text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="check_circle"
+                  className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Formatting</span>
-                <IconMapper name="check_circle" className="text-[#795900] text-sm"
-                  style={{ fontVariationSettings: "'FILL' 1" }} />
+                <IconMapper
+                  name="check_circle"
+                  className="text-[#795900] text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-['Hanken_Grotesk'] text-sm text-[#564240]">Impact verbs</span>

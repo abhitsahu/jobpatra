@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useRateLimit } from '@/app/app/_hooks/use-rate-limit';
+import { RateLimitError } from '@/app/api/client/_utils/api-client';
 
 import { signupSchema } from '@/app/api/model/request/auth/auth';
 import { signupClient, googleLoginClient } from '@/app/api/client/auth/auth-client';
@@ -35,6 +37,7 @@ export function SignupForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [serverSuccess, setServerSuccess] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { isRateLimited, secondsLeft, triggerRateLimit } = useRateLimit();
 
   const redirectPath = searchParams.get('redirect');
   const template = searchParams.get('template');
@@ -78,6 +81,10 @@ export function SignupForm() {
       const loginUrl = `/app/login${redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}${template ? `&template=${encodeURIComponent(template)}` : ''}` : ''}`;
       setTimeout(() => router.push(loginUrl), 2500);
     } catch (err) {
+      if (err instanceof RateLimitError) {
+        triggerRateLimit(err.retryAfter);
+        return;
+      }
       setServerError(
         err instanceof Error ? err.message : 'Something went wrong. Please try again.',
       );
@@ -191,6 +198,15 @@ export function SignupForm() {
             {serverError}
           </p>
         )}
+        {/* Rate limit notice */}
+        {isRateLimited && (
+          <p
+            className="font-['Hanken_Grotesk'] text-[14px] text-[#ba1a1a] text-center"
+            role="alert"
+          >
+            Too many attempts. Please wait {secondsLeft}s before trying again.
+          </p>
+        )}
         {serverSuccess && (
           <p
             className="font-['Hanken_Grotesk'] text-[14px] text-[#2a7040] text-center"
@@ -204,9 +220,9 @@ export function SignupForm() {
           <button
             className="w-full bg-[#5b060c] text-white py-4 px-6 font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.2em] font-semibold uppercase shadow-lg hover:shadow-xl hover:bg-[#7a1f1f] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             type="submit"
-            disabled={isSubmitting || !passwordReady}
+            disabled={isSubmitting || !passwordReady || isRateLimited}
           >
-            {isSubmitting ? 'Registering...' : 'Start Building'}
+            {isSubmitting ? 'Registering...' : isRateLimited ? `Try again in ${secondsLeft}s` : 'Start Building'}
             <IconMapper name="arrow_forward" className="text-sm" />
           </button>
         </div>

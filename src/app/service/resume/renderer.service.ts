@@ -1,70 +1,12 @@
-import fs from 'fs';
 import Handlebars from 'handlebars';
+import { SkillCategory, LanguageProficiency } from '@/app/api/model/enums/resume';
 import type { ResumeWithRelations } from '@/app/api/model/response/resume';
+import type { TemplateData } from '@/app/api/model/response/template';
 import { getResume } from './resume.service';
-import { getTemplate } from './template.service';
+import { getTemplate, getTemplateContent } from './template.service';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPLATE DATA SHAPE (matches sample-data.json contract)
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface TemplateData {
-  metadata: { title: string };
-  personal: {
-    name: string;
-    jobTitle?: string | null;
-    email: string;
-    phone?: string | null;
-    location?: string | null;
-    website?: string | null;
-    linkedin?: string | null;
-    github?: string | null;
-  };
-  summary?: string | null;
-  education: {
-    degree: string;
-    institution: string;
-    startDate: string;
-    endDate?: string | null;
-    result?: string | null;
-  }[];
-  experience: {
-    position: string;
-    company: string;
-    location?: string | null;
-    startDate: string;
-    endDate?: string | null;
-    currentlyWorking: boolean;
-    description?: string | null;
-    highlights: string[];
-  }[];
-  projects: {
-    title: string;
-    field?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    description?: string | null;
-    technologies: string[];
-    link?: string | null;
-  }[];
-  skills: string[];
-  certifications: {
-    name: string;
-    issuer?: string | null;
-    date?: string | null;
-    url?: string | null;
-  }[];
-  achievements: { title: string; date?: string | null; description?: string | null }[];
-  languages: string[];
-  references: {
-    name: string;
-    designation?: string | null;
-    company?: string | null;
-    email?: string | null;
-    phone?: string | null;
-  }[];
-  declaration?: string | null;
-}
+export { SkillCategory, LanguageProficiency };
+export type { TemplateData };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ASSEMBLER — maps Prisma relations → HBS template object
@@ -78,6 +20,7 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
 
     personal: {
       name: p?.fullName ?? '',
+      photoUrl: p?.photoUrl,
       jobTitle: p?.jobTitle,
       email: p?.email ?? '',
       phone: p?.phone,
@@ -120,6 +63,10 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
 
     // Templates use {{#each skills}} {{this}} — flat string array
     skills: resume.skills.map((s) => s.name),
+    skillsList: resume.skills.map((s) => ({
+      name: s.name,
+      category: s.category,
+    })),
 
     certifications: resume.certifications.map((c) => ({
       name: c.name,
@@ -138,6 +85,10 @@ export function assembleTemplateData(resume: ResumeWithRelations): TemplateData 
     languages: resume.languages.map((l) =>
       l.proficiency ? `${l.name} (${l.proficiency})` : l.name,
     ),
+    languagesList: resume.languages.map((l) => ({
+      name: l.name,
+      proficiency: l.proficiency,
+    })),
 
     references: resume.references.map((r) => ({
       name: r.name,
@@ -159,14 +110,12 @@ export async function renderResumeHtml(resumeId: string, userId: string): Promis
   const resume = await getResume(resumeId, userId);
   const template = getTemplate(resume.templateId);
 
-  const hbsSource = fs.readFileSync(template.hbsPath, 'utf-8');
-  const cssSource = fs.existsSync(template.cssPath)
-    ? fs.readFileSync(template.cssPath, 'utf-8')
-    : '';
+  const hbsSource = await getTemplateContent(template.hbsKey, template.hbsPath);
+  const cssSource = await getTemplateContent(template.cssKey, template.cssPath).catch(() => '');
 
   // Inject CSS inline so PDF generation works without external file references
   const hbsWithInlineCss = hbsSource.replace(
-    /<link[^>]+rel="stylesheet"[^>]*\/>/gi,
+    /<link[^>]+rel=["']stylesheet["'][^>]*\/?>/gi,
     `<style>${cssSource}</style>`,
   );
 

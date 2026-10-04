@@ -66,3 +66,10 @@ export interface PricingPageResponse {
   comparison: ComparisonFeatureResponse[];
   testimonials: TestimonialResponse[];
 }
+
+export interface PlanLimits {
+  limitAtsAnalysis: number;
+  limitAiSuggestion: number;
+  durationDays: number | null;
+  templateAccess: TemplateAccess | string;
+}

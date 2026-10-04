@@ -14,9 +14,7 @@ export type AdminSession = {
  *   if (result instanceof NextResponse) return result;
  *   const { session } = result;
  */
-export async function withAdminAuth(): Promise<
-  { session: AdminSession } | NextResponse
-> {
+export async function withAdminAuth(): Promise<{ session: AdminSession } | NextResponse> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {

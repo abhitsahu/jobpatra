@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
+import { checkRateLimit } from '@/app/api/(controller)/_util/rate-limit/rate-limit';
 
 /**
  * Next.js Middleware — runs on EVERY request before the route handler.
@@ -76,6 +77,10 @@ function isAppRoute(pathname: string): boolean {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // 0. RATE LIMITING (centralized via @upstash/ratelimit)
+  const limited = await checkRateLimit(request);
+  if (limited) return limited;
 
   // Get JWT token from cookie
   const token = await getToken({

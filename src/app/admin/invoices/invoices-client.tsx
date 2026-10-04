@@ -28,7 +28,11 @@ export function AdminInvoicesClient({ initialInvoices, total, page, totalPages }
   const router = useRouter();
   const [resending, setResending] = useState<string | null>(null);
   const fmt = (n: number, currency = 'INR') =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
 
   const handleResend = async (id: string) => {
     setResending(id);
@@ -59,14 +63,22 @@ export function AdminInvoicesClient({ initialInvoices, total, page, totalPages }
             <tbody className="divide-y divide-[#ddc0bd]/50">
               {initialInvoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-[#fff0ed]/40 transition-colors">
-                  <td className="px-5 py-3.5 font-mono text-xs font-bold text-[#7a1f1f]">{inv.invoiceNumber}</td>
+                  <td className="px-5 py-3.5 font-mono text-xs font-bold text-[#7a1f1f]">
+                    {inv.invoiceNumber}
+                  </td>
                   <td className="px-5 py-3.5">
                     <p className="font-semibold text-[#2b1611]">{inv.user.name ?? '—'}</p>
                     <p className="text-xs text-[#564240] mt-0.5">{inv.user.email}</p>
                   </td>
-                  <td className="px-5 py-3.5 font-bold text-[#166534]">{fmt(inv.total, inv.currency)}</td>
+                  <td className="px-5 py-3.5 font-bold text-[#166534]">
+                    {fmt(inv.total, inv.currency)}
+                  </td>
                   <td className="px-5 py-3.5 text-xs text-[#564240] font-medium hidden md:table-cell">
-                    {new Date(inv.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {new Date(inv.createdAt).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2 justify-end">

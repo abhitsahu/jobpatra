@@ -14,7 +14,10 @@ export default function PublicPricingLoading() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8 justify-center">
         {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="p-8 bg-white/70 border border-[#ddc0bd] rounded-2xl space-y-6 shadow-sm">
+          <div
+            key={i}
+            className="p-8 bg-white/70 border border-[#ddc0bd] rounded-2xl space-y-6 shadow-sm"
+          >
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-12 w-28" />
             <Skeleton className="h-4 w-full" />

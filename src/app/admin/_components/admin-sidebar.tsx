@@ -3,8 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, MessageSquare, CreditCard,
-  Receipt, FileText, Tag, ShieldCheck, LogOut,
+  LayoutDashboard,
+  Users,
+  MessageSquare,
+  CreditCard,
+  Receipt,
+  FileText,
+  Tag,
+  ShieldCheck,
+  LogOut,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { Logo } from '@/app/app/_components/common/logo';
@@ -20,19 +27,30 @@ const NAV = [
   { label: 'Audit Log', href: '/admin/audit-log', icon: FileText },
 ];
 
-interface Props { adminEmail: string; adminName: string; }
+interface Props {
+  adminEmail: string;
+  adminName: string;
+}
 
 export function AdminSidebar({ adminEmail, adminName }: Props) {
   const pathname = usePathname();
-  const initials = adminName.split(' ').filter(Boolean).slice(0, 2)
-    .map((p) => p[0]?.toUpperCase()).join('') || 'A';
+  const initials =
+    adminName
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase())
+      .join('') || 'A';
 
   return (
     <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-56 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 py-6">
       {/* Brand */}
       <div className="px-5 mb-6">
         <Link href="/admin">
-          <Logo iconClassName="h-7 w-auto" textClassName="font-['Playfair_Display'] text-[20px] font-bold text-[#7a1f1f]" />
+          <Logo
+            iconClassName="h-7 w-auto"
+            textClassName="font-['Playfair_Display'] text-[20px] font-bold text-[#7a1f1f]"
+          />
         </Link>
         <p className="font-['Hanken_Grotesk'] text-[10px] leading-[14px] font-bold text-[#7a1f1f] tracking-widest uppercase mt-1">
           Admin Console

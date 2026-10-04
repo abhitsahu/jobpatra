@@ -16,7 +16,7 @@ export default async function ProtectedSubscriptionPage() {
 
   const hdrs = await headers();
   const country = hdrs.get('x-vercel-ip-country') || hdrs.get('cf-ipcountry') || null;
-  const currency = country === 'IN' ? 'INR' as const : 'INR' as const; // default INR for dashboard
+  const currency = country === 'IN' ? ('INR' as const) : ('INR' as const); // default INR for dashboard
 
   return (
     <div className="h-full overflow-y-auto">

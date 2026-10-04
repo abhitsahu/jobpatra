@@ -35,13 +35,19 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
       {/* Background Decorative Elements (The Desk) */}
       <div className="absolute top-28 left-10 opacity-20 transform -rotate-12 select-none pointer-events-none hidden md:block">
-        <IconMapper name="history_edu" ref={decor1Ref}
-          className="text-[120px] text-[#ffb3ae] transition-transform duration-100 ease-out" />
+        <IconMapper
+          name="history_edu"
+          ref={decor1Ref}
+          className="text-[120px] text-[#ffb3ae] transition-transform duration-100 ease-out"
+        />
       </div>
       <div className="absolute bottom-10 right-10 opacity-20 transform rotate-12 select-none pointer-events-none hidden md:block">
-        <IconMapper name="ink_pen" ref={decor2Ref}
+        <IconMapper
+          name="ink_pen"
+          ref={decor2Ref}
           className="text-[120px] text-[#ffb3ae] transition-transform duration-100 ease-out"
-          style={{ fontVariationSettings: "'FILL' 1" }} />
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        />
       </div>
 
       {/* Centered Page Content */}

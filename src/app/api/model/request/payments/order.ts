@@ -17,3 +17,15 @@ export interface VerifyPaymentRequest {
   planSlug: string;
   billingPeriod: BillingPeriod;
 }
+
+export interface ActivateSubscriptionDTO {
+  userId: string;
+  planSlug: string;
+  billingPeriod: BillingPeriod;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  amount: number;
+  currency: Currency | string;
+}
+
+export * from './invoice';

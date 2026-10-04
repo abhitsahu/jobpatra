@@ -65,7 +65,10 @@ export async function POST(request: Request) {
         existingSub.currentPeriodEnd > new Date();
       if (isActivePaid) {
         return NextResponse.json<CreateOrderResponse>(
-          { success: false, message: 'You cannot switch to the Free plan while on an active paid subscription.' },
+          {
+            success: false,
+            message: 'You cannot switch to the Free plan while on an active paid subscription.',
+          },
           { status: 400 },
         );
       }
@@ -89,8 +92,12 @@ export async function POST(request: Request) {
     }
 
     // 4. Create or fetch Customer on Razorpay API
-    const authHeader = 'Basic ' + Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString('base64');
-    
+    const authHeader =
+      'Basic ' +
+      Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString(
+        'base64',
+      );
+
     // Fetch local user to verify customer ID state
     const localUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -104,7 +111,7 @@ export async function POST(request: Request) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': authHeader,
+            Authorization: authHeader,
           },
           body: JSON.stringify({
             name: authResult.session.user.name || 'JobPatra User',
@@ -136,7 +143,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        Authorization: authHeader,
       },
       body: JSON.stringify({
         amount: amountInSubunits,

@@ -31,7 +31,10 @@ export default function DashboardLoading() {
           {/* Resume Grid Skeletons */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="p-6 bg-white/60 border border-[#ddc0bd] rounded-xl space-y-4 shadow-sm">
+              <div
+                key={i}
+                className="p-6 bg-white/60 border border-[#ddc0bd] rounded-xl space-y-4 shadow-sm"
+              >
                 <div className="flex justify-between items-start">
                   <Skeleton className="h-6 w-3/4" />
                   <Skeleton className="h-6 w-6 rounded-full" />

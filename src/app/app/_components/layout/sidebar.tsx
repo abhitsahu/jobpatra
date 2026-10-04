@@ -42,11 +42,11 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          "flex flex-col h-screen fixed left-0 top-0 py-5 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 transition-all duration-300 ease-in-out",
+          'flex flex-col h-screen fixed left-0 top-0 py-5 bg-[#fff8f6] border-r border-[#ddc0bd] z-50 transition-all duration-300 ease-in-out',
           // Responsive widths: mobile 288px (comfortable full drawer), tablet 80px (icon-only), desktop 224px
-          "w-72 md:w-20 lg:w-56",
+          'w-72 md:w-20 lg:w-56',
           // Responsive positioning: off-screen on mobile unless open, always visible on tablet/desktop
-          isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"
+          isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0',
         )}
       >
         {/* Brand */}
@@ -98,7 +98,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   className="text-[20px] shrink-0"
                   style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
                 />
-                <span className="inline-block md:hidden lg:inline-block truncate">{item.label}</span>
+                <span className="inline-block md:hidden lg:inline-block truncate">
+                  {item.label}
+                </span>
               </Link>
             );
           })}
@@ -116,7 +118,10 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               className="block p-2.5 bg-[#f6be39] hover:bg-[#e0ab2b] border border-[#ddc0bd]/40 rounded-xl text-center transition-all group shadow-xs cursor-pointer"
             >
               <div className="flex items-center justify-center gap-1.5">
-                <IconMapper name="workspace_premium" className="text-[#261a00] text-sm group-hover:scale-110 transition-transform shrink-0" />
+                <IconMapper
+                  name="workspace_premium"
+                  className="text-[#261a00] text-sm group-hover:scale-110 transition-transform shrink-0"
+                />
                 <span className="font-['Hanken_Grotesk'] text-[11px] font-bold text-[#261a00] uppercase tracking-wider inline-block md:hidden lg:inline-block">
                   Upgrade to Pro
                 </span>
@@ -130,7 +135,10 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               className="block p-2.5 bg-[#fff0ed] hover:bg-[#ffe2db]/60 border border-[#ddc0bd]/40 rounded-xl text-center transition-all group cursor-pointer"
             >
               <div className="flex items-center justify-center gap-1.5">
-                <IconMapper name="verified" className="text-[#7a1f1f] text-sm group-hover:rotate-12 transition-transform shrink-0" />
+                <IconMapper
+                  name="verified"
+                  className="text-[#7a1f1f] text-sm group-hover:rotate-12 transition-transform shrink-0"
+                />
                 <span className="font-['Hanken_Grotesk'] text-[11px] font-bold text-[#7a1f1f] uppercase tracking-wider inline-block md:hidden lg:inline-block">
                   {planName} Active
                 </span>

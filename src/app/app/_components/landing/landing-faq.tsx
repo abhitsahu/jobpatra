@@ -48,14 +48,17 @@ const faqs = [
 
 export function LandingFaq() {
   return (
-    <section className="w-full py-24 bg-[#FFF8EE] border-t border-[#E5D9C8] relative" id="faq">
+    <section
+      className="w-full py-14 sm:py-24 bg-[#FFF8EE] border-t border-[#E5D9C8] relative"
+      id="faq"
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div className="col-span-1 flex flex-col gap-6">
-            <h2 className="font-['Playfair_Display'] text-3xl md:text-5xl font-bold text-[#370003]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
+          <div className="col-span-1 flex flex-col gap-4 sm:gap-6">
+            <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-5xl font-bold text-[#370003]">
               Frequently Asked Questions
             </h2>
-            <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
+            <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
               Everything you need to know about JobPatra, resumes, ATS optimization, and your
               AI-powered job search.
             </p>
@@ -75,22 +78,42 @@ export function LandingFaq() {
             </div>
           </div>
 
-          <div className="col-span-1 lg:col-span-2 flex flex-col gap-4">
+          <div className="col-span-1 lg:col-span-2 flex flex-col gap-3.5 sm:gap-4">
             {faqs.map((faq, idx) => (
               <details
                 key={faq.q}
                 className="group bg-[#FFF8F6] rounded-xl border border-[#E5D9C8] overflow-hidden"
                 open={idx === 0}
               >
-                <summary className="flex justify-between items-center font-['Playfair_Display'] text-lg font-semibold text-[#370003] cursor-pointer p-6 bg-[#FFF8F6] hover:bg-[#fff0ee] transition-colors outline-none list-none select-none">
+                <summary className="flex justify-between items-center font-['Playfair_Display'] text-base sm:text-lg font-semibold text-[#370003] cursor-pointer p-4 sm:p-6 bg-[#FFF8F6] hover:bg-[#fff0ee] transition-colors outline-none list-none select-none gap-3">
                   <span>{faq.q}</span>
-                  <IconMapper name="expand_more" className="text-[#370003] transition-transform duration-300 group-open:rotate-180" />
+                  <IconMapper
+                    name="expand_more"
+                    className="text-[#370003] transition-transform duration-300 group-open:rotate-180 shrink-0 text-xl"
+                  />
                 </summary>
-                <div className="p-6 pt-0 font-['Hanken_Grotesk'] text-sm text-[#564240] bg-[#FFF8F6]">
+                <div className="p-4 sm:p-6 pt-0 font-['Hanken_Grotesk'] text-[13px] sm:text-sm text-[#564240] bg-[#FFF8F6] leading-relaxed">
                   {faq.a}
                 </div>
               </details>
             ))}
+
+            <div className="flex lg:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-4 bg-[#fff0ee] p-5 rounded-xl border border-[#E5D9C8]">
+              <div>
+                <h3 className="font-['Playfair_Display'] text-base sm:text-lg font-semibold text-[#370003]">
+                  Still have questions?
+                </h3>
+                <p className="font-['Hanken_Grotesk'] text-xs sm:text-sm text-[#564240]">
+                  We&apos;re here to help you architect your perfect career narrative.
+                </p>
+              </div>
+              <Link
+                href="/app/signup"
+                className="w-full sm:w-auto text-center bg-[#370003] text-white font-['Hanken_Grotesk'] text-[13px] font-semibold px-5 py-2.5 rounded-full shadow-md"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       </div>

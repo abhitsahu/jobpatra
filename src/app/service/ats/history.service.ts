@@ -6,15 +6,28 @@
  */
 
 import { prisma } from '@/app/_lib/prisma';
-import type { SaveAtsAnalysisDTO } from '@/app/api/model/request/ats/history';
-import type { PaginatedATSHistory } from '@/app/api/model/response/ats';
+import type { Prisma } from '@prisma/client';
+import type { SaveAtsAnalysisDTO, ListAtsHistoryQueryDTO } from '@/app/api/model/request/ats';
+import type { PaginatedATSHistory, ATSAnalysisDetail } from '@/app/api/model/response/ats';
+import type { SaveAtsInput } from '@/app/api/client/ats/history-client';
+
+export type {
+  SaveAtsAnalysisDTO,
+  ListAtsHistoryQueryDTO,
+  PaginatedATSHistory,
+  ATSAnalysisDetail,
+  SaveAtsInput,
+};
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
 /** Insert a new ATSAnalysis record. Returns the created record's id. */
-export async function saveAnalysis(userId: string, input: SaveAtsAnalysisDTO): Promise<string> {
+export async function saveAnalysis(
+  userId: string,
+  input: SaveAtsAnalysisDTO | SaveAtsInput,
+): Promise<string> {
   const r = input.result;
 
   const created = await prisma.aTSAnalysis.create({
@@ -35,7 +48,7 @@ export async function saveAnalysis(userId: string, input: SaveAtsAnalysisDTO): P
       missingKeywords: r.missing_keywords,
       matchedSkills: r.matched_skills,
       missingSkills: r.missing_skills,
-      aiExplanation: (r.ai_explanation ?? undefined) as any,
+      aiExplanation: (r.ai_explanation ?? undefined) as unknown as Prisma.InputJsonValue,
       processingTimeMs: r.processing_time_ms ?? null,
       version: r.version ?? null,
     },
@@ -74,8 +87,13 @@ export async function getUserHistory(
 }
 
 /** Fetch a single analysis — scoped to userId (strict tenancy). */
-export async function getAnalysisById(id: string, userId: string) {
-  return prisma.aTSAnalysis.findFirst({ where: { id, userId } });
+export async function getAnalysisById(
+  id: string,
+  userId: string,
+): Promise<ATSAnalysisDetail | null> {
+  return prisma.aTSAnalysis.findFirst({
+    where: { id, userId },
+  }) as Promise<ATSAnalysisDetail | null>;
 }
 
 /** Delete one analysis belonging to userId. */

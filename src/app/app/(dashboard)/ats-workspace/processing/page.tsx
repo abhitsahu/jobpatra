@@ -36,9 +36,14 @@ export default function ProcessingPage() {
   const handleSaveAndRedirect = useCallback(
     async (result: ATSAnalyzeResponse, resumeName: string, jdText: string) => {
       // Extract a short job title from the first line of the JD
-      const firstJdLine = jdText.split('\n')[0].replace(/[#*_-]/g, '').trim();
+      const firstJdLine = jdText
+        .split('\n')[0]
+        .replace(/[#*_-]/g, '')
+        .trim();
       const jobTitle =
-        firstJdLine.length > 40 ? firstJdLine.substring(0, 40) + '...' : firstJdLine || 'Target Position';
+        firstJdLine.length > 40
+          ? firstJdLine.substring(0, 40) + '...'
+          : firstJdLine || 'Target Position';
 
       // ── Save to database ──────────────────────────────────────────────────
       try {
@@ -59,7 +64,13 @@ export default function ProcessingPage() {
       localStorage.setItem(`jobpatra_ats_result_${analysisId}`, JSON.stringify(result));
       const existingHistory = localStorage.getItem('jobpatra_ats_analyses');
       const historyList = existingHistory ? JSON.parse(existingHistory) : [];
-      historyList.push({ id: analysisId, resumeTitle: resumeName, jobTitle, overallScore: Math.round(result.overall_score), timestamp: new Date().toISOString() });
+      historyList.push({
+        id: analysisId,
+        resumeTitle: resumeName,
+        jobTitle,
+        overallScore: Math.round(result.overall_score),
+        timestamp: new Date().toISOString(),
+      });
       localStorage.setItem('jobpatra_ats_analyses', JSON.stringify(historyList));
       router.replace(`/app/ats-workspace/result/${analysisId}`);
     },
@@ -222,14 +233,20 @@ export default function ProcessingPage() {
             <div key={step.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {step.status === 'completed' && (
-                  <IconMapper name="check_circle" className="text-green-600 text-[18px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }} />
+                  <IconMapper
+                    name="check_circle"
+                    className="text-green-600 text-[18px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  />
                 )}
                 {step.status === 'running' && (
                   <div className="w-[18px] h-[18px] rounded-full border-2 border-[#7a1f1f]/25 border-t-[#7a1f1f] animate-spin shrink-0"></div>
                 )}
                 {step.status === 'idle' && (
-                  <IconMapper name="radio_button_unchecked" className="text-[#564240]/20 text-[18px]" />
+                  <IconMapper
+                    name="radio_button_unchecked"
+                    className="text-[#564240]/20 text-[18px]"
+                  />
                 )}
                 {step.status === 'failed' && (
                   <IconMapper name="cancel" className="text-red-600 text-[18px]" />

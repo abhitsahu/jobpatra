@@ -34,19 +34,29 @@ const PLAN_BADGE: Record<string, string> = {
 
 const PLANS = ['', 'FREE', 'PRO', 'ENTERPRISE'];
 
-export function AdminUsersClient({ initialUsers, total, page, totalPages, initialQ, initialPlan }: Props) {
+export function AdminUsersClient({
+  initialUsers,
+  total,
+  page,
+  totalPages,
+  initialQ,
+  initialPlan,
+}: Props) {
   const router = useRouter();
   const [q, setQ] = useState(initialQ);
   const [plan, setPlan] = useState(initialPlan);
   const [isPending, startTransition] = useTransition();
 
-  const navigate = useCallback((newQ: string, newPlan: string, newPage: number) => {
-    const params = new URLSearchParams();
-    if (newQ) params.set('q', newQ);
-    if (newPlan) params.set('plan', newPlan);
-    if (newPage > 1) params.set('page', String(newPage));
-    startTransition(() => router.push(`/admin/users?${params.toString()}`));
-  }, [router]);
+  const navigate = useCallback(
+    (newQ: string, newPlan: string, newPage: number) => {
+      const params = new URLSearchParams();
+      if (newQ) params.set('q', newQ);
+      if (newPlan) params.set('plan', newPlan);
+      if (newPage > 1) params.set('page', String(newPage));
+      startTransition(() => router.push(`/admin/users?${params.toString()}`));
+    },
+    [router],
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,11 +90,16 @@ export function AdminUsersClient({ initialUsers, total, page, totalPages, initia
         </div>
         <select
           value={plan}
-          onChange={(e) => { setPlan(e.target.value); navigate(q, e.target.value, 1); }}
+          onChange={(e) => {
+            setPlan(e.target.value);
+            navigate(q, e.target.value, 1);
+          }}
           className="px-4 py-2.5 text-sm bg-white border border-[#ddc0bd] rounded-xl text-[#2b1611] focus:outline-none focus:border-[#7a1f1f] shadow-xs"
         >
           {PLANS.map((p) => (
-            <option key={p} value={p}>{p || 'All Plans'}</option>
+            <option key={p} value={p}>
+              {p || 'All Plans'}
+            </option>
           ))}
         </select>
         <button
@@ -95,7 +110,9 @@ export function AdminUsersClient({ initialUsers, total, page, totalPages, initia
         </button>
       </form>
 
-      <p className="text-xs font-semibold text-[#564240]">{total.toLocaleString()} users registered{isPending ? ' — loading…' : ''}</p>
+      <p className="text-xs font-semibold text-[#564240]">
+        {total.toLocaleString()} users registered{isPending ? ' — loading…' : ''}
+      </p>
 
       {/* Table */}
       <div className="bg-white border border-[#ddc0bd] rounded-xl overflow-hidden shadow-xs">
@@ -106,7 +123,9 @@ export function AdminUsersClient({ initialUsers, total, page, totalPages, initia
                 <th className="text-left px-5 py-3.5 font-bold">User</th>
                 <th className="text-left px-5 py-3.5 font-bold hidden sm:table-cell">Plan</th>
                 <th className="text-left px-5 py-3.5 font-bold hidden lg:table-cell">Resumes</th>
-                <th className="text-left px-5 py-3.5 font-bold hidden lg:table-cell">ATS Analyses</th>
+                <th className="text-left px-5 py-3.5 font-bold hidden lg:table-cell">
+                  ATS Analyses
+                </th>
                 <th className="text-left px-5 py-3.5 font-bold hidden md:table-cell">Joined</th>
                 <th className="px-5 py-3.5" />
               </tr>
@@ -119,14 +138,24 @@ export function AdminUsersClient({ initialUsers, total, page, totalPages, initia
                     <p className="text-xs text-[#564240] mt-0.5">{user.email}</p>
                   </td>
                   <td className="px-5 py-3.5 hidden sm:table-cell">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${PLAN_BADGE[user.subscription?.plan ?? 'FREE'] ?? PLAN_BADGE.FREE}`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${PLAN_BADGE[user.subscription?.plan ?? 'FREE'] ?? PLAN_BADGE.FREE}`}
+                    >
                       {user.subscription?.plan ?? 'FREE'}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-[#564240] font-medium hidden lg:table-cell">{user._count.resumes}</td>
-                  <td className="px-5 py-3.5 text-[#564240] font-medium hidden lg:table-cell">{user._count.atsAnalyses}</td>
+                  <td className="px-5 py-3.5 text-[#564240] font-medium hidden lg:table-cell">
+                    {user._count.resumes}
+                  </td>
+                  <td className="px-5 py-3.5 text-[#564240] font-medium hidden lg:table-cell">
+                    {user._count.atsAnalyses}
+                  </td>
                   <td className="px-5 py-3.5 text-[#564240] text-xs hidden md:table-cell">
-                    {new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {new Date(user.createdAt).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2 justify-end">

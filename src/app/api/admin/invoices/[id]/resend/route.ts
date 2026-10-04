@@ -3,10 +3,7 @@ import { prisma } from '@/app/_lib/prisma';
 import { withAdminAuth } from '@/app/api/admin/_lib/with-admin-auth';
 import { logAdminAction } from '@/app/api/admin/_lib/log-admin-action';
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await withAdminAuth();
   if (auth instanceof NextResponse) return auth;
 
@@ -30,7 +27,12 @@ export async function POST(
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId: invoice.userId },
-    select: { currentPeriodStart: true, currentPeriodEnd: true, snapshotPlanName: true, snapshotBillingPeriod: true },
+    select: {
+      currentPeriodStart: true,
+      currentPeriodEnd: true,
+      snapshotPlanName: true,
+      snapshotBillingPeriod: true,
+    },
   });
 
   const { sendInvoiceEmail } = await import('@/app/service/auth/email.service');

@@ -1,4 +1,7 @@
-import { activateUserSubscription, failUserPayment } from '@/app/service/subscription/subscription.service';
+import {
+  activateUserSubscription,
+  failUserPayment,
+} from '@/app/service/subscription/subscription.service';
 import { BillingPeriod } from '@/app/api/model/enums/subscription';
 import { prisma } from '@/app/_lib/prisma';
 import { NextResponse } from 'next/server';
@@ -89,7 +92,10 @@ export async function POST(request: Request) {
       const notes = paymentEntity.notes || {};
 
       if (!orderId || !notes.userId || !notes.planSlug || !notes.billingPeriod) {
-        console.warn('[Razorpay Webhook] Missing order details or metadata in notes:', paymentEntity);
+        console.warn(
+          '[Razorpay Webhook] Missing order details or metadata in notes:',
+          paymentEntity,
+        );
         return NextResponse.json(
           { success: false, message: 'Missing order details or metadata notes' },
           { status: 400 },
@@ -122,7 +128,6 @@ export async function POST(request: Request) {
           });
         }
       } catch (err: any) {
-
         if (err.message === 'PAYMENT_ALREADY_COMPLETED') {
           return NextResponse.json({ received: true });
         }

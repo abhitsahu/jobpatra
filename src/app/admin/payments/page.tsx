@@ -31,7 +31,11 @@ export default async function AdminPaymentsPage({
   ]);
 
   const fmt = (n: number, currency = 'INR') =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
 
   const STATUS_BADGE: Record<string, string> = {
     COMPLETED: 'bg-[#dcfce7] text-[#166534] border border-[#86efac]',
@@ -50,7 +54,9 @@ export default async function AdminPaymentsPage({
                 <th className="text-left px-5 py-3.5 font-bold">User</th>
                 <th className="text-left px-5 py-3.5 font-bold">Amount</th>
                 <th className="text-left px-5 py-3.5 font-bold">Status</th>
-                <th className="text-left px-5 py-3.5 font-bold hidden md:table-cell">Razorpay Order</th>
+                <th className="text-left px-5 py-3.5 font-bold hidden md:table-cell">
+                  Razorpay Order
+                </th>
                 <th className="text-left px-5 py-3.5 font-bold hidden md:table-cell">Date</th>
               </tr>
             </thead>
@@ -61,13 +67,25 @@ export default async function AdminPaymentsPage({
                     <p className="font-semibold text-[#2b1611]">{p.user.name ?? '—'}</p>
                     <p className="text-xs text-[#564240] mt-0.5">{p.user.email}</p>
                   </td>
-                  <td className="px-5 py-3.5 font-bold text-[#166534]">{fmt(p.amount, p.currency)}</td>
-                  <td className="px-5 py-3.5">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[p.status] ?? ''}`}>{p.status}</span>
+                  <td className="px-5 py-3.5 font-bold text-[#166534]">
+                    {fmt(p.amount, p.currency)}
                   </td>
-                  <td className="px-5 py-3.5 text-xs text-[#564240] font-mono hidden md:table-cell">{p.razorpayOrderId}</td>
+                  <td className="px-5 py-3.5">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${STATUS_BADGE[p.status] ?? ''}`}
+                    >
+                      {p.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-[#564240] font-mono hidden md:table-cell">
+                    {p.razorpayOrderId}
+                  </td>
                   <td className="px-5 py-3.5 text-xs text-[#564240] font-medium hidden md:table-cell">
-                    {p.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {p.createdAt.toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </td>
                 </tr>
               ))}
@@ -78,21 +96,21 @@ export default async function AdminPaymentsPage({
       {/* ponytail: simple offset pagination, good enough for a read-only admin list */}
       {Math.ceil(total / PAGE_SIZE) > 1 && (
         <div className="flex justify-center gap-2 pt-2">
-          {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, i) => i + 1).slice(
-            Math.max(0, page - 3), page + 2
-          ).map((p) => (
-            <a
-              key={p}
-              href={`/admin/payments?page=${p}`}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg border transition-colors shadow-2xs ${
-                p === page
-                  ? 'bg-[#5b060c] text-white border-[#5b060c]'
-                  : 'bg-white border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] hover:bg-[#fff0ed]'
-              }`}
-            >
-              {p}
-            </a>
-          ))}
+          {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, i) => i + 1)
+            .slice(Math.max(0, page - 3), page + 2)
+            .map((p) => (
+              <a
+                key={p}
+                href={`/admin/payments?page=${p}`}
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg border transition-colors shadow-2xs ${
+                  p === page
+                    ? 'bg-[#5b060c] text-white border-[#5b060c]'
+                    : 'bg-white border-[#ddc0bd] text-[#564240] hover:text-[#2b1611] hover:bg-[#fff0ed]'
+                }`}
+              >
+                {p}
+              </a>
+            ))}
         </div>
       )}
     </div>

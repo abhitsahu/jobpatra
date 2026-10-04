@@ -24,11 +24,13 @@ function loadEnv(filePath) {
     const eq = trimmed.indexOf('=');
     if (eq === -1) continue;
     const key = trimmed.slice(0, eq).trim();
-    const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
+    const val = trimmed
+      .slice(eq + 1)
+      .trim()
+      .replace(/^["']|["']$/g, '');
     if (!process.env[key]) process.env[key] = val;
   }
 }
-
 
 loadEnv(resolve(root, '.env'));
 
@@ -111,5 +113,11 @@ async function seed() {
 }
 
 seed()
-  .catch((e) => { console.error('❌  Seed failed:', e.message); process.exit(1); })
-  .finally(async () => { await prisma.$disconnect(); await pool.end(); });
+  .catch((e) => {
+    console.error('❌  Seed failed:', e.message);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+  });

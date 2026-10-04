@@ -7,6 +7,14 @@
  * Server-side only — never import from client components.
  */
 
+import {
+  KeywordMatchType,
+  RecommendationPriority,
+  ExtractionMode,
+} from '@/app/api/model/enums/ats';
+
+export { KeywordMatchType, RecommendationPriority, ExtractionMode };
+
 // ---------------------------------------------------------------------------
 // Request types (what we send TO the AI service)
 // ---------------------------------------------------------------------------
@@ -33,7 +41,7 @@ export interface ATSAnalyzeRequestBody {
 
 export interface MatchedKeyword {
   keyword: string;
-  matchType: 'EXACT' | 'SYNONYM' | 'FUZZY' | 'RELATED';
+  matchType: KeywordMatchType | `${KeywordMatchType}`;
   similarity: number | null;
   matched_jd_keyword: string | null;
   is_related_concept: boolean;
@@ -57,7 +65,7 @@ export interface SectionExplanation {
 }
 
 export interface Recommendation {
-  priority: 'High' | 'Medium' | 'Low';
+  priority: RecommendationPriority | `${RecommendationPriority}`;
   issue: string;
   why: string;
   copy_paste_content: string;
@@ -94,7 +102,7 @@ export interface ATSAnalyzeResponse {
   missing_skills: string[];
   required_skill_count: number;
   culture_signals: string[];
-  extraction_mode: 'hybrid_ai' | 'deterministic_fallback';
+  extraction_mode: ExtractionMode | `${ExtractionMode}`;
   required_experience_years: number;
   candidate_experience_years: number;
   required_education_level: string;

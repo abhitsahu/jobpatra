@@ -27,12 +27,14 @@ export async function GET() {
 
     const planName = (() => {
       const map: Record<string, string> = {
-        FREE: 'Free Lifetime',
+        FREE: 'Free',
         PRO: 'Pro',
         ENTERPRISE: 'Enterprise',
         PLUS: 'Plus',
       };
-      return map[subscription.plan.toUpperCase()] || subscription.snapshotPlanName || subscription.plan;
+      return (
+        map[subscription.plan.toUpperCase()] || subscription.snapshotPlanName || subscription.plan
+      );
     })();
 
     const templateAccess =
@@ -53,24 +55,23 @@ export async function GET() {
         atsScans: {
           current: atsUsage.used,
           max: atsUsage.limit,
-          percent: atsUsage.limit && atsUsage.limit !== -1
-            ? Math.min(100, Math.round((atsUsage.used / atsUsage.limit) * 100))
-            : 0,
+          percent:
+            atsUsage.limit && atsUsage.limit !== -1
+              ? Math.min(100, Math.round((atsUsage.used / atsUsage.limit) * 100))
+              : 0,
         },
         aiOptimizations: {
           current: aiUsage.used,
           max: aiUsage.limit,
-          percent: aiUsage.limit && aiUsage.limit !== -1
-            ? Math.min(100, Math.round((aiUsage.used / aiUsage.limit) * 100))
-            : 0,
+          percent:
+            aiUsage.limit && aiUsage.limit !== -1
+              ? Math.min(100, Math.round((aiUsage.used / aiUsage.limit) * 100))
+              : 0,
         },
       },
     });
   } catch (err: any) {
     console.error('[GET /api/subscription/status]', err);
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

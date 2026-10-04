@@ -103,8 +103,11 @@ export function SubscriptionSection() {
             border: '1px solid #c3e6cb',
           }}
         >
-          <IconMapper name="check_circle" className="text-[#155724] shrink-0 mt-0.5"
-            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }} />
+          <IconMapper
+            name="check_circle"
+            className="text-[#155724] shrink-0 mt-0.5"
+            style={{ fontSize: 20, fontVariationSettings: "'FILL' 1" }}
+          />
           <div className="flex-1">
             <p
               className="text-[14px] font-bold text-[#155724]"
@@ -154,7 +157,7 @@ export function SubscriptionSection() {
                 className="text-[24px] leading-[32px] font-semibold text-[#795900]"
                 style={{ fontFamily: 'Playfair Display, serif' }}
               >
-                {sub?.planName || 'Free Lifetime'}
+                {sub?.planName || 'Free'}
               </p>
             </div>
             <div className="space-y-4">

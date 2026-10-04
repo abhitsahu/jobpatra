@@ -13,10 +13,22 @@ export const feedbackSchema = z.object({
   pageUrl: z.union([z.string().url(), z.literal('')]).optional(),
   // For unauthenticated users
   name: z.string().optional(),
-  email: z.union([z.string().email('Please provide a valid email address'), z.literal('')]).optional(),
+  email: z
+    .union([z.string().email('Please provide a valid email address'), z.literal('')])
+    .optional(),
   // Turnstile CAPTCHA token
   turnstileToken: z.string().optional(),
 });
 
 export type FeedbackRequestDTO = z.infer<typeof feedbackSchema>;
 
+export interface FeedbackEmailParams {
+  userName: string;
+  userEmail: string;
+  type: FeedbackType | `${FeedbackType}` | string;
+  rating?: number | null;
+  subject?: string | null;
+  message: string;
+  pageUrl?: string | null;
+  submittedAt: Date;
+}

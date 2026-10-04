@@ -43,16 +43,20 @@ export function ComparisonTable({ plans, comparison }: ComparisonTableProps) {
               <div className="col-span-1 font-medium text-[#2b1611]">{row.title}</div>
               {plans.map((plan) => {
                 const val =
-                  (row.values && typeof row.values === 'object' ? row.values[plan.slug] : undefined) ||
-                  '—';
+                  (row.values && typeof row.values === 'object'
+                    ? row.values[plan.slug]
+                    : undefined) || '—';
                 return (
                   <div
                     key={plan.id}
                     className="text-center text-[#564240] text-sm flex justify-center items-center"
                   >
                     {val === 'check' ? (
-                      <IconMapper name="check_circle" className="text-[#5b060c] text-xl"
-                        style={{ fontVariationSettings: "'FILL' 1" }} />
+                      <IconMapper
+                        name="check_circle"
+                        className="text-[#5b060c] text-xl"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      />
                     ) : (
                       val
                     )}

@@ -86,34 +86,37 @@ export function LandingFeatures() {
   return (
     <>
       {/* Core Features & Highlights Section */}
-      <section className="w-full py-24 bg-[#FFF8F6] relative overflow-hidden" id="features">
+      <section
+        className="w-full py-14 sm:py-24 bg-[#FFF8F6] relative overflow-hidden"
+        id="features"
+      >
         <div className="max-w-7xl mx-auto px-4 md:px-16">
-          <div className="text-center mb-20 flex flex-col items-center">
-            <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] mb-6">
+          <div className="text-center mb-12 sm:mb-20 flex flex-col items-center">
+            <h2 className="font-['Playfair_Display'] text-[26px] sm:text-[36px] md:text-[48px] leading-tight md:leading-[56px] md:tracking-[-0.02em] font-bold text-[#370003] mb-4 sm:mb-6">
               Everything You Need to Land Your Next Job
             </h2>
-            <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] max-w-3xl">
+            <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240] max-w-3xl">
               Build a better resume, understand your ATS score, discover relevant jobs, and optimize
               every application with AI.
             </p>
           </div>
 
-          <div className="flex flex-col gap-32">
+          <div className="flex flex-col gap-16 sm:gap-24 lg:gap-32">
             {/* Feature 1: AI Resume Builder */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="flex flex-col gap-6 order-2 lg:order-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+              <div className="flex flex-col gap-5 sm:gap-6 order-2 lg:order-1">
                 <div className="w-12 h-12 bg-[#5b060c] rounded-full flex items-center justify-center">
                   <IconMapper name="edit_document" className="text-[#e46e69]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
+                <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[28px] md:text-[32px] leading-tight sm:leading-[40px] font-semibold text-[#2b1611]">
                   AI Resume Builder
                 </h3>
-                <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
+                <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
                   Create professional, eye-catching resumes from scratch in minutes. Our intelligent
                   builder guides you through Personal Info, Experience, and Education, while AI
                   suggests powerful phrasing tailored to your industry.
                 </p>
-                <div className="mt-4">
+                <div className="mt-2 sm:mt-4">
                   <Link
                     href="/app/signup"
                     className="inline-block bg-[#370003] text-white font-['Hanken_Grotesk'] text-[14px] leading-[20px] tracking-[0.05em] font-semibold px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-md"
@@ -123,7 +126,7 @@ export function LandingFeatures() {
                 </div>
               </div>
 
-              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:-rotate-2 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
+              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-4 sm:p-6 shadow-xl relative transform lg:-rotate-2 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
                 <div className="absolute inset-0 border border-[#E5D9C8]/50 rounded-2xl pointer-events-none" />
                 <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] overflow-hidden h-[360px] flex flex-col">
                   <div className="bg-[#fff0ee] px-4 py-3 border-b border-[#ffe9e5] flex items-center gap-2">
@@ -156,10 +159,10 @@ export function LandingFeatures() {
             </div>
 
             {/* Feature 2: ATS Score & Resume Analysis */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:rotate-2 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+              <div className="bg-[#FFF8EE] rounded-2xl p-4 sm:p-6 shadow-xl relative transform lg:rotate-2 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
                 <div className="absolute inset-0 border border-[#E5D9C8]/50 rounded-2xl pointer-events-none" />
-                <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] overflow-hidden h-[360px] p-6 flex flex-col gap-6">
+                <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] overflow-hidden h-[360px] p-4 sm:p-6 flex flex-col gap-6">
                   <div className="flex items-center justify-between">
                     <span className="font-['Hanken_Grotesk'] text-[12px] font-semibold text-[#564240] uppercase tracking-widest">
                       ATS Scan Result
@@ -224,14 +227,14 @@ export function LandingFeatures() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-5 sm:gap-6">
                 <div className="w-12 h-12 bg-[#fed174] rounded-full flex items-center justify-center">
                   <IconMapper name="fact_check" className="text-[#785800]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
+                <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[28px] md:text-[32px] leading-tight sm:leading-[40px] font-semibold text-[#2b1611]">
                   ATS Score &amp; Analysis
                 </h3>
-                <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
+                <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
                   Stop guessing if your resume will pass the filters. Get an instant ATS
                   compatibility score out of 100, complete with keyword gap analysis, structural
                   feedback, and actionable improvement suggestions.
@@ -240,24 +243,24 @@ export function LandingFeatures() {
             </div>
 
             {/* Feature 3: AI-Powered Resume Optimization */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="flex flex-col gap-6 order-2 lg:order-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+              <div className="flex flex-col gap-5 sm:gap-6 order-2 lg:order-1">
                 <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center">
                   <IconMapper name="model_training" className="text-[#410004]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[32px] leading-[40px] font-semibold text-[#2b1611]">
+                <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[28px] md:text-[32px] leading-tight sm:leading-[40px] font-semibold text-[#2b1611]">
                   AI-Powered Optimization
                 </h3>
-                <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
+                <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
                   Transform passive responsibilities into active achievements. The Digital Nib
                   rewrites your bullet points to emphasize impact, quantify results, and incorporate
                   the exact terminology hiring managers look for.
                 </p>
               </div>
 
-              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-6 shadow-xl relative transform lg:rotate-1 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
+              <div className="order-1 lg:order-2 bg-[#FFF8EE] rounded-2xl p-4 sm:p-6 shadow-xl relative transform lg:rotate-1 hover:rotate-0 transition-transform duration-500 border border-[#E5D9C8]">
                 <div className="absolute inset-0 border border-[#E5D9C8]/50 rounded-2xl pointer-events-none" />
-                <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] h-[360px] flex flex-col justify-center p-8 relative overflow-hidden">
+                <div className="bg-[#FFF8F6] rounded-lg shadow-sm border border-[#ffe9e5] h-[360px] flex flex-col justify-center p-5 sm:p-8 relative overflow-hidden">
                   <div className="flex flex-col gap-2 mb-8 relative z-10">
                     <span className="text-xs uppercase text-[#564240] font-bold tracking-wider">
                       Before
@@ -271,8 +274,7 @@ export function LandingFeatures() {
                   </div>
                   <div className="flex flex-col gap-2 relative z-10">
                     <span className="text-xs uppercase text-[#370003] font-bold tracking-wider flex items-center gap-1">
-                      <IconMapper name="auto_awesome" className="text-sm" /> After
-                      AI Optimization
+                      <IconMapper name="auto_awesome" className="text-sm" /> After AI Optimization
                     </span>
                     <div className="bg-[#5b060c]/10 border border-[#370003]/20 p-4 rounded-lg text-[#2b1611] font-['Hanken_Grotesk'] shadow-inner">
                       &ldquo;Developed and optimized RESTful APIs using Node.js, improving system
@@ -287,19 +289,19 @@ export function LandingFeatures() {
       </section>
 
       {/* Professional Resume Templates Section — Full Width */}
-      <section className="w-full py-24 bg-[#fff0ee] border-y border-[#E5D9C8] relative overflow-hidden">
+      <section className="w-full py-14 sm:py-24 bg-[#fff0ee] border-y border-[#E5D9C8] relative overflow-hidden">
         {/* Decorative Backgrounds */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#5b060c]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#fed174]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-16 flex flex-col items-center text-center mb-10 relative z-10">
-          <div className="w-16 h-16 bg-[#FFF8F6] rounded-full flex items-center justify-center mb-6 shadow-md">
-            <IconMapper name="style" className="text-[#370003] text-2xl" />
+        <div className="max-w-7xl mx-auto px-4 md:px-16 flex flex-col items-center text-center mb-8 sm:mb-10 relative z-10">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#FFF8F6] rounded-full flex items-center justify-center mb-4 sm:mb-6 shadow-md">
+            <IconMapper name="style" className="text-[#370003] text-xl sm:text-2xl" />
           </div>
-          <h3 className="font-['Playfair_Display'] text-3xl md:text-5xl font-bold text-[#370003] mb-4">
+          <h3 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-5xl font-bold text-[#370003] mb-3 sm:mb-4">
             Professional Resume Templates
           </h3>
-          <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240] max-w-2xl">
+          <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240] max-w-2xl">
             Choose from a curated collection of ATS-friendly templates. Whether you need a modern
             creative layout or a traditional corporate format, our designs ensure your application
             stands out.
@@ -307,40 +309,40 @@ export function LandingFeatures() {
         </div>
 
         {/* Scrollable Gallery Track with Left/Right Navigation */}
-        <div className="relative w-full px-4 md:px-12 my-6">
+        <div className="relative w-full px-2 sm:px-4 md:px-12 my-4 sm:my-6">
           {/* Scroll Left Button */}
           <button
             onClick={() => scroll('left')}
-            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
+            className="absolute left-1 sm:left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-12 sm:h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
             aria-label="Scroll left"
           >
-            <IconMapper name="chevron_left" className="text-2xl" />
+            <IconMapper name="chevron_left" className="text-xl sm:text-2xl" />
           </button>
 
           {/* Scroll Right Button */}
           <button
             onClick={() => scroll('right')}
-            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
+            className="absolute right-1 sm:right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-12 sm:h-12 bg-[#FFF8F6] text-[#370003] border border-[#E5D9C8] rounded-full shadow-lg flex items-center justify-center hover:bg-[#ffe9e5] hover:scale-110 transition-all cursor-pointer"
             aria-label="Scroll right"
           >
-            <IconMapper name="chevron_right" className="text-2xl" />
+            <IconMapper name="chevron_right" className="text-xl sm:text-2xl" />
           </button>
 
           {/* Scrollable Container */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto scroll-smooth py-6 px-4 md:px-12 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth py-4 sm:py-6 px-8 sm:px-12 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             {templates.map((tpl) => (
               <div
                 key={tpl.id || tpl.name}
-                className="shrink-0 w-[240px] sm:w-[280px] snap-start group/card"
+                className="shrink-0 w-[220px] sm:w-[280px] snap-start group/card"
               >
                 <div className="bg-[#FFF8EE] rounded-xl border border-[#ddc0bd] p-3 shadow-sm transition-all duration-500 hover:scale-105 hover:shadow-2xl relative overflow-hidden flex flex-col h-full">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt={tpl.name}
-                    className="w-full h-72 object-cover rounded-lg mb-3 bg-[#ffe9e5]"
+                    className="w-full h-64 sm:h-72 object-cover rounded-lg mb-3 bg-[#ffe9e5]"
                     src={tpl.previewImage}
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
@@ -375,16 +377,16 @@ export function LandingFeatures() {
       </section>
 
       {/* Bento Features Section — The Modern Artisan's Toolkit */}
-      <section className="w-full py-24 bg-[#fff0ee] relative border-t border-[#E5D9C8]">
+      <section className="w-full py-14 sm:py-24 bg-[#fff0ee] relative border-t border-[#E5D9C8]">
         <div className="max-w-7xl mx-auto px-4 md:px-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
-            <div className="flex flex-col gap-4 max-w-2xl">
-              <h2 className="font-['Playfair_Display'] text-[32px] md:text-[48px] md:leading-[56px] font-bold text-[#370003]">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 gap-6 sm:gap-8">
+            <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl">
+              <h2 className="font-['Playfair_Display'] text-[26px] sm:text-[36px] md:text-[48px] leading-tight md:leading-[56px] font-bold text-[#370003]">
                 The Modern Artisan&apos;s Toolkit
               </h2>
-              <p className="font-['Hanken_Grotesk'] text-[18px] leading-[28px] text-[#564240]">
-                Precision engineering meets editorial elegance. Our suite is designed to curate
-                your professional history into a compelling narrative artifact.
+              <p className="font-['Hanken_Grotesk'] text-[15px] sm:text-[18px] leading-[24px] sm:leading-[28px] text-[#564240]">
+                Precision engineering meets editorial elegance. Our suite is designed to curate your
+                professional history into a compelling narrative artifact.
               </p>
             </div>
           </div>
@@ -392,19 +394,19 @@ export function LandingFeatures() {
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
             {/* Large Feature: Resume Builder */}
-            <div className="md:col-span-2 bg-[#FFF8F6] rounded-2xl p-10 flex flex-col justify-between relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] hover:shadow-[0_8px_30px_rgba(78,52,46,0.06)] transition-shadow duration-300 border border-[#E5D9C8]">
+            <div className="md:col-span-2 bg-[#FFF8F6] rounded-2xl p-6 sm:p-10 flex flex-col justify-between relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] hover:shadow-[0_8px_30px_rgba(78,52,46,0.06)] transition-shadow duration-300 border border-[#E5D9C8]">
               <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#ffe2dc] to-transparent opacity-30 transform translate-x-4 group-hover:translate-x-0 transition-transform duration-500" />
               <div className="relative z-10 flex flex-col gap-4 max-w-md">
                 <div className="w-12 h-12 bg-[#5b060c] rounded-full flex items-center justify-center mb-2">
                   <IconMapper name="architecture" className="text-[#e46e69]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[28px] leading-[36px] font-semibold text-[#2b1611]">
+                <h3 className="font-['Playfair_Display'] text-[24px] sm:text-[28px] leading-[32px] sm:leading-[36px] font-semibold text-[#2b1611]">
                   Architectural Resume Builder
                 </h3>
                 <p className="font-['Hanken_Grotesk'] text-base text-[#564240]">
                   Construct your profile with structural integrity. Our AI contextualizes your
-                  experience, suggesting impactful phrasing and optimal layouts for readability
-                  and presence.
+                  experience, suggesting impactful phrasing and optimal layouts for readability and
+                  presence.
                 </p>
               </div>
 
@@ -422,12 +424,12 @@ export function LandingFeatures() {
             </div>
 
             {/* Medium Feature: ATS Analyzer */}
-            <div className="bg-[#FFF8F6] rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] hover:shadow-[0_8px_30px_rgba(78,52,46,0.06)] transition-shadow duration-300 border border-[#E5D9C8]">
+            <div className="bg-[#FFF8F6] rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] hover:shadow-[0_8px_30px_rgba(78,52,46,0.06)] transition-shadow duration-300 border border-[#E5D9C8]">
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="w-12 h-12 bg-[#fed174] rounded-full flex items-center justify-center mb-2">
                   <IconMapper name="troubleshoot" className="text-[#785800]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-[#2b1611]">
+                <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[24px] leading-[30px] sm:leading-[32px] font-semibold text-[#2b1611]">
                   The Gatekeeper
                 </h3>
                 <p className="font-['Hanken_Grotesk'] text-base text-[#564240]">
@@ -467,13 +469,13 @@ export function LandingFeatures() {
             </div>
 
             {/* Medium Feature: Cover Letters */}
-            <div className="bg-[#370003] text-white rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
+            <div className="bg-[#370003] text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group shadow-xl">
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="w-12 h-12 bg-[#ffdad7] rounded-full flex items-center justify-center mb-2">
                   <IconMapper name="mark_email_unread" className="text-[#410004]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-[24px] leading-[32px] font-semibold text-white">
+                <h3 className="font-['Playfair_Display'] text-[22px] sm:text-[24px] leading-[30px] sm:leading-[32px] font-semibold text-white">
                   Postmarked Letters
                 </h3>
                 <p className="font-['Hanken_Grotesk'] text-base text-[#ffb3ae]">
@@ -493,7 +495,7 @@ export function LandingFeatures() {
 
             {/* Medium Feature: AI Editor */}
             <div className="md:col-span-2 bg-[#FFF8F6] rounded-2xl p-0 flex flex-col sm:flex-row relative overflow-hidden group shadow-[0_4px_20px_rgba(78,52,46,0.03)] border border-[#E5D9C8]">
-              <div className="p-8 md:p-10 flex flex-col justify-center gap-4 sm:w-1/2 z-10 bg-[#FFF8F6]">
+              <div className="p-6 sm:p-8 md:p-10 flex flex-col justify-center gap-4 sm:w-1/2 z-10 bg-[#FFF8F6]">
                 <div className="w-12 h-12 bg-[#5e0001] rounded-full flex items-center justify-center mb-2">
                   <IconMapper name="draw" className="text-[#eb6a59]" />
                 </div>

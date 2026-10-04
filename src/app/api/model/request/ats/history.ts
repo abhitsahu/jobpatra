@@ -10,26 +10,30 @@ export const saveAtsAnalysisSchema = z.object({
   jobDescription: z.string().min(1, 'jobDescription is required'),
   jobTitle: z.string().optional(),
   resumeId: z.string().optional(),
-  result: z.object({
-    overall_score: z.number(),
-    keyword_score: z.number(),
-    experience_score: z.number(),
-    skills_score: z.number(),
-    education_score: z.number(),
-    summary_score: z.number(),
-    formatting_score: z.number(),
-    matched_keywords: z.array(
-      z.object({
-        keyword: z.string(),
-      }).passthrough(),
-    ),
-    missing_keywords: z.array(z.string()),
-    matched_skills: z.array(z.string()),
-    missing_skills: z.array(z.string()),
-    ai_explanation: z.unknown().optional().nullable(),
-    processing_time_ms: z.number().optional(),
-    version: z.string().optional(),
-  }).passthrough(),
+  result: z
+    .object({
+      overall_score: z.number(),
+      keyword_score: z.number(),
+      experience_score: z.number(),
+      skills_score: z.number(),
+      education_score: z.number(),
+      summary_score: z.number(),
+      formatting_score: z.number(),
+      matched_keywords: z.array(
+        z
+          .object({
+            keyword: z.string(),
+          })
+          .passthrough(),
+      ),
+      missing_keywords: z.array(z.string()),
+      matched_skills: z.array(z.string()),
+      missing_skills: z.array(z.string()),
+      ai_explanation: z.unknown().optional().nullable(),
+      processing_time_ms: z.number().optional(),
+      version: z.string().optional(),
+    })
+    .passthrough(),
 });
 
 export interface SaveAtsAnalysisDTO {

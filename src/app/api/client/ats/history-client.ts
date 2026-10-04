@@ -46,7 +46,9 @@ export async function listAtsHistoryClient(params?: {
 // ---------------------------------------------------------------------------
 
 export async function getAtsResultClient(id: string): Promise<ATSAnalysisDetail> {
-  const res = await apiFetch<{ success: boolean; data: ATSAnalysisDetail }>(`/api/ats/result/${id}`);
+  const res = await apiFetch<{ success: boolean; data: ATSAnalysisDetail }>(
+    `/api/ats/result/${id}`,
+  );
   return res.data;
 }
 
